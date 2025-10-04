@@ -1,0 +1,149 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  UNPAID
+  REQUIRES_PAYMENT
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  fullName  String
+  phone     String?  @unique
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  patient             PatientProfile?
+  doctor              DoctorProfile?
+  appointmentsPatient Appointment[]   @relation("PatientAppointments")
+  appointmentsDoctor  Appointment[]   @relation("DoctorAppointments")
+  notifications       Notification[]
+  PasswordReset       PasswordReset[]
+}
+
+model PatientProfile {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id])
+  dob              DateTime?
+  gender           String?
+  medicalHistory   Json?
+  medications      Json?
+  allergies        Json?
+  insuranceNumber  String?
+  address          String?
+  emergencyContact String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model DoctorProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id])
+  specialty       String
+  bio             String?
+  yearsExperience Int?
+  clinicName      String?
+  rating          Float?   @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  slots DoctorSlot[]
+}
+
+model DoctorSlot {
+  id           String        @id @default(cuid())
+  doctorId     String
+  doctor       DoctorProfile @relation(fields: [doctorId], references: [id])
+  start        DateTime
+  end          DateTime
+  isBooked     Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  appointments Appointment[]
+}
+
+model Appointment {
+  id            String            @id @default(cuid())
+  patientId     String
+  patient       User              @relation("PatientAppointments", fields: [patientId], references: [id])
+  doctorId      String
+  doctor        User              @relation("DoctorAppointments", fields: [doctorId], references: [id])
+  slotId        String?
+  slot          DoctorSlot?       @relation(fields: [slotId], references: [id])
+  service       String
+  scheduledAt   DateTime
+  status        AppointmentStatus @default(PENDING)
+  paymentStatus PaymentStatus     @default(UNPAID)
+  paymentId     String?
+  qrCode        String?
+  cancelReason  String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  payment Payment?
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  appointmentId String        @unique
+  appointment   Appointment   @relation(fields: [appointmentId], references: [id])
+  provider      String
+  amount        Int
+  currency      String
+  providerRef   String?
+  status        PaymentStatus @default(REQUIRES_PAYMENT)
+  meta          Json?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  type      String
+  title     String
+  body      String
+  data      Json?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model PasswordReset {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  codeHash  String // bcrypt hash của mã 6 số
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
