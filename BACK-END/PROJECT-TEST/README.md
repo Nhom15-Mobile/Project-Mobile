@@ -6,9 +6,9 @@ git clone https://github.com/your-username/your-repo.git
 cd your-repo
 2. Tạo file .env từ mẫu:
 # macOS / Linux
-cp .env.sample .env
+cp .env.example .env
 # Windows (PowerShell)
-copy .env.sample .env
+copy .env.example .env
 
 3. Cài dependencies (tạo node_modules):
 npm install
