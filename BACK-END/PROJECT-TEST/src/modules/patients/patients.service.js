@@ -17,11 +17,13 @@ create: { userId, ...payload }
 
 
 async function getAppointments(userId) {
-return prisma.appointment.findMany({
-where: { patientId: userId },
-include: { doctor: true, payment: true }
-});
+  return prisma.appointment.findMany({
+    where: { patientId: userId },
+    include: { doctor: true, payment: true, careProfile: true },
+    orderBy: { scheduledAt: 'desc' }
+  });
 }
+
 
 
 module.exports = { getProfile, upsertProfile, getAppointments };

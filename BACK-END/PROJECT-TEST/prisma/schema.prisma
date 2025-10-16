@@ -39,17 +39,23 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  patient             PatientProfile?
-  doctor              DoctorProfile?
-  appointmentsPatient Appointment[]   @relation("PatientAppointments")
-  appointmentsDoctor  Appointment[]   @relation("DoctorAppointments")
-  notifications       Notification[]
-  PasswordReset       PasswordReset[]
+  // Profiles
+  patient PatientProfile?
+  doctor  DoctorProfile?
+
+  // Care profiles (hồ sơ người bệnh do user sở hữu)
+  careProfiles CareProfile[] @relation("OwnerCareProfiles")
+
+  // Appointments (owner đặt lịch & bác sĩ khám)
+  appointmentsPatient Appointment[] @relation("PatientAppointments")
+  appointmentsDoctor  Appointment[] @relation("DoctorAppointments")
+
+  notifications Notification[]
+  PasswordReset PasswordReset[]
 }
 
 model PatientProfile {
-  id               String    @id @default(cuid())
-  userId           String    @unique
+  userId           String    @id
   user             User      @relation(fields: [userId], references: [id])
   dob              DateTime?
   gender           String?
@@ -64,8 +70,7 @@ model PatientProfile {
 }
 
 model DoctorProfile {
-  id              String   @id @default(cuid())
-  userId          String   @unique
+  userId          String   @id
   user            User     @relation(fields: [userId], references: [id])
   specialty       String
   bio             String?
@@ -81,22 +86,49 @@ model DoctorProfile {
 model DoctorSlot {
   id           String        @id @default(cuid())
   doctorId     String
-  doctor       DoctorProfile @relation(fields: [doctorId], references: [id])
+  doctor       DoctorProfile @relation(fields: [doctorId], references: [userId]) // <— đổi id -> userId
   start        DateTime
   end          DateTime
   isBooked     Boolean       @default(false)
   createdAt    DateTime      @default(now())
   appointments Appointment[]
+
+  @@index([doctorId, start, end])
+  @@index([doctorId, start, isBooked])
+}
+
+model CareProfile {
+  id      String @id @default(cuid())
+  ownerId String
+  owner   User   @relation("OwnerCareProfiles", fields: [ownerId], references: [id])
+
+  insuranceNo String?
+  fullName    String
+  relation    String
+  dob         DateTime?
+  gender      String?
+  note        String?
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt // <— thêm @default(now())
+  // NEW: back-relation tới Appointment.careProfile
+  appointments Appointment[] @relation("CareProfileAppointments")
 }
 
 model Appointment {
-  id            String            @id @default(cuid())
-  patientId     String
-  patient       User              @relation("PatientAppointments", fields: [patientId], references: [id])
-  doctorId      String
-  doctor        User              @relation("DoctorAppointments", fields: [doctorId], references: [id])
-  slotId        String?
-  slot          DoctorSlot?       @relation(fields: [slotId], references: [id])
+  id        String @id @default(cuid())
+  patientId String
+  patient   User   @relation("PatientAppointments", fields: [patientId], references: [id])
+  doctorId  String
+  doctor    User   @relation("DoctorAppointments", fields: [doctorId], references: [id])
+
+  // NEW: link tới hồ sơ người được khám (thuộc về patient)
+  careProfileId String?
+  careProfile   CareProfile? @relation("CareProfileAppointments", fields: [careProfileId], references: [id])
+
+  slotId String?
+  slot   DoctorSlot? @relation(fields: [slotId], references: [id])
+
   service       String
   scheduledAt   DateTime
   status        AppointmentStatus @default(PENDING)

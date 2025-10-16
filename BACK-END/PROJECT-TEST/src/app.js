@@ -16,7 +16,7 @@ const apptRoutes = require('./modules/appointments/appointments.routes');
 const paymentRoutes = require('./modules/payments/payments.routes');
 const notifRoutes = require('./modules/notifications/notifications.routes');
 const userRoutes = require('./modules/users/users.routes');
-
+const careProfileRoutes = require('./modules/careProfiles/careProfiles.routes');
 
 const app = express();
 app.use(helmet());
@@ -37,7 +37,7 @@ app.use('/api/appointments', apptRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/notifications', notifRoutes);
 app.use('/api/users', userRoutes);
-
+app.use('/api/care-profiles', careProfileRoutes);
 
 // Errors
 app.use(notFound);
