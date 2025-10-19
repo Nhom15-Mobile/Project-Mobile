@@ -1,7 +1,8 @@
 // src/modules/doctors/doctors.validation.js
-// Tối giản: chỉ whitelist & kiểm tra cơ bản, không dùng zod để tránh phụ thuộc
+const config = require('../../config/env');
 
 const allowedKeys = ['specialty', 'bio', 'yearsExperience', 'clinicName', 'rating'];
+const ALLOWED_SPECIALTIES = config.specialties.map(s => s.name);
 
 function validateUpdateProfile(body = {}) {
   const data = {};
@@ -11,10 +12,16 @@ function validateUpdateProfile(body = {}) {
     }
   }
 
-  // kiểm tra cơ bản theo schema DoctorProfile tối giản
-  if (data.specialty != null && (typeof data.specialty !== 'string' || data.specialty.length < 2)) {
-    return { error: 'specialty: must be a string with length >= 2' };
+  // specialty: bắt buộc thuộc whitelist nếu có gửi lên
+  if (data.specialty != null) {
+    if (typeof data.specialty !== 'string' || data.specialty.length < 2) {
+      return { error: 'specialty: must be a string with length >= 2' };
+    }
+    if (!ALLOWED_SPECIALTIES.includes(data.specialty)) {
+      return { error: `specialty: must be one of [${ALLOWED_SPECIALTIES.join(', ')}]` };
+    }
   }
+
   if (data.bio != null && typeof data.bio !== 'string') {
     return { error: 'bio: must be a string' };
   }

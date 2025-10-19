@@ -98,20 +98,42 @@ model DoctorSlot {
 }
 
 model CareProfile {
-  id      String @id @default(cuid())
-  ownerId String
-  owner   User   @relation("OwnerCareProfiles", fields: [ownerId], references: [id])
+  id        String   @id @default(cuid())
+  ownerId   String
+  owner     User     @relation("OwnerCareProfiles", fields: [ownerId], references: [id])
 
+  // Bắt buộc theo UI
+  fullName  String
+  relation  String         // Cha/Mẹ/Con/Bản thân...
+  dob       DateTime?
+  gender    String?
+
+  // Liên hệ
+  phone     String?
+  email     String?
+
+  // Nhận dạng & nghề nghiệp
+  nationalId String?       // CCCD
+  occupation String?
+
+  // Địa lý
+  country   String?
+  ethnicity String?
+  province  String?
+  district  String?
+  ward      String?
+
+  // Địa chỉ
+  address     String?
+
+  // Bảo hiểm + ghi chú
   insuranceNo String?
-  fullName    String
-  relation    String
-  dob         DateTime?
-  gender      String?
   note        String?
 
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @default(now()) @updatedAt // <— thêm @default(now())
-  // NEW: back-relation tới Appointment.careProfile
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+
+  // Back-relation tới Appointment
   appointments Appointment[] @relation("CareProfileAppointments")
 }
 

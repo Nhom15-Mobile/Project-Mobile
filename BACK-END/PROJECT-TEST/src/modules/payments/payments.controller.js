@@ -1,71 +1,50 @@
-// src/modules/payments/payments.controller.js
 const R = require('../../utils/apiResponse');
-const prisma = require('../../config/db');
-const config = require('../../config/env');
-const { stripeClient } = require('./providers/stripe.provider');
-const { generateAppointmentQR } = require('../../utils/qr');
-
-
-async function create(req, res) {
-const { appointmentId, amount, currency, provider } = req.body;
-if (!appointmentId || !amount) return R.badRequest(res, 'appointmentId and amount are required');
 const svc = require('./payments.service');
-const result = await svc.createPayment({ appointmentId, amount, currency, provider });
-return R.ok(res, result, 'Payment created');
+const prisma = require('../../config/db');
+
+
+
+async function momoCreate(req, res) {
+  const { appointmentId } = req.body;
+  if (!appointmentId) return R.badRequest(res, 'appointmentId is required');
+  const data = await svc.createMoMoForAppointment({ appointmentId, byUserId: req.user.id });
+  return R.ok(res, data);
 }
 
-
-// Stripe webhook (demo): set endpoint in Stripe dashboard
-async function stripeWebhook(req, res) {
-const stripe = stripeClient();
-const sig = req.headers['stripe-signature'];
-let event;
-try {
-event = require('stripe').webhooks.constructEvent(req.rawBody, sig, config.stripe.webhookSecret);
-} catch (err) {
-return res.status(400).send(`Webhook Error: ${err.message}`);
+// IPN (public, không auth)
+async function momoNotify(req, res) {
+  try {
+    const result = await svc.handleMomoIPN(req.body);
+    return res.json({ resultCode: result.code, message: result.msg });
+  } catch (e) {
+    return res.status(200).json({ resultCode: 99, message: e.message || 'Error' });
+  }
 }
 
+// (tuỳ chọn) nếu bạn giữ API phiếu khám:
+async function receipt(req, res) {
+  const { id } = req.params; // appointment id
+  const appt = await prisma.appointment.findUnique({
+    where: { id },
+    include: { patient: true, doctor: true, slot: true, careProfile: true, payment: true }
+  });
+  if (!appt) return R.notFound(res, 'Appointment not found');
+  if (req.user.role === 'PATIENT' && appt.patientId !== req.user.id) return R.forbidden(res);
+  if (appt.paymentStatus !== 'PAID') return R.badRequest(res, 'Payment not completed');
 
-if (event.type === 'payment_intent.succeeded') {
-const pi = event.data.object;
-const appointmentId = pi.metadata.appointmentId;
+  const dp = await prisma.doctorProfile.findUnique({ where: { userId: appt.doctorId } });
+  const specialty = dp?.specialty || 'GENERAL';
 
-
-// Mark payment/appointment, generate QR
-const appt = await prisma.appointment.update({
-where: { id: appointmentId },
-data: { status: 'CONFIRMED', paymentStatus: 'PAID' },
-include: { patient: true, doctor: true }
-});
-
-
-const qr = await generateAppointmentQR({
-appointmentId: appt.id,
-patientName: appt.patient.fullName,
-doctorName: appt.doctor.fullName,
-scheduledAt: appt.scheduledAt
-});
-
-
-await prisma.appointment.update({ where: { id: appt.id }, data: { qrCode: qr } });
-
-
-// Create a notification to patient
-await prisma.notification.create({
-data: {
-userId: appt.patientId,
-type: 'APPOINTMENT_CONFIRMED',
-title: 'Lịch khám đã xác nhận',
-body: 'Thanh toán thành công. Lịch khám của bạn đã được xác nhận.',
-data: { appointmentId: appt.id }
-}
-});
+  return R.ok(res, {
+    receiptNo: appt.payment?.id || appt.id,
+    patientName: appt.careProfile?.fullName || appt.patient.fullName,
+    specialty,
+    examDate: appt.slot?.start,
+    examTime: appt.slot ? { start: appt.slot.start, end: appt.slot.end } : null,
+    clinicRoom: dp?.clinicName || 'Phòng khám',
+    amount: appt.payment?.amount,
+    bookedAt: appt.createdAt
+  });
 }
 
-
-res.json({ received: true });
-}
-
-
-module.exports = { create, stripeWebhook };
+module.exports = { momoCreate, momoNotify, receipt };

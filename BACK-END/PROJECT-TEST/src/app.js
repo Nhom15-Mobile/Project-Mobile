@@ -7,7 +7,6 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const { notFound, errorHandler } = require('./middlewares/error');
 
-
 // Routers
 const authRoutes = require('./modules/auth/auth.routes');
 const patientRoutes = require('./modules/patients/patients.routes');
@@ -17,17 +16,19 @@ const paymentRoutes = require('./modules/payments/payments.routes');
 const notifRoutes = require('./modules/notifications/notifications.routes');
 const userRoutes = require('./modules/users/users.routes');
 const careProfileRoutes = require('./modules/careProfiles/careProfiles.routes');
+const locationRoutes = require('./modules/locations/locations.routes');
 
 const app = express();
+
+// Core middlewares
 app.use(helmet());
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json({ limit: '1mb' }));
-app.use(cookieParser());
 app.use(morgan('dev'));
+app.use(cookieParser());
+app.use(express.json({ limit: '1mb' }));
 
-
+// Health
 app.get('/api/health', (req, res) => res.json({ ok: true }));
-
 
 // Mount routes
 app.use('/api/auth', authRoutes);
@@ -38,19 +39,10 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/notifications', notifRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/care-profiles', careProfileRoutes);
+app.use('/api/locations', locationRoutes);
 
-// Errors
+// Errors (always last)
 app.use(notFound);
 app.use(errorHandler);
 
-// Add BEFORE express.json()
-const bodyParser = require('body-parser');
-
-
-// Stripe webhook raw body
-app.post('/api/payments/stripe/webhook', bodyParser.raw({ type: 'application/json' }), require('./modules/payments/payments.routes').stripeWebhook);
-
-
-// Then the usual JSON parser for all other routes
-app.use(express.json({ limit: '1mb' }));
 module.exports = app;

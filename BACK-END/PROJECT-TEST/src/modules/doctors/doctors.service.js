@@ -1,5 +1,7 @@
+// src/modules/doctors/doctors.service.js
 const prisma = require('../../config/db');
 const { toPagination } = require('../../utils/pagination');
+const config = require('../../config/env');
 
 // =============== Helpers (TZ: Asia/Ho_Chi_Minh) ===============
 const TZ = '+07:00';
@@ -20,24 +22,52 @@ const rangesOverlap = (a, b) => a.start < b.end && a.end > b.start;
 async function getProfileByUserId(userId) {
   return prisma.doctorProfile.findUnique({ where: { userId }, include: { user: true } });
 }
+
 async function updateProfile(userId, data) {
   const allowed = ['specialty', 'bio', 'yearsExperience', 'clinicName', 'rating'];
   const cleaned = Object.fromEntries(
     Object.entries(data).filter(([k, v]) => allowed.includes(k) && v !== undefined)
   );
 
-  await prisma.doctorProfile.upsert({
-    where: { userId },
-    update: cleaned,
-    create: { userId, ...cleaned }
-  });
+  // Lấy default specialty an toàn
+  const defaultSpecialty =
+    (config.specialties && config.specialties[0] && config.specialties[0].name) || 'GENERAL';
+
+  // Check đã có profile chưa
+  const existing = await prisma.doctorProfile.findUnique({ where: { userId } });
+
+  if (!existing) {
+    // tạo mới → đảm bảo luôn có specialty
+    const toCreate = {
+      userId,
+      specialty: cleaned.specialty || defaultSpecialty,
+      ...cleaned
+    };
+
+    // validate specialty
+    const ok =
+      (config.specialties && config.specialties.some(s => s.name === toCreate.specialty)) ||
+      toCreate.specialty === 'GENERAL';
+    if (!ok) throw new Error('Invalid specialty');
+
+    await prisma.doctorProfile.create({ data: toCreate });
+  } else {
+    // đã có → nếu gửi specialty thì validate; không gửi thì giữ nguyên
+    if (cleaned.specialty) {
+      const ok = config.specialties && config.specialties.some(s => s.name === cleaned.specialty);
+      if (!ok) throw new Error('Invalid specialty');
+    }
+    await prisma.doctorProfile.update({
+      where: { userId },
+      data: cleaned
+    });
+  }
 
   return prisma.doctorProfile.findUnique({
     where: { userId },
     include: { user: { select: { id: true, fullName: true, email: true } } }
   });
 }
-
 // =============== Search/List ===============
 async function search(query) {
   const { q, specialty } = query;
@@ -45,7 +75,7 @@ async function search(query) {
 
   const where = {
     AND: [
-      specialty ? { specialty: { contains: specialty } } : {},
+      specialty ? { specialty } : {},
       q
         ? {
             OR: [
@@ -63,7 +93,7 @@ async function search(query) {
       skip,
       take,
       include: { user: true },
-      orderBy: { createdAt: 'asc' } // để sau sort theo tên
+      orderBy: { createdAt: 'asc' }
     }),
     prisma.doctorProfile.count({ where })
   ]);
@@ -72,35 +102,25 @@ async function search(query) {
   return { items, page, pageSize, total };
 }
 
+// Trả list 10 chuyên khoa cố định + fee từ config (KHÔNG đọc DB)
 async function listSpecialties() {
-  const raw = await prisma.doctorProfile.findMany({
-    select: { specialty: true },
-    distinct: ['specialty'],
-    orderBy: { specialty: 'asc' }
-  });
-  return raw.map(r => r.specialty).filter(s => s && s.trim() !== '');
+  return config.specialties.map(s => ({ name: s.name, fee: s.fee }));
 }
 
 /**
- * Bác sĩ còn slot trong ngày theo chuyên khoa + text + minRating
- * trả về kèm tối đa N slot đầu (slotsPerDoctor)
+ * Bác sĩ còn slot trong ngày theo chuyên khoa (+ text + minRating)
+ * Trả về kèm tối đa N slot đầu (slotsPerDoctor)
  */
 async function availableByDay({ specialty, day, q = '', minRating, slotsPerDoctor = 3 }) {
   const { start, end } = dayRange(day);
 
   const where = {
-    ...(specialty ? { specialty: { contains: specialty } } : {}),
-    ...(minRating != null ? { rating: { gte: minRating } } : {}),
+    ...(specialty ? { specialty } : {}), // exact match
+    ...(minRating != null ? { rating: { gte: Number(minRating) } } : {}),
+    ...(q ? { user: { is: { fullName: { contains: q } } } } : {}),
     slots: {
-      some: {
-        start: { gte: start },
-        end:   { lte: end },
-        isBooked: false
-      }
-    },
-    ...(q
-      ? { user: { is: { fullName: { contains: q } } } }
-      : {})
+      some: { start: { gte: start }, end: { lte: end }, isBooked: false }
+    }
   };
 
   const doctors = await prisma.doctorProfile.findMany({
@@ -117,7 +137,6 @@ async function availableByDay({ specialty, day, q = '', minRating, slotsPerDocto
     orderBy: [{ rating: 'desc' }, { updatedAt: 'desc' }]
   });
 
-  // đảm bảo thứ tự thân thiện theo tên nếu rating bằng nhau
   doctors.sort((a, b) => {
     if ((a.rating ?? 0) !== (b.rating ?? 0)) return (b.rating ?? 0) - (a.rating ?? 0);
     return a.user.fullName.localeCompare(b.user.fullName, 'vi');

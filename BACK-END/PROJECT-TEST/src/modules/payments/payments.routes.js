@@ -1,13 +1,15 @@
-// src/modules/payments/payments.routes.js
 const router = require('express').Router();
 const auth = require('../../middlewares/auth');
 const { allow } = require('../../middlewares/role');
 const ctrl = require('./payments.controller');
 
+// tạo MoMo payment cho appointment
+router.post('/momo/create', auth, allow('PATIENT'), ctrl.momoCreate);
 
-router.post('/create', auth, allow('PATIENT'), ctrl.create);
+// IPN từ MoMo (public)
+router.post('/momo/notify', ctrl.momoNotify);
 
+// phiếu khám
+router.get('/receipt/:id', auth, allow('PATIENT','DOCTOR','ADMIN'), ctrl.receipt);
 
-// Export webhook handler separately for raw body binding in app.js
 module.exports = router;
-module.exports.stripeWebhook = ctrl.stripeWebhook;
