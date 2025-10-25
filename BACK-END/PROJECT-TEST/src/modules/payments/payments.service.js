@@ -3,24 +3,41 @@ const axios = require('axios');
 const crypto = require('crypto');
 const prisma = require('../../config/db');
 const config = require('../../config/env');
+const { notifyBooked } = require('../notifications/notifications.service');
 
 // --- helpers ---
 function signRaw(raw, secretKey) {
   return crypto.createHmac('sha256', secretKey).update(raw).digest('hex');
 }
 
+/**
+ * Lấy phí khám theo chuyên khoa:
+ * - Ưu tiên đọc từ config.specialties: [{ name, fee }]
+ * - Fallback sang config.fees.specialtyFees hoặc fees.defaultSpecialtyFee (giữ tương thích dự án cũ)
+ */
 function getFeeBySpecialty(specialty) {
+  const name = String(specialty || '').trim();
+  // 1) specialties (mới)
+  if (Array.isArray(config.specialties) && config.specialties.length) {
+    const found = config.specialties.find(
+      s => String(s.name).trim().toLowerCase() === name.toLowerCase()
+    );
+    if (found && Number(found.fee)) return Math.max(1, Math.floor(Number(found.fee)));
+  }
+  // 2) fees (cũ)
   const map = config.fees?.specialtyFees || {};
-  const v = Number(map[specialty]) || Number(config.fees?.defaultSpecialtyFee || 150000);
+  const v = Number(map[name]) || Number(config.fees?.defaultSpecialtyFee || 150000);
   return Math.max(1, Math.floor(v)); // int >= 1
 }
 
 function ensureMomoConfig() {
   const reqKeys = ['partnerCode', 'accessKey', 'secretKey', 'endpoint', 'returnUrl', 'notifyUrl'];
   const missing = reqKeys.filter(k => !config.momo?.[k]);
-  if (missing.length) {
-    throw new Error(`MoMo config missing: ${missing.join(', ')}`);
-  }
+  if (missing.length) throw new Error(`MoMo config missing: ${missing.join(', ')}`);
+}
+
+function trimTrailingSlash(u = '') {
+  return String(u || '').replace(/\/+$/, '');
 }
 
 // --- MoMo create for an appointment ---
@@ -31,11 +48,17 @@ async function createMoMoForAppointment({ appointmentId, byUserId }) {
   // 1) load appointment + quyền sở hữu
   const appt = await prisma.appointment.findUnique({
     where: { id: appointmentId },
-    include: { patient: true, doctor: true, careProfile: true, slot: true }
+    include: {
+      patient: { select: { id: true, fullName: true } },
+      doctor:  { select: { id: true, fullName: true } },
+      careProfile: true,
+      slot: true
+    }
   });
   if (!appt) throw new Error('Appointment not found');
   if (appt.patientId !== byUserId) throw new Error('Forbidden');
   if (appt.status === 'CANCELLED') throw new Error('Appointment cancelled');
+  if (appt.paymentStatus === 'PAID') throw new Error('Appointment already paid');
 
   // 2) fee theo specialty của bác sĩ (doctorId là User.id)
   const dp = await prisma.doctorProfile.findUnique({ where: { userId: appt.doctorId } });
@@ -45,8 +68,8 @@ async function createMoMoForAppointment({ appointmentId, byUserId }) {
   // 3) chuẩn bị Payment record
   const provider = 'MOMO';
   const currency = 'VND';
-  const orderId = `APPT_${appointmentId}`;     // duy nhất theo appt
-  const requestId = `${orderId}_${Date.now()}`; // duy nhất theo request
+  const orderId = `APPT_${appointmentId}`;       // duy nhất theo appt
+  const requestId = `${orderId}_${Date.now()}`;  // duy nhất theo request
 
   await prisma.payment.upsert({
     where: { appointmentId },
@@ -55,7 +78,7 @@ async function createMoMoForAppointment({ appointmentId, byUserId }) {
   });
 
   // 4) call MoMo create
-  const endpoint = `${config.momo.endpoint.replace(/\/+$/,'')}/create`;
+  const endpoint = `${trimTrailingSlash(config.momo.endpoint)}/create`;
   const orderInfo = `Thanh toán đặt khám - ${specialty}`;
   const redirectUrl = config.momo.returnUrl;
   const ipnUrl = config.momo.notifyUrl;
@@ -96,7 +119,10 @@ async function createMoMoForAppointment({ appointmentId, byUserId }) {
     // 5) lưu providerRef / meta
     await prisma.payment.update({
       where: { appointmentId },
-      data: { providerRef: data.transId ? String(data.transId) : null, meta: data }
+      data: {
+        providerRef: data.transId ? String(data.transId) : null,
+        meta: data
+      }
     });
 
     // giữ trạng thái chờ thanh toán
@@ -108,11 +134,11 @@ async function createMoMoForAppointment({ appointmentId, byUserId }) {
     return {
       amount,
       orderInfo,
-      payUrl: data.payUrl,
-      qrCodeUrl: data.qrCodeUrl || null
+      payUrl: data.payUrl || null,
+      qrCodeUrl: data.qrCodeUrl || null,
+      deeplink: data.deeplink || data.deeplinkWebInApp || null
     };
   } catch (err) {
-    // surface MoMo error rõ ràng
     if (err.response) {
       const { status, data } = err.response;
       const msg = (data && (data.message || data.localMessage)) || JSON.stringify(data);
@@ -130,18 +156,18 @@ function verifyMomoSignature(params) {
   } = params;
 
   const raw = `accessKey=${config.momo.accessKey}`
-    + `&amount=${amount}`
-    + `&extraData=${extraData}`
-    + `&message=${message}`
-    + `&orderId=${orderId}`
-    + `&orderInfo=${orderInfo}`
-    + `&orderType=${orderType}`
-    + `&partnerCode=${partnerCode}`
-    + `&payType=${payType}`
-    + `&requestId=${requestId}`
-    + `&responseTime=${responseTime}`
-    + `&resultCode=${resultCode}`
-    + `&transId=${transId}`;
+    + `&amount=${amount ?? ''}`
+    + `&extraData=${extraData ?? ''}`
+    + `&message=${message ?? ''}`
+    + `&orderId=${orderId ?? ''}`
+    + `&orderInfo=${orderInfo ?? ''}`
+    + `&orderType=${orderType ?? ''}`
+    + `&partnerCode=${partnerCode ?? ''}`
+    + `&payType=${payType ?? ''}`
+    + `&requestId=${requestId ?? ''}`
+    + `&responseTime=${responseTime ?? ''}`
+    + `&resultCode=${resultCode ?? ''}`
+    + `&transId=${transId ?? ''}`;
 
   const sign = signRaw(raw, config.momo.secretKey);
   return sign === signature;
@@ -153,6 +179,16 @@ async function handleMomoIPN(body) {
   const { orderId, resultCode } = body; // APPT_<appointmentId>
   if (!orderId || !orderId.startsWith('APPT_')) return { ok: false, code: 98, msg: 'Invalid orderId' };
   const appointmentId = orderId.substring('APPT_'.length);
+
+  // Lấy trạng thái trước update để chặn bắn notify trùng khi IPN bị gọi lại
+  const apptBefore = await prisma.appointment.findUnique({
+    where: { id: appointmentId },
+    include: {
+      patient: { select: { id: true, fullName: true } },
+      doctor:  { select: { id: true, fullName: true } },
+    }
+  });
+  if (!apptBefore) return { ok: false, code: 99, msg: 'Appointment not found' };
 
   const paid = Number(resultCode) === 0;
 
@@ -169,6 +205,21 @@ async function handleMomoIPN(body) {
       }
     });
   });
+
+  // Chỉ gửi thông báo khi từ trạng thái CHƯA-PAID -> PAID
+  if (paid && apptBefore.paymentStatus !== 'PAID') {
+    await notifyBooked({
+      patientId: apptBefore.patientId,
+      doctorId:  apptBefore.doctorId,
+      appointment: {
+        id: appointmentId,
+        service: apptBefore.service,
+        scheduledAt: apptBefore.scheduledAt,
+        patientName: apptBefore.patient?.fullName || 'Người bệnh',
+        doctorName:  apptBefore.doctor?.fullName  || 'Bác sĩ'
+      }
+    });
+  }
 
   return { ok: true, code: 0, msg: 'OK' };
 }
