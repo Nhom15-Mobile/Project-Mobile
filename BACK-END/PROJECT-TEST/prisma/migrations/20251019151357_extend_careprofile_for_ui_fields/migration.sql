@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE `careprofile` ADD COLUMN `address` VARCHAR(191) NULL,
+ALTER TABLE `CareProfile` ADD COLUMN `address` VARCHAR(191) NULL,
     ADD COLUMN `country` VARCHAR(191) NULL,
     ADD COLUMN `district` VARCHAR(191) NULL,
     ADD COLUMN `email` VARCHAR(191) NULL,

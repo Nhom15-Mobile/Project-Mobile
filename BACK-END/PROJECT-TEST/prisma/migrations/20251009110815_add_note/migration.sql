@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `careprofile` ADD COLUMN `note` VARCHAR(191) NULL;
+ALTER TABLE `CareProfile` ADD COLUMN `note` VARCHAR(191) NULL;

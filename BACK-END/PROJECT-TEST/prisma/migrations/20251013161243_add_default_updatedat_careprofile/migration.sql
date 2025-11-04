@@ -8,13 +8,13 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `doctorprofile` DROP FOREIGN KEY `DoctorProfile_userId_fkey`;
+ALTER TABLE `DoctorProfile` DROP FOREIGN KEY `DoctorProfile_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `doctorslot` DROP FOREIGN KEY `DoctorSlot_doctorId_fkey`;
+ALTER TABLE `DoctorSlot` DROP FOREIGN KEY `DoctorSlot_doctorId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `patientprofile` DROP FOREIGN KEY `PatientProfile_userId_fkey`;
+ALTER TABLE `PatientProfile` DROP FOREIGN KEY `PatientProfile_userId_fkey`;
 
 -- DropIndex
 DROP INDEX `DoctorProfile_userId_key` ON `doctorprofile`;
@@ -23,16 +23,16 @@ DROP INDEX `DoctorProfile_userId_key` ON `doctorprofile`;
 DROP INDEX `PatientProfile_userId_key` ON `patientprofile`;
 
 -- AlterTable
-ALTER TABLE `careprofile` ADD COLUMN `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ALTER TABLE `CareProfile` ADD COLUMN `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     ADD COLUMN `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
 
 -- AlterTable
-ALTER TABLE `doctorprofile` DROP PRIMARY KEY,
+ALTER TABLE `DoctorProfile` DROP PRIMARY KEY,
     DROP COLUMN `id`,
     ADD PRIMARY KEY (`userId`);
 
 -- AlterTable
-ALTER TABLE `patientprofile` DROP PRIMARY KEY,
+ALTER TABLE `PatientProfile` DROP PRIMARY KEY,
     DROP COLUMN `id`,
     ADD PRIMARY KEY (`userId`);
 
