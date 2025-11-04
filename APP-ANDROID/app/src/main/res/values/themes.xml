@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Theme app chính -->
+    <style name="Theme.Clinic" parent="Theme.Material3.Light.NoActionBar" />
+
+    <!-- Theme Splash của Android 12+ -->
+    <style name="Theme.Clinic.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <!-- Nếu icon của bạn là adaptive có nền riêng, có thể bỏ dòng dưới -->
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/Theme.Clinic</item>
+        <!-- Tuỳ chọn -->
+        <!-- <item name="windowSplashScreenBrandingImage">@drawable/branding</item> -->
+    </style>
+</resources>
