@@ -11,25 +11,17 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/appointment" />
-            <option value="$PROJECT_DIR$/auth" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/db" />
             <option value="$PROJECT_DIR$/core/network" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/core/util" />
-            <option value="$PROJECT_DIR$/db" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/appointment" />
             <option value="$PROJECT_DIR$/feature/auth" />
             <option value="$PROJECT_DIR$/feature/payment" />
             <option value="$PROJECT_DIR$/feature/records" />
-            <option value="$PROJECT_DIR$/network" />
-            <option value="$PROJECT_DIR$/payment" />
-            <option value="$PROJECT_DIR$/records" />
-            <option value="$PROJECT_DIR$/ui" />
-            <option value="$PROJECT_DIR$/util" />
           </set>
         </option>
       </GradleProjectSettings>

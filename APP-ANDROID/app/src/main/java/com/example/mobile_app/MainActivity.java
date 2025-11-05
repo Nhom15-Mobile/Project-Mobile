@@ -5,14 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.core.splashscreen.SplashScreen;
 
-import com.example.mobile_app.LoginActivity;
+import com.example.auth.ui.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
     private boolean ready = false;

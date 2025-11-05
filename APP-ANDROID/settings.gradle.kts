@@ -11,6 +11,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -20,16 +21,21 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Mobile_APP"
-include(":app")
-include(":ui")
-include(":network")
-include(":db")
-include(":util")
-include(":auth")
-include(":appointment")
-include(":records")
-include(":domain")
-include(":core:ui", ":core:network", ":core:db", ":core:util")
-include(":feature:auth", ":feature:appointment", ":feature:payment", ":feature:records")
 
-include(":payment")
+// App chính
+include(":app")
+
+// Core (dùng chung)
+include(":core:ui")
+include(":core:network")
+include(":core:db")
+include(":core:util")
+
+// Domain (logic thuần)
+include(":domain")
+
+// Feature (tính năng)
+include(":feature:auth")
+include(":feature:appointment")
+include(":feature:payment")
+include(":feature:records")
