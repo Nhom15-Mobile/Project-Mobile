@@ -3,8 +3,11 @@ const prisma = require('../../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('../../config/env');
-const mailer = require('../../utils/mailer'); // <<< ADD
+const mailer = require('../../utils/mailer'); // dùng SMTP từ .env
 
+/**
+ * Đăng nhập: kiểm tra email/password, trả JWT + thông tin user cơ bản.
+ */
 async function login(email, password) {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return null;
@@ -20,11 +23,23 @@ async function login(email, password) {
 
   return {
     token,
-    user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role }
+    user: {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      role: user.role
+    }
   };
 }
 
+/**
+ * Đăng ký: tạo User + profile theo role.
+ * - PATIENT  -> tạo PatientProfile với userId.
+ * - DOCTOR   -> tạo DoctorProfile với userId (ép specialty hợp lệ).
+ * Trả JWT để đăng nhập luôn.
+ */
 async function register({ email, password, fullName, role = 'PATIENT', specialty }) {
+  // 1) Email unique
   const exists = await prisma.user.findUnique({ where: { email } });
   if (exists) {
     const err = new Error('Email already registered');
@@ -32,26 +47,31 @@ async function register({ email, password, fullName, role = 'PATIENT', specialty
     throw err;
   }
 
+  // 2) Tạo user
   const hashed = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
     data: { email, password: hashed, fullName, role }
   });
 
+  // 3) Tạo profile theo role
   if (role === 'PATIENT') {
-    // ✅ Chỉ dùng userId, KHÔNG có id riêng
+    // chỉ dùng userId (id của profile do DB/Prisma sinh)
     await prisma.patientProfile.create({
       data: { userId: user.id }
     });
   } else if (role === 'DOCTOR') {
-    const allowed = config.specialties.map(s => s.name);
-    const chosen = allowed.includes(specialty) ? specialty : allowed[0];
+    // ép chọn specialty hợp lệ theo config.specialties
+    const allowed = (config.specialties || []).map(s => s.name);
+    const chosen = allowed.length
+      ? (allowed.includes(specialty) ? specialty : allowed[0])
+      : (specialty || 'GENERAL');
 
-    // ✅ Chỉ dùng userId
     await prisma.doctorProfile.create({
       data: { userId: user.id, specialty: chosen }
     });
   }
 
+  // 4) JWT
   const token = jwt.sign(
     { sub: user.id, role: user.role },
     config.jwt.secret,
@@ -60,17 +80,28 @@ async function register({ email, password, fullName, role = 'PATIENT', specialty
 
   return {
     token,
-    user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role }
+    user: {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      role: user.role
+    }
   };
 }
 
-// ===== Reset Password (Email code) =====
+/* ===================== RESET PASSWORD (Email code) ===================== */
 
-// Sinh mã 6 số
+/** Sinh mã 6 số */
 function gen6() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+/**
+ * Gửi email chứa mã reset
+ * - Dùng utils/mailer (Nodemailer + SMTP từ .env)
+ * - Cần cấu hình trong .env trên server:
+ *   SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, SMTP_FROM
+ */
 async function sendResetCodeEmail(email, code) {
   const subject = 'Mã đặt lại mật khẩu - UIT Healthcare';
   const text = `Mã xác nhận đặt lại mật khẩu của bạn là: ${code}. Mã có hiệu lực trong 10 phút.`;
@@ -88,20 +119,30 @@ async function sendResetCodeEmail(email, code) {
   await mailer.sendMail({ to: email, subject, text, html });
 }
 
+/**
+ * Yêu cầu đặt lại mật khẩu:
+ * - Không tiết lộ email có tồn tại hay không.
+ * - Hủy hiệu lực các mã cũ còn hạn.
+ * - Tạo mã mới (hash trong DB), gửi email mã 6 số.
+ */
 async function requestPasswordReset(email) {
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return { ok: true };
+  if (!user) {
+    // vẫn trả OK để tránh lộ thông tin
+    return { ok: true };
+  }
 
   // Hủy hiệu lực các mã cũ còn hạn
   await prisma.passwordReset.updateMany({
     where: { userId: user.id, usedAt: null, expiresAt: { gt: new Date() } },
-    data: { expiresAt: new Date() }
+    data: { expiresAt: new Date() } // expire ngay
   });
 
   const code = gen6();
   const codeHash = await bcrypt.hash(code, 10);
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 phút
 
+  // Lưu mã
   await prisma.passwordReset.create({
     data: { userId: user.id, codeHash, expiresAt }
   });
@@ -111,15 +152,22 @@ async function requestPasswordReset(email) {
     await sendResetCodeEmail(email, code);
   } catch (e) {
     console.error('Send reset mail error:', e?.response?.data || e.message);
+    // Vẫn trả OK để không lộ việc gửi fail
   }
 
   return { ok: true };
 }
 
+/**
+ * Đặt lại mật khẩu với email + code + mật khẩu mới:
+ * - Tìm mã reset còn hạn mới nhất, so khớp code.
+ * - Đổi mật khẩu user, đánh dấu usedAt cho mã.
+ */
 async function resetPassword({ email, code, newPassword }) {
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return { ok: true };
+  if (!user) return { ok: true }; // không lộ thông tin
 
+  // Lấy mã còn hạn mới nhất
   const pr = await prisma.passwordReset.findFirst({
     where: { userId: user.id, usedAt: null, expiresAt: { gt: new Date() } },
     orderBy: { createdAt: 'desc' }
@@ -131,6 +179,7 @@ async function resetPassword({ email, code, newPassword }) {
     throw err;
   }
 
+  // So khớp mã
   const match = await bcrypt.compare(code, pr.codeHash);
   if (!match) {
     const err = new Error('Invalid or expired code');
@@ -138,11 +187,18 @@ async function resetPassword({ email, code, newPassword }) {
     throw err;
   }
 
+  // Đổi mật khẩu
   const newHash = await bcrypt.hash(newPassword, 10);
 
   await prisma.$transaction([
-    prisma.passwordReset.update({ where: { id: pr.id }, data: { usedAt: new Date() } }),
-    prisma.user.update({ where: { id: user.id }, data: { password: newHash } })
+    prisma.passwordReset.update({
+      where: { id: pr.id },
+      data: { usedAt: new Date() }
+    }),
+    prisma.user.update({
+      where: { id: user.id },
+      data: { password: newHash }
+    })
   ]);
 
   return { ok: true };
