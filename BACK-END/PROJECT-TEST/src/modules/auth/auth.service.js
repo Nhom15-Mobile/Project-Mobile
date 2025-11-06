@@ -3,6 +3,7 @@ const prisma = require('../../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('../../config/env');
+const mailer = require('../../utils/mailer'); // <<< ADD
 
 async function login(email, password) {
   const user = await prisma.user.findUnique({ where: { email } });
@@ -15,7 +16,6 @@ async function login(email, password) {
 }
 
 async function register({ email, password, fullName, role = 'PATIENT', specialty }) {
-  // 1) Email phải unique
   const exists = await prisma.user.findUnique({ where: { email } });
   if (exists) {
     const err = new Error('Email already registered');
@@ -23,58 +23,76 @@ async function register({ email, password, fullName, role = 'PATIENT', specialty
     throw err;
   }
 
-  // 2) Tạo user
   const hashed = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
     data: { email, password: hashed, fullName, role }
   });
 
-  // 3) Tạo profile theo role
   if (role === 'PATIENT') {
     await prisma.patientProfile.create({ data: { userId: user.id } });
   } else if (role === 'DOCTOR') {
-    // ép chọn 1 trong 10 chuyên khoa cố định
     const allowed = config.specialties.map(s => s.name);
     const chosen = allowed.includes(specialty) ? specialty : allowed[0];
-
-    await prisma.doctorProfile.create({
-      data: { userId: user.id, specialty: chosen }
-    });
+    await prisma.doctorProfile.create({ data: { userId: user.id, specialty: chosen } });
   }
 
-  // 4) Trả token để đăng nhập luôn
   const token = jwt.sign({ sub: user.id, role: user.role }, config.jwt.secret, { expiresIn: config.jwt.expires });
   return { token, user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role } };
 }
 
-// Tạo mã 6 số
+// ===== Reset Password (Email code) =====
+
+// 6 digits
 function gen6() {
-  return Math.floor(100000 + Math.random() * 900000).toString(); // 6 digits
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Gửi (log) mã — sau này thay bằng gửi email thực
-async function sendResetCodeDev(email, code) {
-  console.log(`[RESET CODE] email=${email} code=${code}`);
+async function sendResetCodeEmail(email, code) {
+  const subject = 'Mã đặt lại mật khẩu - UIT Healthcare';
+  const text = `Mã xác nhận đặt lại mật khẩu của bạn là: ${code}. Mã có hiệu lực trong 10 phút.`;
+  const html = `
+    <div style="font-family:Arial,sans-serif;line-height:1.6">
+      <h2>Đặt lại mật khẩu</h2>
+      <p>Xin chào <b>${email}</b>,</p>
+      <p>Mã xác nhận của bạn là:</p>
+      <div style="font-size:28px;font-weight:700;letter-spacing:3px;margin:8px 0 14px">${code}</div>
+      <p>Mã có hiệu lực trong <b>10 phút</b>. Nếu bạn không yêu cầu, vui lòng bỏ qua email này.</p>
+      <hr/>
+      <small>UIT Healthcare</small>
+    </div>
+  `;
+  await mailer.sendMail({ to: email, subject, text, html });
 }
 
 async function requestPasswordReset(email) {
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return { ok: true };
+  if (!user) {
+    // Không tiết lộ tồn tại hay không
+    return { ok: true };
+  }
 
+  // Hủy hiệu lực các mã cũ còn hạn
   await prisma.passwordReset.updateMany({
     where: { userId: user.id, usedAt: null, expiresAt: { gt: new Date() } },
-    data: { expiresAt: new Date() }
+    data: { expiresAt: new Date() } // expire ngay
   });
 
   const code = gen6();
   const codeHash = await bcrypt.hash(code, 10);
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 phút
 
   await prisma.passwordReset.create({
     data: { userId: user.id, codeHash, expiresAt }
   });
 
-  await sendResetCodeDev(email, code);
+  // Gửi email
+  try {
+    await sendResetCodeEmail(email, code);
+  } catch (e) {
+    console.error('Send reset mail error:', e?.response?.data || e.message);
+    // Không ném lỗi ra ngoài để tránh lộ thông tin. Vẫn trả OK.
+  }
+
   return { ok: true };
 }
 

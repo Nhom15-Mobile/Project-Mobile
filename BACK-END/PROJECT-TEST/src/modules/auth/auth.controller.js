@@ -12,11 +12,9 @@ async function login(req, res) {
 
 async function register(req, res) {
   const { email, password, fullName, role, specialty } = req.body;
-
   if (!email || !password || !fullName) {
     return R.badRequest(res, 'email, password, fullName are required');
   }
-
   try {
     const data = await service.register({ email, password, fullName, role, specialty });
     return R.created(res, data, 'Register success');
@@ -29,9 +27,7 @@ async function register(req, res) {
 async function forgotPassword(req, res) {
   const { email } = req.body;
   if (!email) return R.badRequest(res, 'email is required');
-
   await service.requestPasswordReset(email);
-  // Luôn trả OK, không tiết lộ email có tồn tại hay không
   return R.ok(res, { sent: true }, 'If the email exists, a reset code has been sent');
 }
 
@@ -40,7 +36,6 @@ async function resetPassword(req, res) {
   if (!email || !code || !newPassword) {
     return R.badRequest(res, 'email, code, newPassword are required');
   }
-
   try {
     await service.resetPassword({ email, code, newPassword });
     return R.ok(res, { reset: true }, 'Password has been reset');
