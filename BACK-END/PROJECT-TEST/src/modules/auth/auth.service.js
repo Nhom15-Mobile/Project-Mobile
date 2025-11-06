@@ -2,8 +2,9 @@
 const prisma = require('../../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { randomUUID } = require('crypto');      // <<< THÊM: tự tạo id cho profile
 const config = require('../../config/env');
-const mailer = require('../../utils/mailer'); // dùng SMTP từ .env
+const mailer = require('../../utils/mailer');  // SMTP từ .env
 
 /**
  * Đăng nhập: kiểm tra email/password, trả JWT + thông tin user cơ bản.
@@ -34,8 +35,8 @@ async function login(email, password) {
 
 /**
  * Đăng ký: tạo User + profile theo role.
- * - PATIENT  -> tạo PatientProfile với userId.
- * - DOCTOR   -> tạo DoctorProfile với userId (ép specialty hợp lệ).
+ * - PATIENT  -> tạo PatientProfile (tự cấp id bằng randomUUID()).
+ * - DOCTOR   -> tạo DoctorProfile (tự cấp id bằng randomUUID()).
  * Trả JWT để đăng nhập luôn.
  */
 async function register({ email, password, fullName, role = 'PATIENT', specialty }) {
@@ -53,21 +54,26 @@ async function register({ email, password, fullName, role = 'PATIENT', specialty
     data: { email, password: hashed, fullName, role }
   });
 
-  // 3) Tạo profile theo role
+  // 3) Tạo profile theo role (tự cấp id để tránh lỗi NULL id)
   if (role === 'PATIENT') {
-    // chỉ dùng userId (id của profile do DB/Prisma sinh)
     await prisma.patientProfile.create({
-      data: { userId: user.id }
+      data: {
+        id: randomUUID(),     // <<< CẤP ID
+        userId: user.id
+      }
     });
   } else if (role === 'DOCTOR') {
-    // ép chọn specialty hợp lệ theo config.specialties
     const allowed = (config.specialties || []).map(s => s.name);
     const chosen = allowed.length
       ? (allowed.includes(specialty) ? specialty : allowed[0])
       : (specialty || 'GENERAL');
 
     await prisma.doctorProfile.create({
-      data: { userId: user.id, specialty: chosen }
+      data: {
+        id: randomUUID(),     // <<< CẤP ID
+        userId: user.id,
+        specialty: chosen
+      }
     });
   }
 
@@ -98,9 +104,7 @@ function gen6() {
 
 /**
  * Gửi email chứa mã reset
- * - Dùng utils/mailer (Nodemailer + SMTP từ .env)
- * - Cần cấu hình trong .env trên server:
- *   SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, SMTP_FROM
+ * - Cần các biến .env: SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, SMTP_FROM
  */
 async function sendResetCodeEmail(email, code) {
   const subject = 'Mã đặt lại mật khẩu - UIT Healthcare';
