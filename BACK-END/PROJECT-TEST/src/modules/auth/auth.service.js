@@ -8,11 +8,20 @@ const mailer = require('../../utils/mailer'); // <<< ADD
 async function login(email, password) {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return null;
+
   const ok = await bcrypt.compare(password, user.password);
   if (!ok) return null;
 
-  const token = jwt.sign({ sub: user.id, role: user.role }, config.jwt.secret, { expiresIn: config.jwt.expires });
-  return { token, user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role } };
+  const token = jwt.sign(
+    { sub: user.id, role: user.role },
+    config.jwt.secret,
+    { expiresIn: config.jwt.expires }
+  );
+
+  return {
+    token,
+    user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role }
+  };
 }
 
 async function register({ email, password, fullName, role = 'PATIENT', specialty }) {
@@ -29,20 +38,35 @@ async function register({ email, password, fullName, role = 'PATIENT', specialty
   });
 
   if (role === 'PATIENT') {
-    await prisma.patientProfile.create({ data: { userId: user.id } });
+    // ✅ Chỉ dùng userId, KHÔNG có id riêng
+    await prisma.patientProfile.create({
+      data: { userId: user.id }
+    });
   } else if (role === 'DOCTOR') {
     const allowed = config.specialties.map(s => s.name);
     const chosen = allowed.includes(specialty) ? specialty : allowed[0];
-    await prisma.doctorProfile.create({ data: { userId: user.id, specialty: chosen } });
+
+    // ✅ Chỉ dùng userId
+    await prisma.doctorProfile.create({
+      data: { userId: user.id, specialty: chosen }
+    });
   }
 
-  const token = jwt.sign({ sub: user.id, role: user.role }, config.jwt.secret, { expiresIn: config.jwt.expires });
-  return { token, user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role } };
+  const token = jwt.sign(
+    { sub: user.id, role: user.role },
+    config.jwt.secret,
+    { expiresIn: config.jwt.expires }
+  );
+
+  return {
+    token,
+    user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role }
+  };
 }
 
 // ===== Reset Password (Email code) =====
 
-// 6 digits
+// Sinh mã 6 số
 function gen6() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -66,15 +90,12 @@ async function sendResetCodeEmail(email, code) {
 
 async function requestPasswordReset(email) {
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
-    // Không tiết lộ tồn tại hay không
-    return { ok: true };
-  }
+  if (!user) return { ok: true };
 
   // Hủy hiệu lực các mã cũ còn hạn
   await prisma.passwordReset.updateMany({
     where: { userId: user.id, usedAt: null, expiresAt: { gt: new Date() } },
-    data: { expiresAt: new Date() } // expire ngay
+    data: { expiresAt: new Date() }
   });
 
   const code = gen6();
@@ -90,7 +111,6 @@ async function requestPasswordReset(email) {
     await sendResetCodeEmail(email, code);
   } catch (e) {
     console.error('Send reset mail error:', e?.response?.data || e.message);
-    // Không ném lỗi ra ngoài để tránh lộ thông tin. Vẫn trả OK.
   }
 
   return { ok: true };
@@ -128,4 +148,9 @@ async function resetPassword({ email, code, newPassword }) {
   return { ok: true };
 }
 
-module.exports = { login, register, requestPasswordReset, resetPassword };
+module.exports = {
+  login,
+  register,
+  requestPasswordReset,
+  resetPassword
+};
