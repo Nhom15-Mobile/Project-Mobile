@@ -124,4 +124,25 @@ const update = Joi.object({
   return value;
 });
 
-module.exports = { create, update };
+/* -------------------- WRAPPERS -------------------- */
+function run(schema, payload) {
+  const { error, value } = schema.validate(payload, {
+    abortEarly: false,
+    stripUnknown: true,
+  });
+  return {
+    ok: !error,
+    errors: error ? error.details.map(d => d.message) : [],
+    value,
+  };
+}
+
+function validateCreate(payload) {
+  return run(create, payload);
+}
+
+function validateUpdate(payload) {
+  return run(update, payload);
+}
+
+module.exports = { create, update, validateCreate, validateUpdate };
