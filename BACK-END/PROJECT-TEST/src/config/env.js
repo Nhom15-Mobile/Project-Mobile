@@ -34,7 +34,18 @@ const config = {
     { name: 'TƯ VẤN TÂM LÝ',              fee: 150000 },
     { name: 'KHÁM VÀ TƯ VẤN DINH DƯỠNG',  fee: 150000 }
   ],
-
+  // <<< ADD: SMTP / MAIL >>>
+  smtp: {
+    host: process.env.SMTP_HOST || '',
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: String(process.env.SMTP_SECURE || 'false') === 'true',
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || ''
+  },
+  mail: {
+    fromName:  process.env.MAIL_FROM_NAME || 'UIT Healthcare',
+    fromEmail: process.env.MAIL_FROM_EMAIL || process.env.SMTP_USER || ''
+  },
   // Fallback chung (nếu cần dùng nơi khác)
   fees: {
     defaultSpecialtyFee: 150000

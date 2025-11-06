@@ -1,0 +1,11 @@
+ <resources>
+     <style name="CircularShape">
+         <item name="cornerFamily">rounded</item>
+         <item name="cornerSize">25%</item> <!-- Đặt radius cho ảnh -->
+         <item name="android:textSize">14sp</item>
+     </style>
+     <style name="Bottom_bar">
+
+         <item name="android:textSize">13sp</item>
+     </style>
+ </resources>

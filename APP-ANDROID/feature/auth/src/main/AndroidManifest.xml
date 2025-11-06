@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- Activity của feature; không gắn MAIN/LAUNCHER -->
+        <activity
+            android:name="com.example.auth.ui.LoginActivity"
+            android:exported="false" />
+    </application>
+
+</manifest>
