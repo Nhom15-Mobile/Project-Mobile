@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="56dp">
+
+    <TextView
+        android:id="@+id/tvLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nhãn"
+        android:textColor="#0E1B3F"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvValue"
+        app:layout_constraintHorizontal_bias="0"
+        android:maxLines="1"/>
+
+    <ImageView
+        android:id="@+id/imgChevron"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/more"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Giá trị"
+        android:textColor="#8B93A5"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/imgChevron"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

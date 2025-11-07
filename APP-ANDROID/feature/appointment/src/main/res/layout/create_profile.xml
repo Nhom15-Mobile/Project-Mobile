@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F5F7">
+
+    <!-- ScrollView chứa toàn bộ form -->
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <!-- LinearLayout chứa nội dung form -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="32dp">
+
+            <!-- Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_back" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Tạo hồ sơ mới"
+                    android:textColor="#1F57E7"
+                    android:textStyle="bold"
+                    android:textSize="24sp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Họ và Tên *"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:textSize="20sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxStrokeColor="#1F57E7"
+
+
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtFullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Họ tên"
+                    android:inputType="textPersonName"
+
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+            <!-- Số điện thoại -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Số điện thoại *"
+                android:textStyle="bold"
+                android:layout_marginTop="14dp"
+                android:textSize="16sp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxStrokeColor="#1F57E7">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="SĐT"
+                    android:inputType="phone"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Email -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Địa chỉ email"
+                android:textStyle="bold"
+                android:layout_marginTop="14dp"
+                android:textSize="16sp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxStrokeColor="#1F57E7">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Số CCCD -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Số CCCD"
+                android:textStyle="bold"
+                android:layout_marginTop="14dp"
+                android:textSize="16sp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxStrokeColor="#1F57E7">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtCccd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="CCCD"
+                    android:inputType="number"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Nghề nghiệp -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nghề nghiệp"
+                android:textStyle="bold"
+                android:layout_marginTop="14dp"
+                android:textSize="16sp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxStrokeColor="#1F57E7">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtJob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nghề nghiệp cá nhân"
+                    android:inputType="textCapSentences"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Hàng: Quốc gia | Dân tộc -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="14dp">
+
+                <!-- Quốc gia -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quốc gia *"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:boxBackgroundMode="outline"
+                        app:endIconMode="dropdown_menu"
+                        app:boxStrokeColor="#1F57E7"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        app:boxCornerRadiusBottomStart="8dp"
+                        app:boxCornerRadiusBottomEnd="8dp">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/autoCountry"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="Việt Nam"
+                            android:inputType="none"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <Space android:layout_width="12dp" android:layout_height="0dp"/>
+
+                <!-- Dân tộc -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dân tộc"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:boxBackgroundMode="outline"
+                        app:endIconMode="dropdown_menu"
+                        app:boxStrokeColor="#1F57E7"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        app:boxCornerRadiusBottomStart="8dp"
+                        app:boxCornerRadiusBottomEnd="8dp">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/autoEthnicity"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="Kinh"
+                            android:inputType="none"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Hàng: Giới tính | Ngày sinh -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="14dp">
+
+                <!-- Giới tính -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Giới tính *"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:boxBackgroundMode="outline"
+                        app:endIconMode="dropdown_menu"
+                        app:boxStrokeColor="#1F57E7"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        app:boxCornerRadiusBottomStart="8dp"
+                        app:boxCornerRadiusBottomEnd="8dp">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/autoGender"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="Nam"
+                            android:inputType="none"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <Space android:layout_width="12dp" android:layout_height="0dp"/>
+
+                <!-- Ngày sinh -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ngày sinh *"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:boxBackgroundMode="outline"
+                        app:boxStrokeColor="#1F57E7"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        app:boxCornerRadiusBottomStart="8dp"
+                        app:boxCornerRadiusBottomEnd="8dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtDob"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="DD/MM/YYYY"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:drawableEnd="@drawable/ic_home_calen1"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Hàng: Tỉnh thành | Quận huyện -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="14dp">
+
+                <!-- Tỉnh thành -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tỉnh thành *"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:boxBackgroundMode="outline"
+                        app:endIconMode="dropdown_menu"
+                        app:boxStrokeColor="#1F57E7"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        app:boxCornerRadiusBottomStart="8dp"
+                        app:boxCornerRadiusBottomEnd="8dp">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/autoProvince"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="Tỉnh thành"
+                            android:inputType="none"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <Space android:layout_width="12dp" android:layout_height="0dp"/>
+
+                <!-- Quận huyện -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quận huyện *"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:boxBackgroundMode="outline"
+                        app:endIconMode="dropdown_menu"
+                        app:boxStrokeColor="#1F57E7"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        app:boxCornerRadiusBottomStart="8dp"
+                        app:boxCornerRadiusBottomEnd="8dp">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/autoDistrict"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="Quận huyện"
+                            android:inputType="none"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Phường xã -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phường xã *"
+                android:textStyle="bold"
+                android:layout_marginTop="14dp"
+                android:textSize="16sp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:endIconMode="dropdown_menu"
+                app:boxStrokeColor="#1F57E7"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/autoWard"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Phường xã"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Địa chỉ thường trú -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Địa chỉ thường trú *"
+                android:textStyle="bold"
+                android:layout_marginTop="14dp"
+                android:textSize="16sp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="#1F57E7"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minLines="3"
+                    android:gravity="top|start"
+                    android:hint="Địa chỉ thường trú bệnh nhân"
+                    android:inputType="textMultiLine"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Nút hành động -->
+
+
+            <!-- ... (các phần còn lại của form ở đây) ... -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnScanCccd"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:text="Quét CCCD"
+                    android:textSize="18sp"
+                    app:backgroundTint="#D7F2E0"
+                    app:cornerRadius="12dp"
+                    android:textColor="#0F7A42"/>
+
+                <Space
+                    android:layout_width="16dp"
+                    android:layout_height="0dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCreate"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:text="Tạo mới"
+                    app:cornerRadius="12dp"
+                    app:backgroundTint="#2F5CE6"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

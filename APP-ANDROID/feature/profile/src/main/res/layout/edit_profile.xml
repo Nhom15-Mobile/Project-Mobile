@@ -1,6 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F4F5F7">
+
+    <!-- Thẻ trắng bo góc chứa toàn bộ nội dung -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardRoot"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="20dp"
+        app:cardUseCompatPadding="false"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="24dp">
+
+            <!-- Header: Back + Title -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_back"
+                    />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Chỉnh sửa hồ sơ"
+                    android:textColor="#1F57E7"
+                    android:textStyle="bold"
+                    android:textSize="24sp" />
+            </LinearLayout>
+
+            <!-- Avatar -->
+            <ImageView
+                android:id="@+id/imgAvatar"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/avatar" />
+
+            <!-- ====== Hàng: Họ và tên ====== -->
+            <include
+                layout="@layout/row_profile_item"
+                android:id="@+id/rowFullName"
+                app:tag="Họ và tên|Nguyễn Văn A|edit" />
+
+            <!-- ====== Hàng: Giới tính ====== -->
+            <include
+                layout="@layout/row_profile_item"
+                android:id="@+id/rowGender"
+                app:tag="Giới tính|Nam|edit" />
+
+            <!-- ====== Hàng: Ngày sinh (1) ====== -->
+            <include
+                layout="@layout/row_profile_item"
+                android:id="@+id/rowDob1"
+                app:tag="Ngày sinh|01-01-2001|edit" />
+
+            <!-- ====== Hàng: Ngày sinh (2) – để đúng ảnh mẫu của bạn ====== -->
+            <include
+                layout="@layout/row_profile_item"
+                android:id="@+id/rowDob2"
+                app:tag="Ngày sinh|01-01-2001|edit" />
+
+            <!-- ====== Hàng: Số điện thoại ====== -->
+            <include
+                layout="@layout/row_profile_item"
+                android:id="@+id/rowPhone"
+                app:tag="Số điện thoại|0912345678|edit" />
+
+            <!-- ====== Hàng: Email (không mũi tên) ====== -->
+            <include
+                layout="@layout/row_profile_item"
+                android:id="@+id/rowEmail"
+                app:tag="Email|nguyenvana01@gmail.com|none" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
