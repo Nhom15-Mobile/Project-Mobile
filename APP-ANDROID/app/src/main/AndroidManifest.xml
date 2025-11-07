@@ -25,6 +25,9 @@
         <activity android:name="com.example.auth.ui.LoginActivity" />
         <activity android:name=".HomeActivity"/>
         <activity android:name="com.example.auth.ui.SignupActivity" />
+        <activity android:name="com.example.profile.ProfileFragment" />
+
+
     </application>
 
 </manifest>

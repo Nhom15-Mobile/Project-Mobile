@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/feature/appointment" />
             <option value="$PROJECT_DIR$/feature/auth" />
             <option value="$PROJECT_DIR$/feature/payment" />
+            <option value="$PROJECT_DIR$/feature/profile" />
             <option value="$PROJECT_DIR$/feature/records" />
           </set>
         </option>
