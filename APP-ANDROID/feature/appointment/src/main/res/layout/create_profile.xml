@@ -84,7 +84,7 @@
                 android:text="Số điện thoại *"
                 android:textStyle="bold"
                 android:layout_marginTop="14dp"
-                android:textSize="16sp"/>
+                android:textSize="18sp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -111,7 +111,7 @@
                 android:text="Địa chỉ email"
                 android:textStyle="bold"
                 android:layout_marginTop="14dp"
-                android:textSize="16sp"/>
+                android:textSize="18sp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -138,7 +138,7 @@
                 android:text="Số CCCD"
                 android:textStyle="bold"
                 android:layout_marginTop="14dp"
-                android:textSize="16sp"/>
+                android:textSize="18sp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -165,7 +165,7 @@
                 android:text="Nghề nghiệp"
                 android:textStyle="bold"
                 android:layout_marginTop="14dp"
-                android:textSize="16sp"/>
+                android:textSize="18sp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -204,7 +204,7 @@
                         android:layout_height="wrap_content"
                         android:text="Quốc gia *"
                         android:textStyle="bold"
-                        android:textSize="16sp"/>
+                        android:textSize="18sp"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -240,7 +240,7 @@
                         android:layout_height="wrap_content"
                         android:text="Dân tộc"
                         android:textStyle="bold"
-                        android:textSize="16sp"/>
+                        android:textSize="18sp"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -282,7 +282,7 @@
                         android:layout_height="wrap_content"
                         android:text="Giới tính *"
                         android:textStyle="bold"
-                        android:textSize="16sp"/>
+                        android:textSize="18sp"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -318,7 +318,7 @@
                         android:layout_height="wrap_content"
                         android:text="Ngày sinh *"
                         android:textStyle="bold"
-                        android:textSize="16sp"/>
+                        android:textSize="18sp"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -361,7 +361,7 @@
                         android:layout_height="wrap_content"
                         android:text="Tỉnh thành *"
                         android:textStyle="bold"
-                        android:textSize="16sp"/>
+                        android:textSize="18sp"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -397,7 +397,7 @@
                         android:layout_height="wrap_content"
                         android:text="Quận huyện *"
                         android:textStyle="bold"
-                        android:textSize="16sp"/>
+                        android:textSize="18sp"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -427,7 +427,7 @@
                 android:text="Phường xã *"
                 android:textStyle="bold"
                 android:layout_marginTop="14dp"
-                android:textSize="16sp"/>
+                android:textSize="18sp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -457,7 +457,7 @@
                 android:text="Địa chỉ thường trú *"
                 android:textStyle="bold"
                 android:layout_marginTop="14dp"
-                android:textSize="16sp"/>
+                android:textSize="18sp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
