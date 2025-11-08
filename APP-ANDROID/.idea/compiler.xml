@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="11">
+      <module name="Mobile_APP.app" target="21" />
+      <module name="Mobile_APP.core.db" target="21" />
+      <module name="Mobile_APP.core.network" target="21" />
+      <module name="Mobile_APP.core.ui" target="21" />
+      <module name="Mobile_APP.core.util" target="21" />
+      <module name="Mobile_APP.feature.appointment" target="21" />
+      <module name="Mobile_APP.feature.auth" target="21" />
+      <module name="Mobile_APP.feature.payment" target="21" />
+      <module name="Mobile_APP.feature.profile" target="21" />
+      <module name="Mobile_APP.feature.records" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>

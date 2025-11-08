@@ -20,7 +20,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Mobile_APP"
+rootProject.name = "APP-ANDROID"
 
 // App chính
 include(":app")

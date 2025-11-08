@@ -48,7 +48,7 @@
         android:baselineAligned="false"
         android:gravity="center_vertical">
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBooking"
+            android:id="@+id/btnAppointment"
             android:layout_width="160dp"
             android:layout_height="60dp"
             android:text="@string/appointment"
