@@ -1,14 +1,19 @@
+// src/modules/doctors/doctors.controller.js
 const R = require('../../utils/apiResponse');
 const svc = require('./doctors.service');
 const { validateUpdateProfile } = require('./doctors.validation');
 
 // format giờ local VN để FE hiển thị
 const tz = 'Asia/Ho_Chi_Minh';
-const fmt = new Intl.DateTimeFormat('sv-SE', { timeZone: tz, dateStyle: 'short', timeStyle: 'short' });
+const fmt = new Intl.DateTimeFormat('sv-SE', {
+  timeZone: tz,
+  dateStyle: 'short',
+  timeStyle: 'short'
+});
 const withLocal = (slot) => ({
   ...slot,
   localStart: fmt.format(new Date(slot.start)),
-  localEnd:   fmt.format(new Date(slot.end))
+  localEnd: fmt.format(new Date(slot.end))
 });
 
 // ===== Public =====
@@ -120,10 +125,14 @@ async function setWorkDayBlocks(req, res) {
       replaceUnbooked: !!replaceUnbooked
     });
 
-    return R.created(res, {
-      created: result.created,
-      slots: result.slots.map(withLocal)
-    }, 'Workday saved');
+    return R.created(
+      res,
+      {
+        created: result.created,
+        slots: result.slots.map(withLocal)
+      },
+      'Workday saved'
+    );
   } catch (e) {
     console.error(e);
     return R.badRequest(res, e.message || 'Bad request');

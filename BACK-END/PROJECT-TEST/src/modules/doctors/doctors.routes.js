@@ -18,5 +18,5 @@ router.get('/workday',        auth, allow('DOCTOR','ADMIN'), ctrl.myWorkDay);
 // public browse
 router.get('/', ctrl.search);
 router.get('/:id', ctrl.getOne); // :id là userId của bác sĩ
-
+router.get('/available', ctrl.available);
 module.exports = router;

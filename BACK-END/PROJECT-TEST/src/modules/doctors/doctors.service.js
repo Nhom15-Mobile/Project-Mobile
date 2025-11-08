@@ -9,6 +9,7 @@ const startOfDayISO = (day) => new Date(`${day}T00:00:00${TZ}`);
 const endOfDayISO   = (day) => new Date(`${day}T23:59:59.999${TZ}`);
 const toISO         = (day, hm) => new Date(`${day}T${hm}:00${TZ}`);
 const dayRange      = (day) => ({ start: startOfDayISO(day), end: endOfDayISO(day) });
+
 function validRange(day, startHM, endHM) {
   const start = toISO(day, startHM);
   const end = toISO(day, endHM);
@@ -68,6 +69,7 @@ async function updateProfile(userId, data) {
     include: { user: { select: { id: true, fullName: true, email: true } } }
   });
 }
+
 // =============== Search/List ===============
 async function search(query) {
   const { q, specialty } = query;
