@@ -95,7 +95,7 @@
             <!-- Chỉnh sửa thông tin -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:id="@+id/rowEditProfile"                android:layout_height="64dp"
                 android:layout_marginBottom="12dp"
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground"
