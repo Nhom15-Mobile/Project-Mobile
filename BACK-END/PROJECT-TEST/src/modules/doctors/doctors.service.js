@@ -159,7 +159,7 @@ async function availableDoctors({ dayISO, specialty, slotsPerDoctor = 3 }) {
         where: { start: { gte: start }, end: { lte: end }, isBooked: false },
         orderBy: { start: 'asc' },
         select: { id: true, start: true, end: true },
-        take: slotsPerDoctor
+        //take: slotsPerDoctor
       }
     },
     orderBy: [{ rating: 'desc' }, { updatedAt: 'desc' }]
