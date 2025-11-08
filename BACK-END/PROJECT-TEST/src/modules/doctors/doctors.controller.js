@@ -1,6 +1,7 @@
 // src/modules/doctors/doctors.controller.js
 const R = require('../../utils/apiResponse');
 const svc = require('./doctors.service');
+const apptSvc = require('../appointments/appointments.service');
 const { validateUpdateProfile } = require('./doctors.validation');
 
 // format giờ local VN để FE hiển thị
@@ -47,24 +48,35 @@ async function getOne(req, res) {
  *  - q (optional)           → filter theo fullName
  *  - minRating (optional)   → filter >=
  *  - slotsPerDoctor (opt)   → số slot trả về mỗi bác sĩ (mặc định 3)
+ *  - view=slots + doctorUserId → trả slot của 1 bác sĩ cụ thể (kiểu cũ)
  */
 async function available(req, res) {
   try {
-    const { day, specialty, q, minRating, slotsPerDoctor } = req.query;
+    const { day, specialty, q, minRating, slotsPerDoctor, view, doctorUserId } = req.query;
     if (!day) return R.badRequest(res, 'day (YYYY-MM-DD) is required');
 
-    const doctors = await svc.availableByDay({
+    // --- nếu view=slots → giữ behavior cũ ---
+    if (view === 'slots') {
+      if (!doctorUserId) return R.badRequest(res, 'doctorUserId is required when view=slots');
+      const slots = await apptSvc.availableSlots(doctorUserId, day);
+      return R.ok(res, slots);
+    }
+
+    // --- default: danh sách bác sĩ còn slot ---
+    const doctors = await svc.availableDoctors({
+      dayISO: day,
       specialty,
-      day,
-      q: q?.trim() || '',
-      minRating: minRating ? Number(minRating) : undefined,
       slotsPerDoctor: slotsPerDoctor ? Number(slotsPerDoctor) : 3
     });
 
-    // thêm localStart/localEnd cho từng slot (tiện FE)
+    // thêm local time format
     const mapped = doctors.map(d => ({
       ...d,
-      slots: d.slots.map(withLocal)
+      firstSlots: d.firstSlots?.map(s => ({
+        ...s,
+        localStart: fmt.format(new Date(s.start)),
+        localEnd: fmt.format(new Date(s.end))
+      })) || []
     }));
 
     return R.ok(res, mapped);
@@ -125,14 +137,10 @@ async function setWorkDayBlocks(req, res) {
       replaceUnbooked: !!replaceUnbooked
     });
 
-    return R.created(
-      res,
-      {
-        created: result.created,
-        slots: result.slots.map(withLocal)
-      },
-      'Workday saved'
-    );
+    return R.created(res, {
+      created: result.created,
+      slots: result.slots.map(withLocal)
+    }, 'Workday saved');
   } catch (e) {
     console.error(e);
     return R.badRequest(res, e.message || 'Bad request');

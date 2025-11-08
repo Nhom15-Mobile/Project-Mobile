@@ -30,30 +30,23 @@ async function updateProfile(userId, data) {
     Object.entries(data).filter(([k, v]) => allowed.includes(k) && v !== undefined)
   );
 
-  // Lấy default specialty an toàn
   const defaultSpecialty =
     (config.specialties && config.specialties[0] && config.specialties[0].name) || 'GENERAL';
 
-  // Check đã có profile chưa
   const existing = await prisma.doctorProfile.findUnique({ where: { userId } });
 
   if (!existing) {
-    // tạo mới → đảm bảo luôn có specialty
     const toCreate = {
       userId,
       specialty: cleaned.specialty || defaultSpecialty,
       ...cleaned
     };
-
-    // validate specialty
     const ok =
       (config.specialties && config.specialties.some(s => s.name === toCreate.specialty)) ||
       toCreate.specialty === 'GENERAL';
     if (!ok) throw new Error('Invalid specialty');
-
     await prisma.doctorProfile.create({ data: toCreate });
   } else {
-    // đã có → nếu gửi specialty thì validate; không gửi thì giữ nguyên
     if (cleaned.specialty) {
       const ok = config.specialties && config.specialties.some(s => s.name === cleaned.specialty);
       if (!ok) throw new Error('Invalid specialty');
@@ -104,7 +97,6 @@ async function search(query) {
   return { items, page, pageSize, total };
 }
 
-// Trả list 10 chuyên khoa cố định + fee từ config (KHÔNG đọc DB)
 async function listSpecialties() {
   return config.specialties.map(s => ({ name: s.name, fee: s.fee }));
 }
@@ -117,7 +109,7 @@ async function availableByDay({ specialty, day, q = '', minRating, slotsPerDocto
   const { start, end } = dayRange(day);
 
   const where = {
-    ...(specialty ? { specialty } : {}), // exact match
+    ...(specialty ? { specialty } : {}),
     ...(minRating != null ? { rating: { gte: Number(minRating) } } : {}),
     ...(q ? { user: { is: { fullName: { contains: q } } } } : {}),
     slots: {
@@ -145,6 +137,51 @@ async function availableByDay({ specialty, day, q = '', minRating, slotsPerDocto
   });
 
   return doctors;
+}
+
+/**
+ * ====== ✅ Legacy-compatible function (cho FE cũ) ======
+ * Dựa theo logic availableByDay nhưng format lại output
+ */
+async function availableDoctors({ dayISO, specialty, slotsPerDoctor = 3 }) {
+  const { start, end } = dayRange(dayISO);
+
+  const where = {
+    ...(specialty ? { specialty } : {}),
+    slots: { some: { start: { gte: start }, end: { lte: end }, isBooked: false } }
+  };
+
+  const doctors = await prisma.doctorProfile.findMany({
+    where,
+    include: {
+      user: { select: { id: true, fullName: true, email: true } },
+      slots: {
+        where: { start: { gte: start }, end: { lte: end }, isBooked: false },
+        orderBy: { start: 'asc' },
+        select: { id: true, start: true, end: true },
+        take: slotsPerDoctor
+      }
+    },
+    orderBy: [{ rating: 'desc' }, { updatedAt: 'desc' }]
+  });
+
+  const specialties = await listSpecialties();
+
+  return doctors.map(d => {
+    const spec = specialties.find(s => s.name === d.specialty);
+    return {
+      doctorUserId: d.user.id,
+      doctorProfileId: d.userId || d.id,
+      fullName: d.user.fullName,
+      email: d.user.email,
+      specialty: d.specialty,
+      clinicName: d.clinicName || '',
+      yearsExperience: d.yearsExperience || 0,
+      rating: d.rating || 0,
+      fee: spec ? spec.fee : 0,
+      firstSlots: d.slots || []
+    };
+  });
 }
 
 // =============== Workday (blocks + capacity) ===============
@@ -251,6 +288,7 @@ module.exports = {
   // search & availability
   listSpecialties,
   availableByDay,
+  availableDoctors,
   search,
   getById
 };
