@@ -1,6 +1,7 @@
 package com.example.appointment.ui;
 
 import android.content.ClipData;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -38,6 +39,19 @@ public class AppointmentActivity extends AppCompatActivity {
         List<ItemRecord> items = fakeData(); // Đổ dữ liệu các record đây
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new RecordAdapter(this, items));
+        RecordAdapter adapter = new RecordAdapter(this, items);
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(item -> {
+            Intent i = new Intent(AppointmentActivity.this, SpecialtyActivity.class);
+            // Truyền dữ liệu cần thiết sang màn đặt lịch:
+            i.putExtra("name", item.getName());
+            i.putExtra("id", item.getId());
+            i.putExtra("phone", item.getPhone());
+            startActivity(i);
+
+            // nếu muốn đóng luôn màn hiện tại:
+            // finish();
+        });
     }
 }
