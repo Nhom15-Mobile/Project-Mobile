@@ -179,7 +179,7 @@ async function availableDoctors({ dayISO, specialty, slotsPerDoctor = 3 }) {
       yearsExperience: d.yearsExperience || 0,
       rating: d.rating || 0,
       fee: spec ? spec.fee : 0,
-      firstSlots: d.slots || []
+      Slots: d.slots || []
     };
   });
 }
