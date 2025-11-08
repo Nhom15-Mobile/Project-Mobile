@@ -4,6 +4,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.example.profile.ui.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
@@ -22,7 +24,7 @@ public class HomeActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             // tạo & add 2 fragment, ẩn Profile để giữ state
             homeFrag = new HomeFragment();
-            profileFrag = new com.example.profile.ProfileFragment();
+            profileFrag = new ProfileFragment();
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.nav_host_container, profileFrag, "PROFILE").hide(profileFrag)

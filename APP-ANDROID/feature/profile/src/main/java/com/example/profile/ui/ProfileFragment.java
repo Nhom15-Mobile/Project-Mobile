@@ -1,4 +1,4 @@
-package com.example.profile;
+package com.example.profile.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.auth.ui.LoginActivity;
+import com.example.profile.ui.EditProfileActivity;
 import com.example.profile.R;
 import com.uithealthcare.util.SessionManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;

@@ -3,8 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <activity
-            android:name="com.example.profile.EditProfileActivity"
+            android:name="com.example.profile.ui.EditProfileActivity"
             android:exported="false"
             tools:ignore="MissingClass" />
+        <activity android:name="com.example.auth.ui.LoginActivity"/>
     </application>
 </manifest>

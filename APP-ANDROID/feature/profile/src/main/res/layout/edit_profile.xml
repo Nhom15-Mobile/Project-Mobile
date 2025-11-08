@@ -70,7 +70,7 @@
                 android:id="@+id/tvFullNameValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nguyễn Văn A"
+                android:text="---"
                 android:textColor="#8B93A5"
                 android:textSize="16sp"
                 android:layout_marginEnd="8dp" />
@@ -104,7 +104,7 @@
                 android:id="@+id/tvGenderValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nam"
+                android:text="---"
                 android:textColor="#8B93A5"
                 android:textSize="16sp"
                 android:layout_marginEnd="8dp" />
@@ -139,7 +139,7 @@
                 android:id="@+id/tvDobValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="01-01-2001"
+                android:text="---"
                 android:textColor="#8B93A5"
                 android:textSize="16sp"
                 android:layout_marginEnd="8dp" />
@@ -174,7 +174,7 @@
                 android:id="@+id/tvPhoneValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0912345678"
+                android:text="---"
                 android:textColor="#8B93A5"
                 android:textSize="16sp"
                 android:layout_marginEnd="8dp" />
@@ -207,7 +207,7 @@
                 android:id="@+id/tvAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hồ Tràm"
+                android:text="---"
                 android:textColor="#8B93A5"
                 android:textSize="16sp"
                 android:layout_marginEnd="8dp" />
@@ -242,7 +242,7 @@
                 android:id="@+id/tvEmailValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="nguyenvana01@gmail.com"
+                android:text="---"
                 android:textColor="#8B93A5"
                 android:textSize="16sp" />
         </LinearLayout>

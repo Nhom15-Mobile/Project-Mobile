@@ -35,4 +35,7 @@ public final class RetrofitProvider {
         }
         return retrofit;
     }
+    public static synchronized void reset() {
+        retrofit = null;
+    }
 }

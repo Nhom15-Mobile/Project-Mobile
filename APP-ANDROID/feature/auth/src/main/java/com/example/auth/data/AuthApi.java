@@ -3,6 +3,7 @@ package com.example.auth.data;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import com.google.gson.annotations.SerializedName;
 
 public interface AuthApi {
 
@@ -23,11 +24,26 @@ public interface AuthApi {
         public Data data;
 
         public static class Data {
-            public String accessToken;   // <— nếu API trả "token", đổi thành: public String token;
-            public String refreshToken;  // optional
-            public String email;         // optional
+            @SerializedName(value = "accessToken", alternate = {"token"})
+            public String accessToken;
+
+            public String refreshToken;
+
+            @SerializedName(value = "email", alternate = {"userEmail"})
+            public String email;
+
+            // thêm user nếu muốn map luôn thông tin user
+            public User user;
+        }
+
+        public static class User {
+            public String id;
+            public String email;
+            public String fullName;
+            public String role;
         }
     }
+
 
     // ---- endpoints ----
     @POST("api/auth/login")
@@ -35,6 +51,9 @@ public interface AuthApi {
     // ---- REGISTER ----
     @POST("api/auth/register")
     Call<RegisterResp> register(@Body RegisterReq body);
+
+    @POST("api/auth/login")
+    Call<com.google.gson.JsonObject> loginRaw(@Body LoginReq body);
 
     class RegisterReq {
         public String email;
