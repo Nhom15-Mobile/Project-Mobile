@@ -33,15 +33,16 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder> {
     @NonNull
     @Override
     public RecordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new RecordViewHolder(LayoutInflater.from(context).inflate(R.layout.item_view_record, parent, false));
+        return new RecordViewHolder(LayoutInflater.from(context).inflate
+                (R.layout.item_view_record, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecordViewHolder holder, int position) {
         ItemRecord it = items.get(position);
-        holder.name.setText(items.get(position).getName());
-        holder.idRecord.setText(items.get(position).getId());
-        holder.phone.setText(items.get(position).getPhone());
+        holder.name.setText(it.getName());
+        holder.idRecord.setText(it.getId());
+        holder.phone.setText(it.getPhone());
 
         holder.card.setOnClickListener(v ->{
             if (listener != null && holder.getAdapterPosition() != RecyclerView.NO_POSITION) {
