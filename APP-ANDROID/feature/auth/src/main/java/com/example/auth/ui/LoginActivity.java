@@ -69,17 +69,17 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         btnLogin.setEnabled(false);
-        android.util.Log.d("AUTH", "Đang gọi login API với email=" + email);
+        //android.util.Log.d("AUTH", "Đang gọi login API với email=" + email);
 
         repo.login(email, pass, new AuthRepository.LoginCallback() {
             @Override
             public void onSuccess(AuthApi.LoginResp.Data data) {
                 btnLogin.setEnabled(true);
-                android.util.Log.d("AUTH", "onSuccess() được gọi, data=" + (data == null ? "null" : "non-null"));
+                //ndroid.util.Log.d("AUTH", "onSuccess() được gọi, data=" + (data == null ? "null" : "non-null"));
 
                 String token = null;
                 if (data != null) {
-                    android.util.Log.d("AUTH", "LoginResp.Data → accessToken=" + data.accessToken + ", email=" + data.email);
+                    //android.util.Log.d("AUTH", "LoginResp.Data → accessToken=" + data.accessToken + ", email=" + data.email);
                     if (data.accessToken != null && !data.accessToken.isEmpty()) {
                         token = data.accessToken;
                     } else {
@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (token == null || token.isEmpty()) {
-                    android.util.Log.w("AUTH", "⚠️ token == null từ model → thử fallback loginRaw() đọc JSON gốc");
+                    //android.util.Log.w("AUTH", "⚠️ token == null từ model → thử fallback loginRaw() đọc JSON gốc");
 
                     // Tạo AuthApi không có Bearer để gọi loginRaw
                     SessionInterceptor.TokenProvider p = new SessionInterceptor.TokenProvider() {
@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(String errorMessage) {
                 btnLogin.setEnabled(true);
-                android.util.Log.e("AUTH", "Login lỗi: " + errorMessage);
+                //android.util.Log.e("AUTH", "Login lỗi: " + errorMessage);
                 Toast.makeText(LoginActivity.this, "Đăng nhập thất bại: " + errorMessage, Toast.LENGTH_LONG).show();
             }
         });
@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
         // (B) Lưu cho network layer (SessionInterceptor sẽ đọc "Bearer ...")
         SessionManager sm = new SessionManager(LoginActivity.this);
         sm.saveBearer(token);
-        android.util.Log.d("AUTH", "Saved bearer (login): " + sm.getBearer());
+        //android.util.Log.d("AUTH", "Saved bearer (login): " + sm.getBearer());
         com.uithealthcare.network.RetrofitProvider.reset();
         // (C) Lưu email nếu cần
         if (cbSave.isChecked()) {
