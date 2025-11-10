@@ -20,13 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.profile.R;
 import com.example.profile.data.PatientApi;
-import com.uithealthcare.network.RetrofitProvider;
-import com.uithealthcare.network.SessionInterceptor;
+import com.example.profile.data.PatientRepository;   // ★ dùng Repository
 import com.uithealthcare.util.SessionManager;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -37,6 +32,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
     // Editable
     private EditText etGender, etDob, etPhone, etAddress;
+
+    // ★ Repo
+    private PatientRepository repo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,24 +65,21 @@ public class EditProfileActivity extends AppCompatActivity {
         // Pickers
         setupPickers();
 
-        // Khôi phục token nếu cần
+        // Khởi tạo Repo
+        repo = new PatientRepository(this);
+
+        // (Tuỳ project) đảm bảo token đã có (nếu bạn cần tự nạp)
         ensureToken();
 
-        // Tải hồ sơ hiện tại
+        // Tải hồ sơ hiện tại qua Repo
         loadProfile();
 
-        // Lưu thay đổi
+        // Lưu thay đổi qua Repo
         findViewById(R.id.btnSave).setOnClickListener(v -> saveProfile());
     }
 
-    // ===== Retrofit API instance =====
-    private PatientApi api() {
-        SessionInterceptor.TokenProvider provider =
-                () -> new SessionManager(EditProfileActivity.this).getBearer();
-        return RetrofitProvider.get(provider).create(PatientApi.class);
-    }
-
     private void ensureToken() {
+        // Nếu SessionManager đã tự xử lý thì có thể bỏ
         SessionManager sm = new SessionManager(this);
         String bearer = sm.getBearer();
         if (bearer == null) {
@@ -94,18 +89,11 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    // ===== GET profile =====
+    // ===== GET profile (Repository) =====
     private void loadProfile() {
-        api().getMyProfile().enqueue(new Callback<PatientApi.GetProfileResp>() {
-            @Override
-            public void onResponse(Call<PatientApi.GetProfileResp> call, Response<PatientApi.GetProfileResp> resp) {
-                if (!resp.isSuccessful() || resp.body() == null || resp.body().data == null) return;
-                bind(resp.body().data);
-            }
-            @Override
-            public void onFailure(Call<PatientApi.GetProfileResp> call, Throwable t) {
-                // log/toast nếu cần
-            }
+        repo.getProfile(new PatientRepository.RepoCallback<PatientApi.ProfileData>() {
+            @Override public void onSuccess(PatientApi.ProfileData data) { bind(data); }
+            @Override public void onError(String message) { toast(message); }
         });
     }
 
@@ -117,7 +105,7 @@ public class EditProfileActivity extends AppCompatActivity {
             tvEmail.setText(nz(d.user.email));
         }
 
-        // etPhone hiển thị emergencyContact
+        // etPhone hiển thị emergencyContact (yêu cầu của bạn)
         etPhone.setText(nz(d.emergencyContact));
 
         // Editable
@@ -126,42 +114,33 @@ public class EditProfileActivity extends AppCompatActivity {
         etAddress.setText(nz(d.address));
     }
 
-    // ===== SAVE profile =====
+    // ===== SAVE profile (Repository) =====
     private void saveProfile() {
         String genderApi = mapGenderToApi(trim(etGender.getText().toString())); // male/female/other
         String dobIso    = toIsoDate(trim(etDob.getText().toString()));         // yyyy-MM-dd
         String emergency = trim(etPhone.getText().toString());                  // etPhone -> emergencyContact
         String address   = trim(etAddress.getText().toString());
 
-        // Body: gửi emergencyContact, không gửi phone
-        PatientApi.UpdateReq body = new PatientApi.UpdateReq(
-                emptyToNull(genderApi),   // gender
-                emptyToNull(dobIso),      // dob (yyyy-MM-dd)
-                emptyToNull(address),     // address
-                null,                     // insuranceNumber
-                emptyToNull(emergency),   // emergencyContact
-                null,                     // phone
-                null,                     // fullName
-                null                      // email
-        );
-
         findViewById(R.id.btnSave).setEnabled(false);
-        api().updateMyProfile(body).enqueue(new Callback<PatientApi.UpdateResp>() {
-            @Override
-            public void onResponse(Call<PatientApi.UpdateResp> call, Response<PatientApi.UpdateResp> resp) {
+
+        PatientRepository.UpdateArgs args =
+                new PatientRepository.UpdateArgs(
+                        emptyToNull(genderApi),
+                        emptyToNull(dobIso),
+                        emptyToNull(address),
+                        emptyToNull(emergency)
+                );
+        // Nếu cần: args.withInsurance(...).withPhone(null);
+
+        repo.updateProfile(args, new PatientRepository.RepoCallback<PatientApi.ProfileData>() {
+            @Override public void onSuccess(PatientApi.ProfileData data) {
                 findViewById(R.id.btnSave).setEnabled(true);
-                if (!resp.isSuccessful() || resp.body() == null) { toast("Cập nhật thất bại"); return; }
-
-                if (resp.body().data != null) bind(resp.body().data);
-                else loadProfile();
-
+                bind(data);
                 toast("Đã lưu thay đổi");
             }
-
-            @Override
-            public void onFailure(Call<PatientApi.UpdateResp> call, Throwable t) {
+            @Override public void onError(String message) {
                 findViewById(R.id.btnSave).setEnabled(true);
-                toast("Không thể kết nối máy chủ");
+                toast(message);
             }
         });
     }

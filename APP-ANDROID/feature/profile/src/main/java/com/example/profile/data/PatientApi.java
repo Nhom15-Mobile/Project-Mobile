@@ -88,8 +88,8 @@ public interface PatientApi {
         @SerializedName("phone")            public String phone;
 
         // Nếu backend cho phép cập nhật fullName/email qua endpoint này thì thêm:
-        @SerializedName("fullName")         public String fullName;
-        @SerializedName("email")            public String email;
+//        @SerializedName("fullName")         public String fullName;
+//        @SerializedName("email")            public String email;
 
         public UpdateReq(String gender,
                          String dob,
@@ -105,8 +105,9 @@ public interface PatientApi {
             this.insuranceNumber = insuranceNumber;
             this.emergencyContact = phone;
             this.phone = phone;
-            this.fullName = fullName;
-            this.email = email;
+            //this.fullName = fullName;
+//            this.email = email;
+//
         }
 
         // Tiện lợi: constructor rút gọn cho các field cơ bản bạn đang dùng
