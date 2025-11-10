@@ -1,5 +1,6 @@
 package com.example.appointment.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -58,6 +59,8 @@ public class ChooseDoctorActivity extends AppCompatActivity {
                 "16/10/2025", "Tòa E - Tầng 5 - Phòng 5.6", s));
 
         DoctorScheduleAdapter adapter = new DoctorScheduleAdapter(list, (doctor, slot) -> {
+            Intent data = new Intent(this, ExamFormActivity.class);
+            startActivity(data);
             // TODO: xử lý khi chọn khung giờ
             // Ví dụ: trả về Activity trước
             // Intent data = new Intent(); data.putExtra("slot", slot.label);

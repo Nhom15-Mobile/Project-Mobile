@@ -31,7 +31,7 @@
         <activity android:name="com.example.appointment.ui.SpecialtyActivity"/>
         <activity android:name="com.example.appointment.ui.ChooseDateActivity"/>
         <activity android:name="com.example.appointment.ui.ChooseDoctorActivity"/>
-
+        <activity android:name="com.example.appointment.ui.ExamFormActivity"/>
     </application>
 
 
