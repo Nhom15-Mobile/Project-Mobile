@@ -25,7 +25,8 @@ public class DoctorScheduleAdapter extends RecyclerView.Adapter<DoctorScheduleAd
     private final OnSelectSlot listener;
 
     public DoctorScheduleAdapter(List<DoctorSchedule> data, OnSelectSlot listener) {
-        this.data = data; this.listener = listener;
+        this.data = data;
+        this.listener = listener;
     }
 
     @NonNull

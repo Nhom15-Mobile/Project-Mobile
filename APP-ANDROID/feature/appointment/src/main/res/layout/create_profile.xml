@@ -221,6 +221,7 @@
                             android:id="@+id/autoCountry"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:paddingHorizontal="15dp"
                             android:hint="Việt Nam"
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -257,6 +258,7 @@
                             android:id="@+id/autoEthnicity"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:paddingHorizontal="15dp"
                             android:hint="Kinh"
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -299,6 +301,7 @@
                             android:id="@+id/autoGender"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:paddingHorizontal="15dp"
                             android:hint="Nam"
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -378,6 +381,7 @@
                             android:id="@+id/autoProvince"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:paddingHorizontal="15dp"
                             android:hint="Tỉnh thành"
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -414,6 +418,7 @@
                             android:id="@+id/autoDistrict"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:paddingHorizontal="15dp"
                             android:hint="Quận huyện"
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -444,6 +449,7 @@
                     android:id="@+id/autoWard"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="15dp"
                     android:hint="Phường xã"
                     android:inputType="none"
                     android:focusable="false"

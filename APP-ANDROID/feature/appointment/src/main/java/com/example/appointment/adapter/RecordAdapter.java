@@ -33,6 +33,12 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         this.listener = l;
     }
 
+    public void setItems(List<ItemRecord> newItems) {
+        this.items.clear();
+        this.items.addAll(newItems);
+    }
+
+
     @NonNull
     @Override
     public RecordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
