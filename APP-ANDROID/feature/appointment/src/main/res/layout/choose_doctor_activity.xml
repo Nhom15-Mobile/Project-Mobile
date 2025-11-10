@@ -24,7 +24,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chọn chuyên khoa"
+            android:text="Chọn khung giờ khám"
 
             android:textColor="@color/primary"
             android:textStyle="bold"
@@ -32,39 +32,11 @@
         </androidx.appcompat.widget.AppCompatTextView>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:background="@drawable/bg_search_box"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="12dp">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_search"/>
-
-        <EditText
-            android:id="@+id/edtSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:hint="Tìm chuyên khoa"
-            android:textColorHint="#9E9E9E"
-            android:background="@android:color/transparent"
-            android:textSize="16sp"
-            android:inputType="text"
-            android:singleLine="true" />
-    </LinearLayout>
-
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="15dp"
+        android:id="@+id/rvDoctors"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/specialtyRecyclerView">
+        android:layout_marginVertical="10dp">
     </androidx.recyclerview.widget.RecyclerView>
-
-
 
 </LinearLayout>

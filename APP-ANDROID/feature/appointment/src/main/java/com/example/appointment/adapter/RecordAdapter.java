@@ -1,18 +1,21 @@
-package com.example.appointment.model;
+package com.example.appointment.adapter;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appointment.R;
+import com.example.appointment.model.ItemRecord;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
-public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder> {
+public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordViewHolder> {
 
     public interface OnItemClickListener {
         void onItemClick(ItemRecord item);
@@ -54,5 +57,18 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder> {
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public static class RecordViewHolder extends RecyclerView.ViewHolder {
+        TextView name, idRecord, phone;
+        MaterialCardView card;
+
+        public RecordViewHolder(@NonNull View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.name);
+            idRecord = itemView.findViewById(R.id.id);
+            phone = itemView.findViewById(R.id.phone);
+            card = itemView.findViewById(R.id.btnProfileCard);
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.appointment.ui;
 
-import android.content.ClipData;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appointment.R;
-import com.example.appointment.model.ItemRecord;
 import com.example.appointment.model.ItemSpecialty;
-import com.example.appointment.model.SpecialtyAdapter;
+import com.example.appointment.adapter.SpecialtyAdapter;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,7 @@ public class SpecialtyActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +38,18 @@ public class SpecialtyActivity extends AppCompatActivity {
 
         RecyclerView rV = findViewById(R.id.specialtyRecyclerView);
 
+        MaterialButton btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
+
         List<ItemSpecialty> items = fakeData();
 
         rV.setLayoutManager(new LinearLayoutManager(this));
         SpecialtyAdapter adapter = new SpecialtyAdapter(this, items);
         rV.setAdapter(adapter);
+
+        adapter.setOnSpecialtyClickListener(item -> {
+            Intent i = new Intent(this, ChooseDateActivity.class);
+            startActivity(i);
+        });
     }
 }

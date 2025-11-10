@@ -1,6 +1,5 @@
 package com.example.appointment.ui;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appointment.R;
 import com.example.appointment.model.ItemRecord;
-import com.example.appointment.model.RecordAdapter;
+import com.example.appointment.adapter.RecordAdapter;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class AppointmentActivity extends AppCompatActivity {
 
     public List<ItemRecord> fakeData(){
         List<ItemRecord> items = new ArrayList<ItemRecord>();
-        for (int i = 1; i <= 15; i++) {
+        for (int i = 1; i <= 5; i++) {
             String name = "Nguyễn Văn " + (char)('A' + i); // Nguyễn Văn A, B, C...
             String idRecord = "K23-2352" + String.format("%04d", i);
             String phone = "0888xxx" + String.format("%03d", i);
@@ -35,6 +35,9 @@ public class AppointmentActivity extends AppCompatActivity {
         setContentView(R.layout.appointment_activity);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
+
+        MaterialButton btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
 
         List<ItemRecord> items = fakeData(); // Đổ dữ liệu các record đây
 

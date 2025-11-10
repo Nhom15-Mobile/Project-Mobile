@@ -29,8 +29,10 @@
         <activity android:name="com.example.profile.ui.ProfileFragment" />
         <activity android:name="com.example.appointment.ui.AppointmentActivity"/>
         <activity android:name="com.example.appointment.ui.SpecialtyActivity"/>
-
+        <activity android:name="com.example.appointment.ui.ChooseDateActivity"/>
+        <activity android:name="com.example.appointment.ui.ChooseDoctorActivity"/>
 
     </application>
+
 
 </manifest>
