@@ -1,5 +1,7 @@
 package com.example.auth.data;
 
+import static com.uithealthcare.network.ApiConfig.BASE_URL;
+
 import android.content.Context;
 
 import okhttp3.OkHttpClient;
@@ -28,7 +30,7 @@ public class AuthRepository {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://uithealthcare.id.vn/") // base URL của bạn
+                .baseUrl(BASE_URL) // base URL của bạn
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
