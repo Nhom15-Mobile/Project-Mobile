@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                                 return;
                             }
                             JsonObject json = resp.body();
-                            android.util.Log.d("AUTH", "loginRaw body=" + json.toString());
+                            //android.util.Log.d("AUTH", "loginRaw body=" + json.toString());
 
                             String tok = extractTokenFromJson(json);
                             if (tok == null || tok.isEmpty()) {
