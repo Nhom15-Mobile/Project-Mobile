@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F5F7"
@@ -18,8 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_marginTop="20dp"
-            >
+            android:layout_marginTop="20dp">
 
             <ImageView
                 android:id="@+id/btnBack"
@@ -47,15 +45,13 @@
             android:src="@drawable/avatar" />
 
         <!-- ====== Họ và Tên ====== -->
+        <!-- ====== Họ và Tên (READ-ONLY) ====== -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_marginTop="20dp"
-
             android:paddingHorizontal="16dp"
             android:gravity="center_vertical">
-
-
 
             <TextView
                 android:layout_width="0dp"
@@ -67,19 +63,17 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/tvFullNameValue"
+                android:id="@+id/tvFullName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="---"
-                android:textColor="#8B93A5"
-                android:textSize="16sp"
-                android:layout_marginEnd="8dp" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/see_more" />
+                android:minWidth="160dp"
+                android:textColor="#111"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="16sp" />
         </LinearLayout>
+
 
         <!-- ====== Giới tính ====== -->
         <LinearLayout
@@ -88,8 +82,6 @@
             android:layout_marginTop="12dp"
             android:paddingHorizontal="16dp"
             android:gravity="center_vertical">
-
-
 
             <TextView
                 android:layout_width="0dp"
@@ -100,19 +92,16 @@
                 android:textColor="#111"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/tvGenderValue"
+            <EditText
+                android:id="@+id/etGender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="---"
-                android:textColor="#8B93A5"
-                android:textSize="16sp"
-                android:layout_marginEnd="8dp" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/see_more" />
+                android:minWidth="160dp"
+                android:hint="Nam/Nữ/Khác"
+                android:singleLine="true"
+                android:inputType="textCapWords"
+                android:textColor="#111"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <!-- ====== Ngày sinh ====== -->
@@ -120,11 +109,8 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_marginTop="12dp"
-
             android:paddingHorizontal="16dp"
             android:gravity="center_vertical">
-
-
 
             <TextView
                 android:layout_width="0dp"
@@ -135,19 +121,18 @@
                 android:textColor="#111"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/tvDobValue"
+            <EditText
+                android:id="@+id/etDob"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="---"
-                android:textColor="#8B93A5"
-                android:textSize="16sp"
-                android:layout_marginEnd="8dp" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/see_more" />
+                android:minWidth="160dp"
+                android:hint="dd/MM/yyyy"
+                android:singleLine="true"
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="date"
+                android:textColor="#111"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <!-- ====== Số điện thoại ====== -->
@@ -155,11 +140,8 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_marginTop="12dp"
-
             android:paddingHorizontal="16dp"
             android:gravity="center_vertical">
-
-
 
             <TextView
                 android:layout_width="0dp"
@@ -170,29 +152,25 @@
                 android:textColor="#111"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/tvPhoneValue"
+            <EditText
+                android:id="@+id/etPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="---"
-                android:textColor="#8B93A5"
-                android:textSize="16sp"
-                android:layout_marginEnd="8dp" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/see_more" />
+                android:minWidth="160dp"
+                android:hint="Nhập số điện thoại"
+                android:singleLine="true"
+                android:inputType="phone"
+                android:textColor="#111"
+                android:textSize="16sp" />
         </LinearLayout>
+
+        <!-- ====== Địa chỉ ====== -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-
             android:paddingHorizontal="16dp"
             android:gravity="center_vertical">
-
-
 
             <TextView
                 android:layout_width="0dp"
@@ -203,31 +181,27 @@
                 android:textColor="#111"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/tvAddress"
+            <EditText
+                android:id="@+id/etAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="---"
-                android:textColor="#8B93A5"
-                android:textSize="16sp"
-                android:layout_marginEnd="8dp" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/see_more" />
+                android:minWidth="160dp"
+                android:hint="Nhập địa chỉ"
+                android:inputType="textPostalAddress"
+                android:maxLines="2"
+                android:imeOptions="actionDone"
+                android:textColor="#111"
+                android:textSize="16sp" />
         </LinearLayout>
 
-        <!-- ====== Email (không có mũi tên) ====== -->
+        <!-- ====== Email ====== -->
+        <!-- ====== Email (READ-ONLY) ====== -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_marginTop="12dp"
-
             android:paddingHorizontal="16dp"
             android:gravity="center_vertical">
-
-
 
             <TextView
                 android:layout_width="0dp"
@@ -239,32 +213,30 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/tvEmailValue"
+                android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="---"
-                android:textColor="#8B93A5"
+                android:minWidth="160dp"
+                android:textColor="#111"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textSize="16sp" />
         </LinearLayout>
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_marginTop="10dp"
             android:text="Lưu"
             android:textColor="@android:color/white"
-
             android:textSize="20sp"
             app:backgroundTint="#1F57E7"
             app:cornerRadius="10dp"
-
             app:iconPadding="8dp"
-            app:iconTint="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
+            app:iconTint="@android:color/white" />
 
     </LinearLayout>
 </ScrollView>
