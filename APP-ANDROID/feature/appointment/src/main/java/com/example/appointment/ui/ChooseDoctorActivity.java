@@ -2,6 +2,7 @@ package com.example.appointment.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -11,62 +12,98 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appointment.R;
 import com.example.appointment.adapter.DoctorScheduleAdapter;
+import com.example.appointment.api.DoctorService;
 import com.example.appointment.model.DoctorSchedule;
+import com.example.appointment.model.ItemSpecialty;
 import com.example.appointment.model.TimeSlot;
 import com.example.appointment.adapter.TimeSlotAdapter;
 import com.google.android.material.button.MaterialButton;
+import com.uithealthcare.domain.doctor.Doctor;
+import com.uithealthcare.domain.doctor.DoctorRespone;
+import com.uithealthcare.domain.doctor.Slot;
+import com.uithealthcare.domain.specialty.Specialty;
 
+import java.sql.Time;
+import java.text.ParseException;
 import java.util.*;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ChooseDoctorActivity extends AppCompatActivity {
+    private MaterialButton btnBack;
+    private RecyclerView rvDoctors;
+    private List<DoctorSchedule> list;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choose_doctor_activity);
 
-        MaterialButton btnBack = findViewById(R.id.btnBack);
+        btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
-        RecyclerView rvDoctors = findViewById(R.id.rvDoctors);
+        rvDoctors = findViewById(R.id.rvDoctors);
         rvDoctors.setLayoutManager(new LinearLayoutManager(this));
         rvDoctors.setHasFixedSize(true);
 
-        List<DoctorSchedule> list = new ArrayList<>();
-// Fake data
-        List<TimeSlot> s = Arrays.asList(
-                new TimeSlot("6:30 - 7:30", true),
-                new TimeSlot("6:30 - 7:30", true),
-                new TimeSlot("6:30 - 7:30", true),
-                new TimeSlot("6:30 - 7:30", false), // không chọn được
-                new TimeSlot("6:30 - 7:30", true),
-                new TimeSlot("6:30 - 7:30", true),
-                new TimeSlot("6:30 - 7:30", false),
-                new TimeSlot("6:30 - 7:30", false),
-                new TimeSlot("6:30 - 7:30", false),
-                new TimeSlot("6:30 - 7:30", false),
-                new TimeSlot("6:30 - 7:30", false)
-        );
-        list.add(new DoctorSchedule("Ths BS. Nguyễn Thanh A",
-                "16/10/2025", "Tòa B - Tầng 2 - Phòng 2.12", s));
+        list = new ArrayList<>();
+        showDoctorSchedule();
+    }
 
-        list.add(new DoctorSchedule("Ths BS. Nguyễn Thanh B",
-                "16/10/2025", "Tòa A - Tầng 3 - Phòng 3.10", s));
+    private void showDoctorSchedule(){
+        Intent i = getIntent();
+        String day = i.getStringExtra("selectedDate");
+        String nameSpecialty = i.getStringExtra("nameSpecialty");
+        DoctorService.doctorService.getAvailableDoctors(day, nameSpecialty).enqueue(new Callback<DoctorRespone>() {
+            @Override
+            public void onResponse(Call<DoctorRespone> call, Response<DoctorRespone> response) {
+                DoctorRespone doctorRespone = response.body();
+                String[] parts = day.split("-"); // [2025, 12, 11]
+                String formattedDate = parts[2] + "-" + parts[1] + "-" + parts[0]; // "11-12-2025"
 
-        list.add(new DoctorSchedule("Ths BS. Nguyễn Thanh C",
-                "16/10/2025", "Tòa D - Tầng 1 - Phòng 1.2", s));
+                if(doctorRespone != null && doctorRespone.isSuccess()){
+                    List<Doctor> listDoc = doctorRespone.getData();
+                    for(Doctor doc : listDoc){
+                        String nameDoc = doc.getFullName();
+                        String nameClinic = doc.getClinicName();
+                        List<Slot> listSlot = doc.getSlots();
 
-        list.add(new DoctorSchedule("Ths BS. Nguyễn Thanh D",
-                "16/10/2025", "Tòa E - Tầng 5 - Phòng 5.6", s));
+                        List<TimeSlot> scheduleDoc = new ArrayList<>();
+                        for(Slot slot : listSlot){
+                            String startTime = null;
+                            String endTime = null;
+                            try {
+                                startTime = slot.getStartTime();
+                                endTime = slot.getEndTime();
+                            } catch (ParseException e) {
+                                throw new RuntimeException(e);
+                            }
 
-        DoctorScheduleAdapter adapter = new DoctorScheduleAdapter(list, (doctor, slot) -> {
-            Intent data = new Intent(this, ExamFormActivity.class);
-            startActivity(data);
-            // TODO: xử lý khi chọn khung giờ
-            // Ví dụ: trả về Activity trước
-            // Intent data = new Intent(); data.putExtra("slot", slot.label);
-            // setResult(RESULT_OK, data); finish();
+                            String time = startTime + " - " + endTime;
+                            boolean available = true;
+                            scheduleDoc.add(new TimeSlot(time, available));
+                        }
+
+                        list.add(new DoctorSchedule(nameDoc,
+                                formattedDate, nameClinic, scheduleDoc));
+                    }
+                    DoctorScheduleAdapter adapter = new DoctorScheduleAdapter(list, (doctor, slot) -> {
+                        Intent data = new Intent(ChooseDoctorActivity.this, ExamFormActivity.class);
+                        startActivity(data);
+                        // TODO: xử lý khi chọn khung giờ
+                        // Ví dụ: trả về Activity trước
+                        // Intent data = new Intent(); data.putExtra("slot", slot.label);
+                        // setResult(RESULT_OK, data); finish();
+                    });
+                    rvDoctors.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DoctorRespone> call, Throwable throwable) {
+                Log.d("API", "Show doctor schedule failure");
+            }
         });
-        rvDoctors.setAdapter(adapter);
-
     }
 }

@@ -13,27 +13,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.appointment.R;
 import com.example.appointment.model.ItemRecord;
 import com.example.appointment.adapter.RecordAdapter;
-import com.example.appointment.service.CareProfileService;
 import com.google.android.material.button.MaterialButton;
+import com.uithealthcare.domain.careProfile.CareProfile;
+import com.uithealthcare.domain.careProfile.CareProfilesResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AppointmentActivity extends AppCompatActivity {
     private SharedPreferences sp;
     private String TOKEN = null;
 
-    public List<ItemRecord> fakeData(){
-        List<ItemRecord> items = new ArrayList<ItemRecord>();
-        for (int i = 1; i <= 5; i++) {
-            String name = "Nguyễn Văn " + (char)('A' + i); // Nguyễn Văn A, B, C...
-            String idRecord = "K23-2352" + String.format("%04d", i);
-            String phone = "0888xxx" + String.format("%03d", i);
+    private RecyclerView recyclerView;
+    private MaterialButton btnBack;
+    private MaterialButton btnCreateRecord;
 
-            items.add(new ItemRecord(name, idRecord, phone));
-        }
-        return items;
-    }
+    private List<ItemRecord> itemRecords;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,47 +41,54 @@ public class AppointmentActivity extends AppCompatActivity {
         sp = getSharedPreferences("app_prefs", MODE_PRIVATE); // OK, context đã có
         TOKEN = sp.getString("access_token", null);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        MaterialButton btnBack = findViewById(R.id.btnBack);
+        btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
-        MaterialButton btnCreateRecord = findViewById(R.id.btnCreateRecord);
+        btnCreateRecord = findViewById(R.id.btnCreateRecord);
         btnCreateRecord.setOnClickListener(v ->{
             Intent data = new Intent(this, CreateProfileActivity.class);
             startActivity(data);
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RecordAdapter adapter = new RecordAdapter(this, new ArrayList<>());
-        recyclerView.setAdapter(adapter);
+        itemRecords = new ArrayList<>();
+        showOnCardRecord();
+    }
 
-        CareProfileService.showListItemRecord(TOKEN, new CareProfileService.CareProfileCallback() { ; // Đổ dữ liệu các record đây
-            @Override
-            public void onSuccess(List<ItemRecord> items) {
-                adapter.setItems(items);      // viết setter trong adapter
-                adapter.notifyDataSetChanged();
-            }
+    private void showOnCardRecord(){
+        com.example.appointment.api.CareProfileService.CARE_PROFILE_API.showOnCardCareProfile(this.TOKEN)
+                .enqueue(new Callback<CareProfilesResponse>() {
+                    @Override
+                    public void onResponse(Call<CareProfilesResponse> call, Response<CareProfilesResponse> response) {
+                        CareProfilesResponse data = response.body();
+                        if(data != null && data.isSuccess()){
+                            List<CareProfile> list = data.getData();
+                            for (CareProfile care : list){
+                                itemRecords.add(new ItemRecord(care.getFullName(), care.getId(), care.getPhone()));
+                            }
+                        }
+                        RecordAdapter adapter = new RecordAdapter(itemRecords);
+                        recyclerView.setAdapter(adapter);
 
-            @Override
-            public void onError(Throwable t) {
-                Log.e("API", "load records failed", t);
-                // hiện Toast nếu cần
-            }
-        });
+                        adapter.setOnItemClickListener(item -> {
+                            Intent i = new Intent(AppointmentActivity.this, SpecialtyActivity.class);
+                            // Truyền dữ liệu cần thiết sang màn đặt lịch:
+                            i.putExtra("name", item.getName());
+                            i.putExtra("id", item.getId());
+                            i.putExtra("phone", item.getPhone());
+                            startActivity(i);
 
+                            // nếu muốn đóng luôn màn hiện tại:
+                            // finish();
+                        });
+                    }
 
-
-        adapter.setOnItemClickListener(item -> {
-            Intent i = new Intent(AppointmentActivity.this, SpecialtyActivity.class);
-            // Truyền dữ liệu cần thiết sang màn đặt lịch:
-            i.putExtra("name", item.getName());
-            i.putExtra("id", item.getId());
-            i.putExtra("phone", item.getPhone());
-            startActivity(i);
-
-            // nếu muốn đóng luôn màn hiện tại:
-            // finish();
-        });
+                    @Override
+                    public void onFailure(Call<CareProfilesResponse> call, Throwable throwable) {
+                        Log.d("Card_Record", "showOnCardRecord failure");
+                    }
+                });
     }
 }

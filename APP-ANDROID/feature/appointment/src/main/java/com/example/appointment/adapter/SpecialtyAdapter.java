@@ -19,12 +19,10 @@ public class SpecialtyAdapter extends RecyclerView.Adapter<SpecialtyAdapter.Spec
     public interface onSpecialtyClickListener {
         void onSpecialtyClick(ItemSpecialty item);
     }
-    Context context;
     List<ItemSpecialty> items;
     private onSpecialtyClickListener listener;
 
-    public SpecialtyAdapter(Context context, List<ItemSpecialty> items) {
-        this.context = context;
+    public SpecialtyAdapter(List<ItemSpecialty> items) {
         this.items = items;
     }
 
@@ -35,7 +33,7 @@ public class SpecialtyAdapter extends RecyclerView.Adapter<SpecialtyAdapter.Spec
     @NonNull
     @Override
     public SpecialtyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new SpecialtyViewHolder(LayoutInflater.from(context).inflate
+        return new SpecialtyViewHolder(LayoutInflater.from(parent.getContext()).inflate
                 (R.layout.item_view_specialty, parent, false));
     }
 

@@ -24,8 +24,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     List<ItemRecord> items;
     private OnItemClickListener listener;
 
-    public RecordAdapter(Context context, List<ItemRecord> items) {
-        this.context = context;
+    public RecordAdapter(List<ItemRecord> items) {
         this.items = items;
     }
 
@@ -42,7 +41,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     @NonNull
     @Override
     public RecordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new RecordViewHolder(LayoutInflater.from(context).inflate
+        return new RecordViewHolder(LayoutInflater.from(parent.getContext()).inflate
                 (R.layout.item_view_record, parent, false));
     }
 

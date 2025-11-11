@@ -1,7 +1,9 @@
 package com.example.appointment.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,47 +11,73 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appointment.R;
+import com.example.appointment.adapter.RecordAdapter;
+import com.example.appointment.api.SpecialtyService;
+import com.example.appointment.model.ItemRecord;
 import com.example.appointment.model.ItemSpecialty;
 import com.example.appointment.adapter.SpecialtyAdapter;
 import com.google.android.material.button.MaterialButton;
+import com.uithealthcare.domain.careProfile.CareProfile;
+import com.uithealthcare.domain.careProfile.CareProfilesResponse;
+import com.uithealthcare.domain.specialty.Specialty;
+import com.uithealthcare.domain.specialty.SpecialtyRespone;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SpecialtyActivity extends AppCompatActivity {
 
-    public List<ItemSpecialty> fakeData(){
-        List<ItemSpecialty> items = new ArrayList<ItemSpecialty>();
-        for (int i = 1; i <= 15; i++) {
-            String name = "Nguyễn Văn " + (char)('A' + i); // Nguyễn Văn A, B, C...
-            String price = "150.000";
+    private SharedPreferences sp;
+    private String TOKEN = null;
 
-            items.add(new ItemSpecialty(name, price));
-        }
-        return items;
-    }
+    private RecyclerView rV;
+    private MaterialButton btnBack;
 
-
+    private List<ItemSpecialty> itemSpecialty;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.specialty_activity);
 
-        RecyclerView rV = findViewById(R.id.specialtyRecyclerView);
+        rV = findViewById(R.id.specialtyRecyclerView);
+        rV.setLayoutManager(new LinearLayoutManager(this));
 
-        MaterialButton btnBack = findViewById(R.id.btnBack);
+        btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
-        List<ItemSpecialty> items = fakeData();
+        itemSpecialty = new ArrayList<>();
+        showOnSpecialtyCard();
+    }
 
-        rV.setLayoutManager(new LinearLayoutManager(this));
-        SpecialtyAdapter adapter = new SpecialtyAdapter(this, items);
-        rV.setAdapter(adapter);
+    private void showOnSpecialtyCard(){
+        SpecialtyService.specialtyService.getListSpecialty().enqueue(new Callback<SpecialtyRespone>() {
+            @Override
+            public void onResponse(Call<SpecialtyRespone> call, Response<SpecialtyRespone> response) {
+                SpecialtyRespone data = response.body();
+                if(data != null && data.isSuccess()){
+                    List<Specialty> list = data.getData();
+                    for (Specialty spec : list){
+                        itemSpecialty.add(new ItemSpecialty(spec.getName(), spec.getFee()));
+                    }
+                }
+                SpecialtyAdapter adapter = new SpecialtyAdapter(itemSpecialty);
+                rV.setAdapter(adapter);
+                adapter.setOnSpecialtyClickListener(item -> {
+                    Intent i = new Intent(SpecialtyActivity.this, ChooseDateActivity.class);
+                    i.putExtra("nameSpecialty", item.getName());
+                    startActivity(i);
+                });
+            }
 
-        adapter.setOnSpecialtyClickListener(item -> {
-            Intent i = new Intent(this, ChooseDateActivity.class);
-            startActivity(i);
+            @Override
+            public void onFailure(Call<SpecialtyRespone> call, Throwable t) {
+                Log.d("API", "showOSpecialtyCare Failure");
+            }
         });
     }
 }

@@ -32,6 +32,7 @@ public class ChooseDateActivity extends AppCompatActivity {
             new SimpleDateFormat("yyyy-MM-dd", new Locale("vi", "VN"));
 
     private final Set<CalendarDay> holidays = new HashSet<>();
+    private String nameSpecialty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,10 @@ public class ChooseDateActivity extends AppCompatActivity {
 
         MaterialButton btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
+
+        Intent intent = getIntent();
+
+        nameSpecialty = intent.getStringExtra("nameSpecialty");
 
         calendarView = findViewById(R.id.calendarView);
 
@@ -93,8 +98,13 @@ public class ChooseDateActivity extends AppCompatActivity {
             if (PastDisabledDecorator.isPast(date)) return;
             if (holidays.contains(date)) return;
 
+            SimpleDateFormat outFmt = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String formattedDate = outFmt.format(date.getDate());
+
             Intent data = new Intent(this, ChooseDoctorActivity.class);
-            data.putExtra("selectedDate", outFmt.format(date.getDate()));
+
+            data.putExtra("selectedDate", formattedDate);
+            data.putExtra("nameSpecialty", nameSpecialty);
             setResult(RESULT_OK, data);
             startActivity(data);
             finish();
