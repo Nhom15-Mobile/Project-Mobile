@@ -17,6 +17,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
 import com.prolificinteractive.materialcalendarview.format.WeekDayFormatter;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
+import com.uithealthcare.domain.appointment.AppointmentRequest;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,6 +29,7 @@ import java.util.Set;
 public class ChooseDateActivity extends AppCompatActivity {
 
     private MaterialCalendarView calendarView;
+    private AppointmentRequest req;
     private final SimpleDateFormat outFmt =
             new SimpleDateFormat("yyyy-MM-dd", new Locale("vi", "VN"));
 
@@ -39,6 +41,7 @@ public class ChooseDateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_date);
 
+        req = (AppointmentRequest) getIntent().getSerializableExtra(AppointmentRequest.EXTRA);
         MaterialButton btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
@@ -105,6 +108,7 @@ public class ChooseDateActivity extends AppCompatActivity {
 
             data.putExtra("selectedDate", formattedDate);
             data.putExtra("nameSpecialty", nameSpecialty);
+            data.putExtra(AppointmentRequest.EXTRA, req);
             setResult(RESULT_OK, data);
             startActivity(data);
             finish();

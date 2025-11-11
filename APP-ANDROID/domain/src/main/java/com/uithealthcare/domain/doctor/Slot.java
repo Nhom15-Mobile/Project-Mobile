@@ -20,6 +20,14 @@ public class Slot {
         // format theo timezone máy (mặc định)
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getDate() throws java.text.ParseException {
         java.util.Date d = ISO.parse(start);
         return DATE_OUT.format(d);

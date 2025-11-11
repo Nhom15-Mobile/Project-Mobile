@@ -18,6 +18,7 @@ import com.example.appointment.model.ItemSpecialty;
 import com.example.appointment.model.TimeSlot;
 import com.example.appointment.adapter.TimeSlotAdapter;
 import com.google.android.material.button.MaterialButton;
+import com.uithealthcare.domain.appointment.AppointmentRequest;
 import com.uithealthcare.domain.doctor.Doctor;
 import com.uithealthcare.domain.doctor.DoctorRespone;
 import com.uithealthcare.domain.doctor.Slot;
@@ -35,11 +36,14 @@ public class ChooseDoctorActivity extends AppCompatActivity {
     private MaterialButton btnBack;
     private RecyclerView rvDoctors;
     private List<DoctorSchedule> list;
+
+    private AppointmentRequest req;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choose_doctor_activity);
 
+        req = (AppointmentRequest) getIntent().getSerializableExtra(AppointmentRequest.EXTRA);
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
@@ -71,6 +75,7 @@ public class ChooseDoctorActivity extends AppCompatActivity {
 
                         List<TimeSlot> scheduleDoc = new ArrayList<>();
                         for(Slot slot : listSlot){
+                            String slotId = slot.getId();
                             String startTime = null;
                             String endTime = null;
                             try {
@@ -82,19 +87,18 @@ public class ChooseDoctorActivity extends AppCompatActivity {
 
                             String time = startTime + " - " + endTime;
                             boolean available = true;
-                            scheduleDoc.add(new TimeSlot(time, available));
+                            scheduleDoc.add(new TimeSlot(slotId, time, available));
                         }
 
                         list.add(new DoctorSchedule(nameDoc,
                                 formattedDate, nameClinic, scheduleDoc));
                     }
                     DoctorScheduleAdapter adapter = new DoctorScheduleAdapter(list, (doctor, slot) -> {
-                        Intent data = new Intent(ChooseDoctorActivity.this, ExamFormActivity.class);
+                        Intent data = new Intent(ChooseDoctorActivity.this, BookingAppointmentActivity.class);
+                        req.setSlotId(slot.getSlotId());
+                        i.putExtra(AppointmentRequest.EXTRA, req);
+                        Log.d("Req", "Đã có slotId: "+slot.getSlotId());
                         startActivity(data);
-                        // TODO: xử lý khi chọn khung giờ
-                        // Ví dụ: trả về Activity trước
-                        // Intent data = new Intent(); data.putExtra("slot", slot.label);
-                        // setResult(RESULT_OK, data); finish();
                     });
                     rvDoctors.setAdapter(adapter);
                 }

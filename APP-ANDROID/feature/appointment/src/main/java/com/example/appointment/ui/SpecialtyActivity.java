@@ -17,6 +17,7 @@ import com.example.appointment.model.ItemRecord;
 import com.example.appointment.model.ItemSpecialty;
 import com.example.appointment.adapter.SpecialtyAdapter;
 import com.google.android.material.button.MaterialButton;
+import com.uithealthcare.domain.appointment.AppointmentRequest;
 import com.uithealthcare.domain.careProfile.CareProfile;
 import com.uithealthcare.domain.careProfile.CareProfilesResponse;
 import com.uithealthcare.domain.specialty.Specialty;
@@ -39,11 +40,13 @@ public class SpecialtyActivity extends AppCompatActivity {
 
     private List<ItemSpecialty> itemSpecialty;
 
+    private AppointmentRequest req;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.specialty_activity);
-
+        req = (AppointmentRequest) getIntent().getSerializableExtra(AppointmentRequest.EXTRA);
         rV = findViewById(R.id.specialtyRecyclerView);
         rV.setLayoutManager(new LinearLayoutManager(this));
 
@@ -69,7 +72,9 @@ public class SpecialtyActivity extends AppCompatActivity {
                 rV.setAdapter(adapter);
                 adapter.setOnSpecialtyClickListener(item -> {
                     Intent i = new Intent(SpecialtyActivity.this, ChooseDateActivity.class);
-                    i.putExtra("nameSpecialty", item.getName());
+                    req.setService(item.getName());
+                    i.putExtra(AppointmentRequest.EXTRA, req);
+                    Log.d("Req", "Đã có specialty: "+ item.getName());
                     startActivity(i);
                 });
             }

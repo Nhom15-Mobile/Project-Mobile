@@ -148,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
     private void afterGotToken(String token) {
         // (A) Lưu vào app_prefs (tuỳ bạn)
         SharedPreferences sp = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        sp.edit().putString("access_token", token).apply();
+        sp.edit().putString("access_token", "Bearer "+token).apply();
 
         // (B) Lưu cho network layer (SessionInterceptor sẽ đọc "Bearer ...")
         SessionManager sm = new SessionManager(LoginActivity.this);

@@ -14,6 +14,7 @@ import com.example.appointment.R;
 import com.example.appointment.model.ItemRecord;
 import com.example.appointment.adapter.RecordAdapter;
 import com.google.android.material.button.MaterialButton;
+import com.uithealthcare.domain.appointment.AppointmentRequest;
 import com.uithealthcare.domain.careProfile.CareProfile;
 import com.uithealthcare.domain.careProfile.CareProfilesResponse;
 
@@ -33,6 +34,8 @@ public class AppointmentActivity extends AppCompatActivity {
     private MaterialButton btnCreateRecord;
 
     private List<ItemRecord> itemRecords;
+
+    private AppointmentRequest req;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +43,8 @@ public class AppointmentActivity extends AppCompatActivity {
 
         sp = getSharedPreferences("app_prefs", MODE_PRIVATE); // OK, context đã có
         TOKEN = sp.getString("access_token", null);
+
+        req = new AppointmentRequest();
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -74,14 +79,10 @@ public class AppointmentActivity extends AppCompatActivity {
 
                         adapter.setOnItemClickListener(item -> {
                             Intent i = new Intent(AppointmentActivity.this, SpecialtyActivity.class);
-                            // Truyền dữ liệu cần thiết sang màn đặt lịch:
-                            i.putExtra("name", item.getName());
-                            i.putExtra("id", item.getId());
-                            i.putExtra("phone", item.getPhone());
+                            req.setCareProfileId(item.getId());
+                            i.putExtra(AppointmentRequest.EXTRA, req);
+                            Log.d("Req", "Đã có care profile ID: " + item.getId());
                             startActivity(i);
-
-                            // nếu muốn đóng luôn màn hiện tại:
-                            // finish();
                         });
                     }
 
