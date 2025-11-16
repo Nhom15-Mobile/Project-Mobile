@@ -64,12 +64,12 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Pickers
         setupPickers();
-
+        ensureToken();
         // Khởi tạo Repo
         repo = new PatientRepository(this);
 
         // (Tuỳ project) đảm bảo token đã có (nếu bạn cần tự nạp)
-        ensureToken();
+
 
         // Tải hồ sơ hiện tại qua Repo
         loadProfile();
@@ -79,15 +79,27 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void ensureToken() {
-        // Nếu SessionManager đã tự xử lý thì có thể bỏ
         SessionManager sm = new SessionManager(this);
-        String bearer = sm.getBearer();
-        if (bearer == null) {
-            SharedPreferences sp = getSharedPreferences("app_prefs", MODE_PRIVATE);
-            String raw = sp.getString("access_token", null);
-            if (!TextUtils.isEmpty(raw)) sm.saveBearer(raw);
+        String cur = sm.getBearer(); // có thể là null, raw, hoặc "Bearer ..."
+
+        SharedPreferences sp = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        String saved = sp.getString("access_token", null); // kỳ vọng: "Bearer <...>" từ afterGotToken
+
+        if (TextUtils.isEmpty(cur)) {
+
+            if (!TextUtils.isEmpty(saved)) {
+                sm.saveBearer(saved);
+            }
+            return;
+        }
+
+        // ĐÃ có token trong SessionManager nhưng là raw (không có "Bearer ")
+        if (!cur.startsWith("Bearer ") && !TextUtils.isEmpty(saved) && saved.startsWith("Bearer ")) {
+            // Ghi đè bằng bản chuẩn từ prefs (đã kèm "Bearer ")
+            sm.saveBearer(saved);
         }
     }
+
 
     // ===== GET profile (Repository) =====
     private void loadProfile() {
