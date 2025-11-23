@@ -1,14 +1,42 @@
+<!--<resources xmlns:tools="http://schemas.android.com/tools">-->
+<!--    &lt;!&ndash; Theme app chính &ndash;&gt;-->
+<!--    <style name="Theme.Clinic" parent="Theme.Material3.Light.NoActionBar" />-->
+
+<!--    &lt;!&ndash; Theme Splash của Android 12+ &ndash;&gt;-->
+<!--    <style name="Theme.Clinic.Splash" parent="Theme.SplashScreen">-->
+<!--        <item name="windowSplashScreenBackground">@color/white</item>-->
+<!--        &lt;!&ndash; Nếu icon của bạn là adaptive có nền riêng, có thể bỏ dòng dưới &ndash;&gt;-->
+<!--        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>-->
+<!--        <item name="postSplashScreenTheme">@style/Theme.Clinic</item>-->
+<!--        &lt;!&ndash; Tuỳ chọn &ndash;&gt;-->
+<!--        &lt;!&ndash; <item name="windowSplashScreenBrandingImage">@drawable/branding</item> &ndash;&gt;-->
+<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
+<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
+<!--        <item name="android:windowFullscreen">true</item>-->
+
+<!--    </style>-->
+<!--</resources>-->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Theme app chính -->
-    <style name="Theme.Clinic" parent="Theme.Material3.Light.NoActionBar" />
+    <style name="Theme.Clinic" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Cho status bar & navigation bar trong suốt -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- (Tùy chọn) Nếu nền app sáng, icon thanh trên/dưới màu đen -->
+<!--        <item name="android:windowLightStatusBar">true</item>-->
+<!--        <item name="android:windowLightNavigationBar">true</item>-->
+    </style>
 
     <!-- Theme Splash của Android 12+ -->
     <style name="Theme.Clinic.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>
-        <!-- Nếu icon của bạn là adaptive có nền riêng, có thể bỏ dòng dưới -->
         <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
         <item name="postSplashScreenTheme">@style/Theme.Clinic</item>
-        <!-- Tuỳ chọn -->
-        <!-- <item name="windowSplashScreenBrandingImage">@drawable/branding</item> -->
+        <!-- Nếu muốn splash cũng trong suốt thanh trên/dưới thì có thể thêm: -->
+        <!--
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        -->
     </style>
 </resources>

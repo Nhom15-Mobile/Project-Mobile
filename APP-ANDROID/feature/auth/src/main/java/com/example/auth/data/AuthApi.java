@@ -55,6 +55,45 @@ public interface AuthApi {
     @POST("api/auth/login")
     Call<com.google.gson.JsonObject> loginRaw(@Body LoginReq body);
 
+    @POST("api/auth/forgot")
+    Call<ForgotPasswordResp> forgotPassword(@Body ForgotPasswordReq body);
+
+    @POST("api/auth/reset")
+    Call<ResetPasswordResp> resetPassword(@Body ResetPasswordReq body);
+
+
+    class ForgotPasswordReq{
+        public String email;
+
+        public ForgotPasswordReq(String email){
+            this.email = email;
+        }
+    }
+    class ForgotPasswordResp{
+        public boolean success;
+        public String message;
+    }
+    class ResetPasswordReq{
+        @SerializedName("email")
+        public String email;
+
+        @SerializedName("code")
+        public String code;
+
+        @SerializedName("newPassword")
+        public String newPassword;
+
+        public ResetPasswordReq(String email, String code, String newPassword) {
+            this.email = email;
+            this.code = code;
+            this.newPassword = newPassword;
+        }
+    }
+    class ResetPasswordResp{
+        public boolean success;
+        public String message;
+    }
+
     class RegisterReq {
         public String email;
         public String password;
