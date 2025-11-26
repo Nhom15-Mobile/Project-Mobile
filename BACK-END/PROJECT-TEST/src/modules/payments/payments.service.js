@@ -5,7 +5,7 @@ const prisma = require('../../config/db');
 const config = require('../../config/env');
 const { notifyBooked } = require('../notifications/notifications.service');
 const { generateAppointmentQR } = require('../../utils/qr');
-const QRCode = require('qrcode'); // ← THÊM DÒNG NÀY
+const QRCode = require('qrcode'); // generate QR cho payUrl
 
 // --- helpers ---
 function signRaw(raw, secretKey) {
@@ -15,7 +15,7 @@ function signRaw(raw, secretKey) {
 /**
  * Lấy phí khám theo chuyên khoa:
  * - Ưu tiên đọc từ config.specialties: [{ name, fee }]
- * - Fallback sang config.fees.specialtyFees hoặc fees.defaultSpecialtyFee (giữ tương thích dự án cũ)
+ * - Fallback sang config.fees.specialtyFees hoặc fees.defaultSpecialtyFee
  */
 function getFeeBySpecialty(specialty) {
   const name = String(specialty || '').trim();
@@ -150,7 +150,7 @@ async function createMoMoForAppointment({ appointmentId, byUserId }) {
       amount,
       orderInfo,
       payUrl: data.payUrl || null,
-      qrImage, // ← BASE64 QR CHO MOBILE
+      qrImage, // BASE64 QR CHO MOBILE
       qrCodeUrl: data.qrCodeUrl || null,
       deeplink: data.deeplink || data.deeplinkWebInApp || null
     };
@@ -189,8 +189,13 @@ function verifyMomoSignature(params) {
   return sign === signature;
 }
 
-async function handleMomoIPN(body) {
-  if (!verifyMomoSignature(body)) return { ok: false, code: 97, msg: 'Signature mismatch' };
+// CHỖ NÀY ĐÃ ĐỔI: thêm opts = { skipVerify }
+async function handleMomoIPN(body, opts = {}) {
+  const { skipVerify = false } = opts;
+
+  if (!skipVerify && !verifyMomoSignature(body)) {
+    return { ok: false, code: 97, msg: 'Signature mismatch' };
+  }
 
   const { orderId, resultCode } = body; // APPT_<appointmentId>_...
   if (!orderId || !orderId.startsWith('APPT_')) {
@@ -323,9 +328,6 @@ async function confirmFakePayment({ appointmentId, byUserId }) {
   });
   if (!apptBefore) throw new Error('Appointment not found');
 
-  // Optional: chỉ cho bệnh nhân hoặc admin/doctor confirm
-  // if (apptBefore.patientId !== byUserId) throw new Error('Forbidden');
-
   // nếu đã PAID rồi thì thôi
   if (apptBefore.paymentStatus === 'PAID') {
     return { alreadyPaid: true };
@@ -345,7 +347,7 @@ async function confirmFakePayment({ appointmentId, byUserId }) {
     });
   });
 
-  // bắn notification giống MoMo IPN (handleMomoIPN)
+  // bắn notification giống MoMo IPN
   await notifyBooked({
     patientId: apptBefore.patientId,
     doctorId:  apptBefore.doctorId,

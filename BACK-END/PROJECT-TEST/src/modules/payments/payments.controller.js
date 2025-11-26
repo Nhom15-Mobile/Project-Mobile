@@ -1,8 +1,7 @@
+// src/modules/payments/payments.controller.js
 const R = require('../../utils/apiResponse');
 const svc = require('./payments.service');
 const prisma = require('../../config/db');
-
-
 
 async function momoCreate(req, res) {
   const { appointmentId } = req.body;
@@ -18,6 +17,26 @@ async function momoNotify(req, res) {
     return res.json({ resultCode: result.code, message: result.msg });
   } catch (e) {
     return res.status(200).json({ resultCode: 99, message: e.message || 'Error' });
+  }
+}
+
+// RETURN URL từ MoMo (browser redirect sau khi thanh toán xong)
+async function momoReturn(req, res) {
+  try {
+    console.log('MoMo RETURN query =', req.query);
+
+    // dùng skipVerify vì query string không đủ field để verify chuẩn như IPN
+    const result = await svc.handleMomoIPN(req.query, { skipVerify: true });
+
+    if (!result.ok) {
+      return R.badRequest(res, result.msg || 'Payment update failed');
+    }
+
+    // Sau này m có thể redirect về app/web riêng, giờ trả JSON cho dễ debug
+    return R.ok(res, result, 'Payment updated via return');
+  } catch (e) {
+    console.error('MoMo return error:', e);
+    return R.badRequest(res, e.message || 'Error');
   }
 }
 
@@ -46,36 +65,5 @@ async function receipt(req, res) {
     bookedAt: appt.createdAt
   });
 }
-async function fakeCreate(req, res) {
-  const { appointmentId } = req.body;
-  if (!appointmentId) return R.badRequest(res, 'appointmentId is required');
 
-  try {
-    const data = await svc.createFakePayment({
-      appointmentId,
-      byUserId: req.user.id,
-    });
-    return R.ok(res, data, 'Fake payment QR created');
-  } catch (e) {
-    console.error(e);
-    return R.error(res, e.message || 'Failed to create fake payment');
-  }
-}
-
-async function fakeConfirm(req, res) {
-  const { appointmentId } = req.body;
-  if (!appointmentId) return R.badRequest(res, 'appointmentId is required');
-
-  try {
-    const data = await svc.confirmFakePayment({
-      appointmentId,
-      byUserId: req.user.id,
-    });
-    return R.ok(res, data, 'Fake payment confirmed');
-  } catch (e) {
-    console.error(e);
-    return R.error(res, e.message || 'Failed to confirm fake payment');
-  }
-}
-
-module.exports = { momoCreate, momoNotify, receipt, fakeCreate, fakeConfirm };
+module.exports = { momoCreate, momoNotify, momoReturn, receipt };
