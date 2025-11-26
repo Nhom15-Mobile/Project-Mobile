@@ -46,5 +46,36 @@ async function receipt(req, res) {
     bookedAt: appt.createdAt
   });
 }
+async function fakeCreate(req, res) {
+  const { appointmentId } = req.body;
+  if (!appointmentId) return R.badRequest(res, 'appointmentId is required');
 
-module.exports = { momoCreate, momoNotify, receipt };
+  try {
+    const data = await svc.createFakePayment({
+      appointmentId,
+      byUserId: req.user.id,
+    });
+    return R.ok(res, data, 'Fake payment QR created');
+  } catch (e) {
+    console.error(e);
+    return R.error(res, e.message || 'Failed to create fake payment');
+  }
+}
+
+async function fakeConfirm(req, res) {
+  const { appointmentId } = req.body;
+  if (!appointmentId) return R.badRequest(res, 'appointmentId is required');
+
+  try {
+    const data = await svc.confirmFakePayment({
+      appointmentId,
+      byUserId: req.user.id,
+    });
+    return R.ok(res, data, 'Fake payment confirmed');
+  } catch (e) {
+    console.error(e);
+    return R.error(res, e.message || 'Failed to confirm fake payment');
+  }
+}
+
+module.exports = { momoCreate, momoNotify, receipt, fakeCreate, fakeConfirm };
