@@ -45,6 +45,7 @@ public class AuthRepository {
             public void onResponse(Call<AuthApi.LoginResp> call, Response<AuthApi.LoginResp> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().success) {
                     cb.onSuccess(response.body().data);
+
                 } else {
                     String msg = "Login failed";
                     if (response.body() != null && response.body().message != null) {
@@ -80,4 +81,73 @@ public class AuthRepository {
             @Override public void onFailure(Call<AuthApi.RegisterResp> call, Throwable t) { cb.onError(t.getMessage()); }
         });
     }
+
+    public interface ForgotPasswordCallback {
+        void onSuccess(String message);
+        void onError(String message);
+    }
+
+    public void forgotPassword(String email, ForgotPasswordCallback cb) {
+        AuthApi.ForgotPasswordReq req = new AuthApi.ForgotPasswordReq(email);
+
+        api.forgotPassword(req).enqueue(new Callback<AuthApi.ForgotPasswordResp>() {
+            @Override
+            public void onResponse(Call<AuthApi.ForgotPasswordResp> call,
+                                   Response<AuthApi.ForgotPasswordResp> res) {
+                if (res.isSuccessful() && res.body() != null && res.body().success) {
+
+                    String msg = (res.body().message != null) ? res.body().message : "If the email exists, a reset code has been sent";
+                    cb.onSuccess(msg);
+
+                } else {
+                    String msg = "Gửi mã thất bại";
+                    if (res.body() != null && res.body().message != null) {
+                        msg = res.body().message;
+                    }
+                    cb.onError(msg);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthApi.ForgotPasswordResp> call, Throwable t) {
+                cb.onError(t.getMessage());
+            }
+        });
+    }
+    public interface ResetPasswordCallback {
+        void onSuccess(String message);
+        void onError(String message);
+    }
+    public void resetPassword(String email, String code, String newPassword, ResetPasswordCallback cb) {
+        AuthApi.ResetPasswordReq req =
+                new AuthApi.ResetPasswordReq(email, code, newPassword);
+
+        api.resetPassword(req).enqueue(new Callback<AuthApi.ResetPasswordResp>() {
+            @Override
+            public void onResponse(Call<AuthApi.ResetPasswordResp> call,
+                                   Response<AuthApi.ResetPasswordResp> res) {
+                if (res.isSuccessful() && res.body() != null && res.body().success) {
+                    String msg = (res.body().message != null)
+                            ? res.body().message
+                            : "Đổi mật khẩu thành công";
+                    cb.onSuccess(msg);
+                } else {
+                    String msg = "Đổi mật khẩu thất bại";
+                    if (res.body() != null && res.body().message != null) {
+                        msg = res.body().message;
+                    }
+                    cb.onError(msg);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthApi.ResetPasswordResp> call, Throwable t) {
+                cb.onError(t.getMessage());
+            }
+        });
+    }
+
+
 }
+
+

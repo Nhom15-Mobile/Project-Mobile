@@ -28,7 +28,7 @@ public final class RetrofitProvider {
             Gson gson = new GsonBuilder().setLenient().create();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(ApiConfig.BASE_URL + "/") // nhớ dấu /
+                    .baseUrl(ApiConfig.BASE_URL)
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();

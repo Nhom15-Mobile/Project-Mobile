@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.auth.R;
 import com.example.auth.data.AuthApi;
 import com.example.auth.data.AuthRepository;
+import com.google.android.material.textview.MaterialTextView;
 import com.uithealthcare.util.SessionManager;
 import com.uithealthcare.network.RetrofitProvider;
 import com.uithealthcare.network.SessionInterceptor;
@@ -28,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     private AuthRepository repo;
     private EditText etEmail, etPass;
     private MaterialButton btnLogin, btnGoSignup;
+    private MaterialTextView btnForgotPass;
     private CheckBox cbSave;
 
     @Override
@@ -41,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin    = findViewById(R.id.buttonLogin);
         btnGoSignup = findViewById(R.id.buttonsignup);
         cbSave      = findViewById(R.id.checkBoxSaveInfor);
+        btnForgotPass = findViewById(R.id.textViewForgotPass);
 
         SharedPreferences sp = getSharedPreferences("app_prefs", MODE_PRIVATE);
         String savedEmail = sp.getString("saved_email", "");
@@ -54,6 +57,11 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, signup));
             } catch (ClassNotFoundException ignored) {}
         });
+
+        btnForgotPass.setOnClickListener(v -> {
+           startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+        });
+
 
         String prefill = getIntent().getStringExtra("prefill_email");
         if (prefill != null) etEmail.setText(prefill);
@@ -69,17 +77,17 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         btnLogin.setEnabled(false);
-        android.util.Log.d("AUTH", "Đang gọi login API với email=" + email);
+        //android.util.Log.d("AUTH", "Đang gọi login API với email=" + email);
 
         repo.login(email, pass, new AuthRepository.LoginCallback() {
             @Override
             public void onSuccess(AuthApi.LoginResp.Data data) {
                 btnLogin.setEnabled(true);
-                android.util.Log.d("AUTH", "onSuccess() được gọi, data=" + (data == null ? "null" : "non-null"));
+                //android.util.Log.d("AUTH", "onSuccess() được gọi, data=" + (data == null ? "null" : "non-null"));
 
                 String token = null;
                 if (data != null) {
-                    android.util.Log.d("AUTH", "LoginResp.Data → accessToken=" + data.accessToken + ", email=" + data.email);
+                    //android.util.Log.d("AUTH", "LoginResp.Data → accessToken=" + data.accessToken + ", email=" + data.email);
                     if (data.accessToken != null && !data.accessToken.isEmpty()) {
                         token = data.accessToken;
                     } else {

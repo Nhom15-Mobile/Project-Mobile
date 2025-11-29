@@ -1,8 +1,7 @@
+// src/modules/payments/payments.controller.js
 const R = require('../../utils/apiResponse');
 const svc = require('./payments.service');
 const prisma = require('../../config/db');
-
-
 
 async function momoCreate(req, res) {
   const { appointmentId } = req.body;
@@ -18,6 +17,26 @@ async function momoNotify(req, res) {
     return res.json({ resultCode: result.code, message: result.msg });
   } catch (e) {
     return res.status(200).json({ resultCode: 99, message: e.message || 'Error' });
+  }
+}
+
+// RETURN URL từ MoMo (browser redirect sau khi thanh toán xong)
+async function momoReturn(req, res) {
+  try {
+    console.log('MoMo RETURN query =', req.query);
+
+    // dùng skipVerify vì query string không đủ field để verify chuẩn như IPN
+    const result = await svc.handleMomoIPN(req.query, { skipVerify: true });
+
+    if (!result.ok) {
+      return R.badRequest(res, result.msg || 'Payment update failed');
+    }
+
+    // Sau này m có thể redirect về app/web riêng, giờ trả JSON cho dễ debug
+    return R.ok(res, result, 'Payment updated via return');
+  } catch (e) {
+    console.error('MoMo return error:', e);
+    return R.badRequest(res, e.message || 'Error');
   }
 }
 
@@ -47,4 +66,4 @@ async function receipt(req, res) {
   });
 }
 
-module.exports = { momoCreate, momoNotify, receipt };
+module.exports = { momoCreate, momoNotify, momoReturn, receipt };

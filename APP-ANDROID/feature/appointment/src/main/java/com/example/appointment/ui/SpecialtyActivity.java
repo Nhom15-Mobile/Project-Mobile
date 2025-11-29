@@ -75,6 +75,7 @@ public class SpecialtyActivity extends AppCompatActivity {
                     req.setService(item.getName());
                     i.putExtra("nameSpecialty", item.getName());
                     i.putExtra(AppointmentRequest.EXTRA, req);
+                    i.putExtra("nameSpecialty", item.getName());
                     Log.d("Req", "Đã có specialty: "+ item.getName());
                     startActivity(i);
                 });
