@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="27dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginVertical="10dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBack"
+            android:layout_width="43dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            app:icon="@drawable/ic_arrow"
+            app:iconGravity="textStart"
+            app:iconTint="@null">
+        </com.google.android.material.button.MaterialButton>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Thông tin đặt khám"
+
+            android:textColor="@color/primary"
+            android:textStyle="bold"
+            android:textSize="20sp">
+        </androidx.appcompat.widget.AppCompatTextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_info_record"
+            android:layout_weight="1">
+        </ImageView>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/stage_booking_clicked"
+            android:layout_weight="1">
+        </ImageView>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/stage_payment"
+            android:layout_weight="1">
+        </ImageView>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/stage_card"
+            android:layout_weight="1">
+        </ImageView>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Vui lòng kiểm tra thông tin trước khi thanh toán"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginTop="15dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:text="BỆNH LÝ CỘT SỐNG"
+            android:textColor="@color/primary"
+            android:textStyle="bold"
+            android:textSize="20dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:textColor="@color/primary"
+            android:textStyle="bold"
+            android:textSize="14dp"
+            android:text="150000đ"
+            android:textAlignment="textEnd"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/qr"
+        android:layout_marginTop="50dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="bottom">
+        <!-- Nút Chụp ảnh -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTakePhoto"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="Quay lại"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"
+            app:strokeColor="@color/primary"
+            app:strokeWidth="2dp"
+            app:cornerRadius="10dp"
+            app:backgroundTint="@android:color/white"
+            android:layout_marginEnd="12dp" />
+
+        <!-- Nút Quay về (nền xanh) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBooking"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="Tiếp tục"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            app:cornerRadius="10dp"
+            app:backgroundTint="@color/primary" />
+    </LinearLayout>
+</LinearLayout>

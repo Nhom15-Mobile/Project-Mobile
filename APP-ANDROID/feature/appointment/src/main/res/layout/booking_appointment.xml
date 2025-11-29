@@ -47,22 +47,31 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/infor_booking_clicked"
+            android:src="@drawable/stage_booking_clicked"
             android:layout_weight="1">
         </ImageView>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_payment"
+            android:src="@drawable/stage_payment"
             android:layout_weight="1">
         </ImageView>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/infor_card"
+            android:src="@drawable/stage_card"
             android:layout_weight="1">
         </ImageView>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Vui lòng kiểm tra thông tin bên dưới"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginTop="15dp" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -222,8 +231,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="bottom"
-        android:padding="16dp">
+        android:gravity="bottom">
         <!-- Nút Chụp ảnh -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTakePhoto"

@@ -53,10 +53,10 @@ public class AppointmentActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
 
         btnCreateRecord = findViewById(R.id.btnCreateRecord);
-        btnCreateRecord.setOnClickListener(v ->{
-            Intent data = new Intent(this, CreateProfileActivity.class);
-            startActivity(data);
-        });
+//        btnCreateRecord.setOnClickListener(v ->{
+//            Intent data = new Intent(this, CreateProfileActivity.class);
+//            startActivity(data);
+//        });
 
         itemRecords = new ArrayList<>();
         showOnCardRecord();

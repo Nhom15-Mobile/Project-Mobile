@@ -34,6 +34,9 @@
         <activity android:name="com.example.appointment.ui.ExamFormActivity"/>
         <activity android:name="com.example.appointment.ui.CreateProfileActivity"/>
         <activity android:name="com.example.appointment.ui.BookingAppointmentActivity"/>
+        <activity android:name="com.example.records.ui.RecordsActivity"/>
+        <activity android:name="com.example.records.ui.ProfileActivity"/>
+        <activity android:name="com.example.records.ui.ChooseResultActivity"/>
     </application>
 
 

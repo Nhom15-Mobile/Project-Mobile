@@ -23,6 +23,7 @@ public class BookingAppointmentActivity extends AppCompatActivity {
     private String TOKEN = null;
     private AppointmentRequest req;
     MaterialButton btnBooking;
+    MaterialButton btnBack;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,8 +33,10 @@ public class BookingAppointmentActivity extends AppCompatActivity {
         TOKEN = sp.getString("access_token", null);
 
         req = (AppointmentRequest) getIntent().getSerializableExtra(AppointmentRequest.EXTRA);
+        btnBooking = findViewById(R.id.btnBooking);
+        btnBack = findViewById(R.id.btnBack);
         Log.d("Req", "Oke");
-//        btnBooking.setOnClickListener(v-> booking());
+        btnBooking.setOnClickListener(v-> booking());
     }
 
     private void booking(){

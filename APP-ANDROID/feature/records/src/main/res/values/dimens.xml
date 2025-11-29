@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="icon_container_size">144dp</dimen>
+    <dimen name="icon_container_radius">28dp</dimen>
+    <dimen name="page_padding">24dp</dimen>
+    <dimen name="radius">50dp</dimen>
+    <dimen name="radius_btn_home">12dp</dimen>
+
+    <dimen name="text_profile">20sp</dimen>
+</resources>

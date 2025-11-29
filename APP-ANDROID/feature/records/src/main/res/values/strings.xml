@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Mobile_APP</string>
+    <string name="title_splash">ĐẶT LỊCH KHÁM BỆNH TRỰC TUYẾN</string>
+    <string name="benefit_splash">Nhanh chóng và tiện lợi</string>
+
+    <string name="appointment">Đặt khám</string>
+    <string name="appointment_history">Lịch sử đặt khám</string>
+    <string name="record">Hồ sơ sức khỏe</string>
+    <string name="results">Kết quả khám</string>
+    <string name="payment">Thanh toán viện phí</string>
+    <string name="detail">Thông tin liên hệ</string>
+</resources>

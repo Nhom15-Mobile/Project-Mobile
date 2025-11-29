@@ -73,6 +73,7 @@ public class SpecialtyActivity extends AppCompatActivity {
                 adapter.setOnSpecialtyClickListener(item -> {
                     Intent i = new Intent(SpecialtyActivity.this, ChooseDateActivity.class);
                     req.setService(item.getName());
+                    i.putExtra("nameSpecialty", item.getName());
                     i.putExtra(AppointmentRequest.EXTRA, req);
                     Log.d("Req", "Đã có specialty: "+ item.getName());
                     startActivity(i);
