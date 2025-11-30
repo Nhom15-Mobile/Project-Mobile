@@ -1,6 +1,7 @@
 package com.example.appointment.ui;
 
 import android.content.Intent;
+import android.health.connect.datatypes.AppInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import com.example.appointment.model.ItemSpecialty;
 import com.example.appointment.model.TimeSlot;
 import com.example.appointment.adapter.TimeSlotAdapter;
 import com.google.android.material.button.MaterialButton;
+import com.uithealthcare.domain.appointment.AppointmentInfo;
 import com.uithealthcare.domain.appointment.AppointmentRequest;
 import com.uithealthcare.domain.doctor.Doctor;
 import com.uithealthcare.domain.doctor.DoctorRespone;
@@ -38,12 +40,15 @@ public class ChooseDoctorActivity extends AppCompatActivity {
     private List<DoctorSchedule> list;
 
     private AppointmentRequest req;
+    private AppointmentInfo appointmentInfo;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choose_doctor_activity);
 
         req = (AppointmentRequest) getIntent().getSerializableExtra(AppointmentRequest.EXTRA);
+        appointmentInfo = (AppointmentInfo) getIntent().getSerializableExtra(AppointmentInfo.EXTRA);
+
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
@@ -56,9 +61,9 @@ public class ChooseDoctorActivity extends AppCompatActivity {
     }
 
     private void showDoctorSchedule(){
-        Intent i = getIntent();
-        String day = i.getStringExtra("selectedDate");
-        String nameSpecialty = i.getStringExtra("nameSpecialty");
+
+        String day = appointmentInfo.getExamDate();
+        String nameSpecialty = appointmentInfo.getSpecialty();
         DoctorService.doctorService.getAvailableDoctors(day, nameSpecialty).enqueue(new Callback<DoctorRespone>() {
             @Override
             public void onResponse(Call<DoctorRespone> call, Response<DoctorRespone> response) {
@@ -95,9 +100,14 @@ public class ChooseDoctorActivity extends AppCompatActivity {
                     }
                     DoctorScheduleAdapter adapter = new DoctorScheduleAdapter(list, (doctor, slot) -> {
                         Intent data = new Intent(ChooseDoctorActivity.this, BookingAppointmentActivity.class);
+
+                        appointmentInfo.setClinic(doctor.location);
+                        appointmentInfo.setExamHour(slot.time);
                         req.setSlotId(slot.getSlotId());
-                        i.putExtra(AppointmentRequest.EXTRA, req);
-                        Log.d("Req", "Đã có slotId: "+slot.getSlotId());
+
+                        data.putExtra(AppointmentRequest.EXTRA, req);
+                        data.putExtra(AppointmentInfo.EXTRA, appointmentInfo);
+                        Log.d("Req", "Đã có slotId: "+req.getSlotId());
                         startActivity(data);
                     });
                     rvDoctors.setAdapter(adapter);

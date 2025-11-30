@@ -39,6 +39,7 @@
         <activity android:name="com.example.records.ui.RecordsActivity"/>
         <activity android:name="com.example.records.ui.ProfileActivity"/>
         <activity android:name="com.example.records.ui.ChooseResultActivity"/>
+        <activity android:name="com.example.appointment.ui.PaymentActivity"/>
     </application>
 
 

@@ -1,23 +1,16 @@
 package com.example.appointment.ui;
 
 import android.os.Bundle;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.appointment.R;
-import com.google.android.material.button.MaterialButton;
 
-public class ExamFormActivity extends AppCompatActivity {
-
+public class PaymentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.exam_form_activity);
-
-
-        MaterialButton btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
+        setContentView(R.layout.payment_activity);
     }
 }
