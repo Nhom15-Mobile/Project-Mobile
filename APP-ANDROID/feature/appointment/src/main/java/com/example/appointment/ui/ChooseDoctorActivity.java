@@ -15,18 +15,14 @@ import com.example.appointment.R;
 import com.example.appointment.adapter.DoctorScheduleAdapter;
 import com.example.appointment.api.DoctorService;
 import com.example.appointment.model.DoctorSchedule;
-import com.example.appointment.model.ItemSpecialty;
 import com.example.appointment.model.TimeSlot;
-import com.example.appointment.adapter.TimeSlotAdapter;
 import com.google.android.material.button.MaterialButton;
 import com.uithealthcare.domain.appointment.AppointmentInfo;
 import com.uithealthcare.domain.appointment.AppointmentRequest;
 import com.uithealthcare.domain.doctor.Doctor;
 import com.uithealthcare.domain.doctor.DoctorRespone;
 import com.uithealthcare.domain.doctor.Slot;
-import com.uithealthcare.domain.specialty.Specialty;
 
-import java.sql.Time;
 import java.text.ParseException;
 import java.util.*;
 
