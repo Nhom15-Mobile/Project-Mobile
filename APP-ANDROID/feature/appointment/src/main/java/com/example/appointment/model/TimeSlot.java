@@ -2,13 +2,13 @@ package com.example.appointment.model;
 
 public class TimeSlot {
     private String slotId;
-    public final String label;
+    public final String time;
     public final boolean available;
     public boolean selected;
 
-    public TimeSlot(String slotId, String label, boolean available) {
+    public TimeSlot(String slotId, String time, boolean available) {
         this.slotId = slotId;
-        this.label = label;
+        this.time = time;
         this.available = available;
         this.selected = false;
     }

@@ -39,7 +39,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.SlotVH
     @Override
     public void onBindViewHolder(@NonNull SlotVH holder, int position) {
         TimeSlot slot = data.get(position);
-        holder.btn.setText(slot.label);
+        holder.btn.setText(slot.time);
         holder.btn.setEnabled(slot.available);
         holder.btn.setChecked(slot.selected);
 

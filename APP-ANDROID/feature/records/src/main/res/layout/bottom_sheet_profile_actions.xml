@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnClose"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:backgroundTint="@color/white"
+        android:background="@drawable/ic_close"
+        android:layout_marginBottom="30dp"
+        android:layout_gravity="end"/>
+    
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnViewInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:strokeColor="@color/primary"
+        app:strokeWidth="2dp"
+        android:backgroundTint="@color/white"
+        app:cornerRadius="10dp"
+        android:text="Xem thông tin hồ sơ"
+        android:textColor="@color/primary"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnViewResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:strokeColor="@color/primary"
+        app:strokeWidth="2dp"
+        android:backgroundTint="@color/white"
+        app:cornerRadius="10dp"
+        android:text="Xem kết quả cận lâm sàn"
+        android:textColor="@color/primary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnViewHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:strokeColor="@color/primary"
+        app:strokeWidth="2dp"
+        android:backgroundTint="@color/white"
+        app:cornerRadius="10dp"
+        android:text="Xem kết quả đặt khám"
+        android:textColor="@color/primary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

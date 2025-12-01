@@ -14,6 +14,7 @@ import com.example.appointment.R;
 import com.example.appointment.model.ItemRecord;
 import com.example.appointment.adapter.RecordAdapter;
 import com.google.android.material.button.MaterialButton;
+import com.uithealthcare.domain.appointment.AppointmentInfo;
 import com.uithealthcare.domain.appointment.AppointmentRequest;
 import com.uithealthcare.domain.careProfile.CareProfile;
 import com.uithealthcare.domain.careProfile.CareProfilesResponse;
@@ -36,6 +37,8 @@ public class AppointmentActivity extends AppCompatActivity {
     private List<ItemRecord> itemRecords;
 
     private AppointmentRequest req;
+
+    private AppointmentInfo appointmentInfo;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,7 @@ public class AppointmentActivity extends AppCompatActivity {
         TOKEN = sp.getString("access_token", null);
 
         req = new AppointmentRequest();
+        appointmentInfo = new AppointmentInfo();
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -53,10 +57,10 @@ public class AppointmentActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
 
         btnCreateRecord = findViewById(R.id.btnCreateRecord);
-        btnCreateRecord.setOnClickListener(v ->{
-            Intent data = new Intent(this, CreateProfileActivity.class);
-            startActivity(data);
-        });
+//        btnCreateRecord.setOnClickListener(v ->{
+//            Intent data = new Intent(this, CreateProfileActivity.class);
+//            startActivity(data);
+//        });
 
         itemRecords = new ArrayList<>();
         showOnCardRecord();
@@ -79,9 +83,14 @@ public class AppointmentActivity extends AppCompatActivity {
 
                         adapter.setOnItemClickListener(item -> {
                             Intent i = new Intent(AppointmentActivity.this, SpecialtyActivity.class);
+
                             req.setCareProfileId(item.getId());
+                            appointmentInfo.setPatientName(item.getName());
+
                             i.putExtra(AppointmentRequest.EXTRA, req);
-                            Log.d("Req", "Đã có care profile ID: " + item.getId());
+                            i.putExtra(AppointmentInfo.EXTRA, appointmentInfo);
+
+                            Log.d("Req", "Đã có care profile ID: " + req.getCareProfileId());
                             startActivity(i);
                         });
                     }

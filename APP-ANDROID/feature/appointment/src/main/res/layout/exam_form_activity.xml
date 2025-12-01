@@ -47,19 +47,19 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_info_exam"
+            android:src="@drawable/stage_booking"
             android:layout_weight="1">
         </ImageView>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_payment"
+            android:src="@drawable/stage_payment"
             android:layout_weight="1">
         </ImageView>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_exam_form_clicked"
+            android:src="@drawable/stage_card_clicked"
             android:layout_weight="1">
         </ImageView>
     </LinearLayout>

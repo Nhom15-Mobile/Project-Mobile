@@ -64,12 +64,12 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Pickers
         setupPickers();
-        ensureToken();
+
         // Khởi tạo Repo
         repo = new PatientRepository(this);
 
         // (Tuỳ project) đảm bảo token đã có (nếu bạn cần tự nạp)
-
+        ensureToken();
 
         // Tải hồ sơ hiện tại qua Repo
         loadProfile();
@@ -86,7 +86,7 @@ public class EditProfileActivity extends AppCompatActivity {
         String saved = sp.getString("access_token", null); // kỳ vọng: "Bearer <...>" từ afterGotToken
 
         if (TextUtils.isEmpty(cur)) {
-
+            // Chưa có gì trong SessionManager -> khôi phục từ prefs (giữ nguyên, không chỉnh sửa)
             if (!TextUtils.isEmpty(saved)) {
                 sm.saveBearer(saved);
             }
@@ -99,7 +99,6 @@ public class EditProfileActivity extends AppCompatActivity {
             sm.saveBearer(saved);
         }
     }
-
 
     // ===== GET profile (Repository) =====
     private void loadProfile() {

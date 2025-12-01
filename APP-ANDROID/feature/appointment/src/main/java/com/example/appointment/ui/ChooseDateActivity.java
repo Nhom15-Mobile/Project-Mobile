@@ -17,6 +17,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
 import com.prolificinteractive.materialcalendarview.format.WeekDayFormatter;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
+import com.uithealthcare.domain.appointment.AppointmentInfo;
 import com.uithealthcare.domain.appointment.AppointmentRequest;
 
 import java.text.SimpleDateFormat;
@@ -30,24 +31,23 @@ public class ChooseDateActivity extends AppCompatActivity {
 
     private MaterialCalendarView calendarView;
     private AppointmentRequest req;
+    private AppointmentInfo appointmentInfo;
     private final SimpleDateFormat outFmt =
             new SimpleDateFormat("yyyy-MM-dd", new Locale("vi", "VN"));
 
     private final Set<CalendarDay> holidays = new HashSet<>();
-    private String nameSpecialty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_date);
 
-        req = (AppointmentRequest) getIntent().getSerializableExtra(AppointmentRequest.EXTRA);
+
         MaterialButton btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
-        Intent intent = getIntent();
-
-        nameSpecialty = intent.getStringExtra("nameSpecialty");
+        req = (AppointmentRequest) getIntent().getSerializableExtra(AppointmentRequest.EXTRA);
+        appointmentInfo = (AppointmentInfo) getIntent().getSerializableExtra(AppointmentInfo.EXTRA);
 
         calendarView = findViewById(R.id.calendarView);
 
@@ -105,10 +105,10 @@ public class ChooseDateActivity extends AppCompatActivity {
             String formattedDate = outFmt.format(date.getDate());
 
             Intent data = new Intent(this, ChooseDoctorActivity.class);
+            appointmentInfo.setExamDate(formattedDate);
 
-            data.putExtra("selectedDate", formattedDate);
-            data.putExtra("nameSpecialty", nameSpecialty);
             data.putExtra(AppointmentRequest.EXTRA, req);
+            data.putExtra(AppointmentInfo.EXTRA, appointmentInfo);
             setResult(RESULT_OK, data);
             startActivity(data);
             finish();

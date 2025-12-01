@@ -54,6 +54,10 @@
 
         <!--        module notification-->
         <activity android:name="com.example.notification.ui.ReceiptDetailActivity" />
+        <activity android:name="com.example.records.ui.RecordsActivity"/>
+        <activity android:name="com.example.records.ui.ProfileActivity"/>
+        <activity android:name="com.example.records.ui.ChooseResultActivity"/>
+        <activity android:name="com.example.appointment.ui.PaymentActivity"/>
     </application>
 
 

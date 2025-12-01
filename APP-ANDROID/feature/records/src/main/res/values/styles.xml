@@ -1,0 +1,41 @@
+ <resources>
+     <style name="CircularShape">
+         <item name="cornerFamily">rounded</item>
+         <item name="cornerSize">25%</item> <!-- Đặt radius cho ảnh -->
+         <item name="android:textSize">14sp</item>
+     </style>
+     <style name="Bottom_bar">
+
+         <item name="android:textSize">13sp</item>
+     </style>
+
+     <style name="CircleShape">
+         <item name="cornerFamily">rounded</item>
+         <item name="cornerSize">50%</item>
+     </style>
+
+     <style name="CalendarHeaderText" parent="TextAppearance.MaterialComponents.Headline6">
+         <item name="android:textColor">@color/primary</item>
+     </style>
+     <style name="CalendarWeekdayText" parent="TextAppearance.MaterialComponents.Body2">
+         <item name="android:textStyle">bold</item>
+         <item name="android:textColor">@color/gray_700</item>
+     </style>
+     <style name="CalendarDateText" parent="TextAppearance.MaterialComponents.Body1">
+         <item name="android:textColor">@color/gray_900</item>
+     </style>
+
+     <style name="Legend.Base" parent="Widget.MaterialComponents.Button">
+         <item name="android:layout_width">wrap_content</item>
+         <item name="android:layout_height">36dp</item>
+         <item name="cornerRadius">8dp</item>
+         <item name="android:textAllCaps">false</item>
+     </style>
+     <style name="Legend" parent="Legend.Base">
+         <item name="backgroundTint">@color/white</item>
+         <item name="android:textColor">@color/black</item>
+     </style>
+
+
+ </resources>
+

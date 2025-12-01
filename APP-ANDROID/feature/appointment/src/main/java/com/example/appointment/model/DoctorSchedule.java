@@ -12,4 +12,6 @@ public class DoctorSchedule {
         this.dateText = dateText;
         this.location = location; this.slots = slots;
     }
+
+
 }

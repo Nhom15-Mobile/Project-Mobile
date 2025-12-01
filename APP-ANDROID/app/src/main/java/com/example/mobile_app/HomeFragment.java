@@ -10,10 +10,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.appointment.ui.AppointmentActivity;
+import com.example.records.ui.RecordsActivity;
 import com.google.android.material.button.MaterialButton;
 
 public class HomeFragment extends Fragment {
     MaterialButton btnContact;
+
+    MaterialButton btnAppointment, btnRecords;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -22,7 +25,9 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
 
         //Listener btnAppointment
-        MaterialButton btnAppointment = view.findViewById(R.id.btnAppointment);
+        btnAppointment = view.findViewById(R.id.btnAppointment);
+        btnRecords = view.findViewById(R.id.btnRecord);
+
         btnAppointment.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AppointmentActivity.class);
             startActivity(intent);
@@ -31,6 +36,11 @@ public class HomeFragment extends Fragment {
         btnContact = view.findViewById(R.id.btnContact);
         btnContact.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ContactActivity.class);
+            startActivity(intent);
+        });
+
+        btnRecords.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), RecordsActivity.class);
             startActivity(intent);
         });
 

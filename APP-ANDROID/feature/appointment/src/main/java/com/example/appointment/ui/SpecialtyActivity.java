@@ -17,6 +17,7 @@ import com.example.appointment.model.ItemRecord;
 import com.example.appointment.model.ItemSpecialty;
 import com.example.appointment.adapter.SpecialtyAdapter;
 import com.google.android.material.button.MaterialButton;
+import com.uithealthcare.domain.appointment.AppointmentInfo;
 import com.uithealthcare.domain.appointment.AppointmentRequest;
 import com.uithealthcare.domain.careProfile.CareProfile;
 import com.uithealthcare.domain.careProfile.CareProfilesResponse;
@@ -42,11 +43,16 @@ public class SpecialtyActivity extends AppCompatActivity {
 
     private AppointmentRequest req;
 
+    private AppointmentInfo appointmentInfo;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.specialty_activity);
+
         req = (AppointmentRequest) getIntent().getSerializableExtra(AppointmentRequest.EXTRA);
+        appointmentInfo = (AppointmentInfo) getIntent().getSerializableExtra(AppointmentInfo.EXTRA);
+
         rV = findViewById(R.id.specialtyRecyclerView);
         rV.setLayoutManager(new LinearLayoutManager(this));
 
@@ -72,10 +78,14 @@ public class SpecialtyActivity extends AppCompatActivity {
                 rV.setAdapter(adapter);
                 adapter.setOnSpecialtyClickListener(item -> {
                     Intent i = new Intent(SpecialtyActivity.this, ChooseDateActivity.class);
+
                     req.setService(item.getName());
+                    appointmentInfo.setSpecialty(item.getName());
+                    appointmentInfo.setPrice(item.getPrice());
+
                     i.putExtra(AppointmentRequest.EXTRA, req);
-                    i.putExtra("nameSpecialty", item.getName());
-                    Log.d("Req", "Đã có specialty: "+ item.getName());
+                    i.putExtra(AppointmentInfo.EXTRA, appointmentInfo);
+                    Log.d("Req", "Đã có specialty: "+ req.getService());
                     startActivity(i);
                 });
             }
