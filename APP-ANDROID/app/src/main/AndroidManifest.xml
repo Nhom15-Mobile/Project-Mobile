@@ -22,13 +22,28 @@
             </intent-filter>
         </activity>
 
+
+<!--        module app-->
         <activity android:name="com.example.auth.ui.LoginActivity" />
         <activity android:name=".HomeActivity"/>
-        <activity android:name="com.example.profile.ui.EditProfileActivity"/>
+        <activity android:name=".ContactActivity"/>
+        <activity android:name=".CancelActivity"/>
+        <activity android:name=".BookingActivity"/>
+<!--        <activity android:name=".SupportFragment"/>-->
+
+
+        <!--        module auth-->
         <activity android:name="com.example.auth.ui.SignupActivity" />
         <activity android:name="com.example.auth.ui.ForgotPasswordActivity" />
         <activity android:name="com.example.auth.ui.ResetPasswordActivity" />
-        <activity android:name="com.example.profile.ui.ProfileFragment" />
+
+        <!--        module profile-->
+<!--        <activity android:name="com.example.profile.ui.ProfileFragment" />-->
+
+        <activity android:name="com.example.profile.ui.EditProfileActivity"/>
+
+
+<!--        module appointment-->
         <activity android:name="com.example.appointment.ui.AppointmentActivity"/>
         <activity android:name="com.example.appointment.ui.SpecialtyActivity"/>
         <activity android:name="com.example.appointment.ui.ChooseDateActivity"/>
@@ -36,6 +51,9 @@
         <activity android:name="com.example.appointment.ui.ExamFormActivity"/>
         <activity android:name="com.example.appointment.ui.CreateProfileActivity"/>
         <activity android:name="com.example.appointment.ui.BookingAppointmentActivity"/>
+
+        <!--        module notification-->
+        <activity android:name="com.example.notification.ui.ReceiptDetailActivity" />
     </application>
 
 

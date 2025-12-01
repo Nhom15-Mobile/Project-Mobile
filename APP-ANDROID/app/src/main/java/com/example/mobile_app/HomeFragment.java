@@ -13,6 +13,7 @@ import com.example.appointment.ui.AppointmentActivity;
 import com.google.android.material.button.MaterialButton;
 
 public class HomeFragment extends Fragment {
+    MaterialButton btnContact;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -24,6 +25,12 @@ public class HomeFragment extends Fragment {
         MaterialButton btnAppointment = view.findViewById(R.id.btnAppointment);
         btnAppointment.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AppointmentActivity.class);
+            startActivity(intent);
+        });
+
+        btnContact = view.findViewById(R.id.btnContact);
+        btnContact.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ContactActivity.class);
             startActivity(intent);
         });
 

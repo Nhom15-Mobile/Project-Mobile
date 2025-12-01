@@ -8,9 +8,9 @@
         android:icon="@drawable/ic_home_notify"
         android:title="Thông báo"/>
     <item
-        android:id="@+id/nav_search"
-        android:icon="@drawable/ic_home_search"
-        android:title="Tìm kiếm"/>
+        android:id="@+id/nav_support"
+        android:icon="@drawable/ic_support"
+        android:title="Hỗ trợ"/>
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_home_user"

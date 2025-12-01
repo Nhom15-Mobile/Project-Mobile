@@ -1,0 +1,21 @@
+ <resources>
+     <style name="CircularShape">
+         <item name="cornerFamily">rounded</item>
+         <item name="cornerSize">25%</item> <!-- Đặt radius cho ảnh -->
+         <item name="android:textSize">14sp</item>
+     </style>
+     <style name="Bottom_bar">
+         <item name="android:textSize">13sp</item>
+     </style>
+     <style name="OtpEditTextStyle">
+         <item name="android:layout_width">45dp</item>
+         <item name="android:layout_height">55dp</item>
+         <item name="android:layout_marginStart">6dp</item>
+         <item name="android:gravity">center</item>
+
+         <item name="android:inputType">number</item>
+         <item name="android:maxLength">1</item>
+         <item name="android:textSize">18sp</item>
+         <item name="android:background">@drawable/otp_border</item>
+     </style>
+ </resources>

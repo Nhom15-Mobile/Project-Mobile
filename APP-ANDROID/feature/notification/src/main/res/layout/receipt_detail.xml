@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FB">
+
+
+
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@android:color/transparent"
+        android:padding="8dp"
+        android:src="@drawable/ic_back"
+        android:tint="#1F57E7"
+        android:layout_gravity="start" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:layout_marginTop="40dp">
+
+
+        <!-- 🌟 Bo góc cho toàn bộ phần LinearLayout này -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#F0F7FF"
+            app:strokeWidth="1dp"
+            app:strokeColor="#D3E0F2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:background="@drawable/bg_detail">
+
+                <!-- Icon + trạng thái -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="24dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        app:shapeAppearanceOverlay="@style/CircularShape"
+                        android:src="@drawable/logo_app"
+                        android:scaleType="centerCrop" />
+
+                    <TextView
+                        android:id="@+id/tvReceiptStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thanh toán thành công"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#1F57E7" />
+                </LinearLayout>
+
+
+                <!-- Card thông tin phiếu -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginHorizontal="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#D3E0F2"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Thông tin phiếu khám"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:textColor="#7081A7" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="8dp"
+                            android:background="#E0E7F5" />
+
+                        <!-- Mã phiếu -->
+                        <TextView
+                            android:id="@+id/tvReceiptNo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mã phiếu: ..."
+                            android:textStyle="bold"
+                            android:textSize="15sp"
+                            android:layout_marginTop="12dp" />
+
+                        <!-- Bệnh nhân -->
+                        <TextView
+                            android:id="@+id/tvPatientName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Bệnh nhân: ..."
+                            android:layout_marginTop="8dp" />
+
+                        <!-- Chuyên khoa -->
+                        <TextView
+                            android:id="@+id/tvSpecialty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Chuyên khoa: ..."
+                            android:layout_marginTop="8dp" />
+
+                        <!-- Nhóm 2: lịch khám -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lịch khám"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:textColor="#7081A7"
+                            android:layout_marginTop="16dp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="8dp"
+                            android:background="#E0E7F5" />
+
+                        <TextView
+                            android:id="@+id/tvExamDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ngày khám: ..."
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvExamTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Giờ khám: ..."
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvClinicRoom"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Phòng khám: ..."
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvAmount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Số tiền: ..."
+                            android:textStyle="bold"
+                            android:textColor="#1F57E7"
+                            android:textSize="16sp"
+                            android:layout_marginTop="16dp" />
+
+                        <TextView
+                            android:id="@+id/tvBookedAt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Đặt lúc: ..."
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

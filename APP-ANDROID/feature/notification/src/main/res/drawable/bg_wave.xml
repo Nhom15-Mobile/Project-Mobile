@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#D7EBFF"
+                android:endColor="#FFFFFF"
+                android:angle="90" />
+        </shape>
+    </item>
+
+    <item android:gravity="bottom">
+        <bitmap
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:src="@drawable/wave_blue" />
+    </item>
+</layer-list>

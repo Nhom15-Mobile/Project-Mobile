@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.profile.ui.ProfileFragment;
+import com.example.notification.ui.NotificationFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
@@ -13,6 +14,10 @@ public class HomeActivity extends AppCompatActivity {
     private Fragment homeFrag;
     private Fragment profileFrag;
     private Fragment activeFrag;
+    private Fragment supportFrag;
+
+    private Fragment notifiFrag;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,13 +27,20 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView bottom = findViewById(R.id.bottom_nav);
 
         if (savedInstanceState == null) {
-            // tạo & add 2 fragment, ẩn Profile để giữ state
+            // tạo & add 3 fragment, ẩn Profile để giữ state
             homeFrag = new HomeFragment();
             profileFrag = new ProfileFragment();
+            supportFrag = new SupportFragment();
+            notifiFrag = new NotificationFragment();
+
+
+
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.nav_host_container, profileFrag, "PROFILE").hide(profileFrag)
                     .add(R.id.nav_host_container, homeFrag, "HOME")
+                    .add(R.id.nav_host_container, notifiFrag, "NOTIFICATION").hide(notifiFrag)
+                    .add(R.id.nav_host_container, supportFrag, "SUPPORT").hide(supportFrag)
                     .commit();
 
             activeFrag = homeFrag;
@@ -36,6 +48,8 @@ public class HomeActivity extends AppCompatActivity {
             // lấy lại từ FragmentManager (sau khi xoay màn…)
             homeFrag = getSupportFragmentManager().findFragmentByTag("HOME");
             profileFrag = getSupportFragmentManager().findFragmentByTag("PROFILE");
+            supportFrag = getSupportFragmentManager().findFragmentByTag("SUPPORT");
+            notifiFrag = getSupportFragmentManager().findFragmentByTag("NOTIFICATION");
             activeFrag = (getSupportFragmentManager().findFragmentById(R.id.nav_host_container));
         }
 
@@ -48,6 +62,12 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             } else if (id == R.id.nav_profile) {
                 switchTo(profileFrag);
+                return true;
+            } else if (id == R.id.nav_support) {
+                switchTo(supportFrag);
+                return true;
+            } else if (id == R.id.nav_notify) {
+                switchTo(notifiFrag);
                 return true;
             }
             return false;

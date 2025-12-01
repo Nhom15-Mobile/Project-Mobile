@@ -27,8 +27,9 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
     buildFeatures{
         viewBinding = true
@@ -43,6 +44,8 @@ dependencies {
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.cardview:cardview:1.0.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -58,7 +61,7 @@ dependencies {
     implementation(project(":core:util"))
     implementation(project(":domain"))
     implementation(project(":feature:profile"))
-
+    implementation(project(":feature:notification"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:appointment"))
     implementation(project(":feature:payment"))

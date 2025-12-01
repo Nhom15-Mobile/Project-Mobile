@@ -19,6 +19,8 @@ public interface PatientApi {
     @POST("api/patient/profile")
     Call<UpdateResp> updateMyProfile(@Body UpdateReq body);
 
+    // 4 notification
+
 
     // ========= MODELS =========
 
@@ -28,6 +30,7 @@ public interface PatientApi {
         public String message;
         public ProfileData data;
     }
+
 
     // --- POST response ---
     class UpdateResp {

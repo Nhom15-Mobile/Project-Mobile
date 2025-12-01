@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
+      <module name="APP-ANDROID.feature.notificaton" target="21" />
       <module name="Mobile_APP.app" target="21" />
       <module name="Mobile_APP.core.db" target="21" />
       <module name="Mobile_APP.core.network" target="21" />

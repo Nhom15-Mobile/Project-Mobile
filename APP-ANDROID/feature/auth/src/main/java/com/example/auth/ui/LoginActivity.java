@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -29,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private AuthRepository repo;
     private EditText etEmail, etPass;
     private MaterialButton btnLogin, btnGoSignup;
-    private MaterialTextView btnForgotPass;
+    private TextView btnForgotPass;
     private CheckBox cbSave;
 
     @Override

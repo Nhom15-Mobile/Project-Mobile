@@ -57,9 +57,6 @@
         android:layout_height="160dp"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/avatar"
-
-        app:strokeWidth="4dp"
-        app:strokeColor="#E7F6FF"
         app:layout_constraintTop_toTopOf="@id/g20"
         app:layout_constraintBottom_toBottomOf="@id/g20"
         app:layout_constraintStart_toStartOf="parent"
