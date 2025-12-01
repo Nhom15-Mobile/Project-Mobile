@@ -47,13 +47,13 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/stage_booking_clicked"
+            android:src="@drawable/stage_booking"
             android:layout_weight="1">
         </ImageView>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/stage_payment"
+            android:src="@drawable/stage_payment_clicked"
             android:layout_weight="1">
         </ImageView>
         <ImageView
@@ -97,10 +97,11 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/qr"
-        android:layout_marginTop="50dp"/>
+        android:id="@+id/qrImage"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -111,7 +112,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTakePhoto"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Quay lại"
             android:textSize="16sp"
@@ -125,11 +126,11 @@
 
         <!-- Nút Quay về (nền xanh) -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBooking"
+            android:id="@+id/btnProcessPayment"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tiếp tục"
+            android:text="Xử lý thanh toán"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"

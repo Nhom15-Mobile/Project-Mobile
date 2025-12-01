@@ -94,7 +94,7 @@
                     android:textColor="@color/black"
                     android:textSize="20sp" />
                 <TextView
-                    android:id="@+id/tvCode"
+                    android:id="@+id/tvAppointmentId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -119,7 +119,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp" />
                 <TextView
-                    android:id="@+id/tvPatient"
+                    android:id="@+id/tvPatientName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -217,7 +217,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp" />
                 <TextView
-                    android:id="@+id/tvRoom"
+                    android:id="@+id/tvClinic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -282,8 +282,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="bottom"
-        android:padding="16dp">
+        android:gravity="bottom">
         <!-- Nút Chụp ảnh -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTakePhoto"

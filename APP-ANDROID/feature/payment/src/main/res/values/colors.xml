@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="lightblue">#D7EEFE</color>
+    <color name="red">#FFA3A3</color>
+    <color name="blue">#004AC9</color>
+    <color name="bllue2">#8FECFF</color>
+    <color name="pink">#D9D9D9</color>
+    <color name="gray">#FFA3A3</color>
+    <color name="gray2">#F9F9F9</color>
+
+    <color name="primary">#004AC9</color>
+    <color name="secondary">#D7EEFE</color>
+    <color name="gray3">#80D9D9D9</color>
+    <color name="theme_login">#F3FDFF</color>
+
+
+    <color name="gray_700">#616161</color>
+    <color name="gray_900">#212121</color>
+    <color name="legend_grey">#E0E0E0</color>
+    <color name="legend_blue">#D7EBFF</color>
+    <color name="legend_red">#F8B6B6</color>
+    <color name="todayStroke">#1976D2</color>
+    <color name="holidayRed">#E53935</color>
+    <color name="disabledGrey">#BDBDBD</color>
+
+</resources>

@@ -48,7 +48,7 @@
         <activity android:name="com.example.appointment.ui.SpecialtyActivity"/>
         <activity android:name="com.example.appointment.ui.ChooseDateActivity"/>
         <activity android:name="com.example.appointment.ui.ChooseDoctorActivity"/>
-        <activity android:name="com.example.appointment.ui.ExamFormActivity"/>
+        <activity android:name="com.example.payment.ui.ExamFormActivity"/>
         <activity android:name="com.example.appointment.ui.CreateProfileActivity"/>
         <activity android:name="com.example.appointment.ui.BookingAppointmentActivity"/>
         <activity android:name="com.example.appointment.ui.AppointmentHistoryActivity"/>
@@ -60,7 +60,7 @@
         <activity android:name="com.example.records.ui.RecordsActivity"/>
         <activity android:name="com.example.records.ui.ProfileActivity"/>
         <activity android:name="com.example.records.ui.ChooseResultActivity"/>
-        <activity android:name="com.example.appointment.ui.PaymentActivity"/>
+        <activity android:name="com.example.payment.ui.PaymentActivity"/>
     </application>
 
 

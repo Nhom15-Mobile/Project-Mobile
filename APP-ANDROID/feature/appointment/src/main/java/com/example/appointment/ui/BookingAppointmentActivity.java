@@ -17,6 +17,7 @@ import com.uithealthcare.domain.appointment.AppointmentRequest;
 import com.uithealthcare.domain.appointment.AppointmentResponse;
 import com.uithealthcare.network.ApiServices;
 import com.uithealthcare.network.SessionInterceptor;
+import com.example.payment.ui.PaymentActivity;
 import com.uithealthcare.util.SessionManager;
 
 import com.uithealthcare.util.ConvertDate;
