@@ -3,7 +3,10 @@ package com.example.appointment.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,16 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appointment.R;
-import com.example.appointment.adapter.RecordAdapter;
 import com.example.appointment.api.SpecialtyService;
-import com.example.appointment.model.ItemRecord;
 import com.example.appointment.model.ItemSpecialty;
 import com.example.appointment.adapter.SpecialtyAdapter;
 import com.google.android.material.button.MaterialButton;
 import com.uithealthcare.domain.appointment.AppointmentInfo;
 import com.uithealthcare.domain.appointment.AppointmentRequest;
-import com.uithealthcare.domain.careProfile.CareProfile;
-import com.uithealthcare.domain.careProfile.CareProfilesResponse;
 import com.uithealthcare.domain.specialty.Specialty;
 import com.uithealthcare.domain.specialty.SpecialtyRespone;
 
@@ -39,11 +38,14 @@ public class SpecialtyActivity extends AppCompatActivity {
     private RecyclerView rV;
     private MaterialButton btnBack;
 
-    private List<ItemSpecialty> itemSpecialty;
+    private List<ItemSpecialty> specialtyList, specialtyFiltered;
 
     private AppointmentRequest req;
 
     private AppointmentInfo appointmentInfo;
+
+    private EditText edtSearch;
+    private SpecialtyAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,8 +60,22 @@ public class SpecialtyActivity extends AppCompatActivity {
 
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
+        edtSearch = findViewById(R.id.edtSearch);
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-        itemSpecialty = new ArrayList<>();
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filterSpecialty(s.toString());
+            }
+        });
+
+        specialtyList = new ArrayList<>();
+
         showOnSpecialtyCard();
     }
 
@@ -71,10 +87,11 @@ public class SpecialtyActivity extends AppCompatActivity {
                 if(data != null && data.isSuccess()){
                     List<Specialty> list = data.getData();
                     for (Specialty spec : list){
-                        itemSpecialty.add(new ItemSpecialty(spec.getName(), spec.getFee()));
+                        specialtyList.add(new ItemSpecialty(spec.getName(), spec.getFee()));
                     }
                 }
-                SpecialtyAdapter adapter = new SpecialtyAdapter(itemSpecialty);
+                specialtyFiltered = new ArrayList<>(specialtyList);
+                adapter = new SpecialtyAdapter(specialtyFiltered);
                 rV.setAdapter(adapter);
                 adapter.setOnSpecialtyClickListener(item -> {
                     Intent i = new Intent(SpecialtyActivity.this, ChooseDateActivity.class);
@@ -95,5 +112,23 @@ public class SpecialtyActivity extends AppCompatActivity {
                 Log.d("API", "showOSpecialtyCare Failure");
             }
         });
+    }
+
+    private void filterSpecialty(String keyword) {
+        keyword = keyword.trim().toLowerCase();
+
+        if (keyword.isEmpty()) {
+            // trả về full list
+            specialtyFiltered = new ArrayList<>(specialtyList);
+        } else {
+            List<ItemSpecialty> temp = new ArrayList<>();
+            for (ItemSpecialty item : specialtyList) {
+                if (item.getName().toLowerCase().contains(keyword)) {
+                    temp.add(item);
+                }
+            }
+            specialtyFiltered = temp;
+        }
+        adapter.updateList(specialtyFiltered);
     }
 }

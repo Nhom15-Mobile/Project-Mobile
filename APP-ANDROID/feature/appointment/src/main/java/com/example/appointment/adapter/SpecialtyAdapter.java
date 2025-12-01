@@ -25,6 +25,10 @@ public class SpecialtyAdapter extends RecyclerView.Adapter<SpecialtyAdapter.Spec
     public SpecialtyAdapter(List<ItemSpecialty> items) {
         this.items = items;
     }
+    public void updateList(List<ItemSpecialty> newList) {
+        this.items = newList;
+        notifyDataSetChanged();
+    }
 
     public void setOnSpecialtyClickListener(onSpecialtyClickListener l) {
         this.listener = l;
