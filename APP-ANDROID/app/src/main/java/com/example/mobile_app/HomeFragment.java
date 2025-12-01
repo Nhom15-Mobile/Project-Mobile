@@ -10,13 +10,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.appointment.ui.AppointmentActivity;
+import com.example.appointment.ui.AppointmentHistoryActivity;
 import com.example.records.ui.RecordsActivity;
 import com.google.android.material.button.MaterialButton;
 
 public class HomeFragment extends Fragment {
     MaterialButton btnContact;
 
-    MaterialButton btnAppointment, btnRecords;
+    MaterialButton btnAppointment, btnRecords, btnBookingHistory;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -41,6 +42,12 @@ public class HomeFragment extends Fragment {
 
         btnRecords.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), RecordsActivity.class);
+            startActivity(intent);
+        });
+
+        btnBookingHistory = view.findViewById(R.id.btnBookingHistory);
+        btnBookingHistory.setOnClickListener(v ->{
+            Intent intent = new Intent(getActivity(), AppointmentHistoryActivity.class);
             startActivity(intent);
         });
 

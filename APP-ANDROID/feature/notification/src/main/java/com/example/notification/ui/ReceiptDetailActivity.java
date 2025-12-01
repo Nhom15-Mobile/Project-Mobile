@@ -1,6 +1,7 @@
 package com.example.notification.ui;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -15,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class ReceiptDetailActivity extends AppCompatActivity {
-
+    private ImageButton btnBack;
     private TextView tvReceiptNo, tvPatientName, tvSpecialty,
             tvExamDate, tvExamTime, tvClinicRoom, tvAmount, tvBookedAt, tvReceiptStatus;
 
@@ -24,8 +25,9 @@ public class ReceiptDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.receipt_detail);
 
-        // Toolbar back
-
+        //  back
+        btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) btnBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         // Bind views
         tvReceiptStatus = findViewById(R.id.tvReceiptStatus);

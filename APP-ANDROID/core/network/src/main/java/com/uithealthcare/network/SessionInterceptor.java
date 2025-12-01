@@ -1,6 +1,6 @@
 package com.uithealthcare.network;
 
-import android.util.Log;
+
 import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.Request;

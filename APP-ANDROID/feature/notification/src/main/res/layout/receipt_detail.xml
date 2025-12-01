@@ -15,7 +15,7 @@
         android:background="@android:color/transparent"
         android:padding="8dp"
         android:src="@drawable/ic_back"
-        android:tint="#1F57E7"
+
         android:layout_gravity="start" />
 
     <ScrollView
