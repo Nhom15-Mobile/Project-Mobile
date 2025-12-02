@@ -7,7 +7,7 @@ export const ViewAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ type: '', text: '' });
-  const [statusFilter, setStatusFilter] = useState('all'); // all, pending, confirmed, cancelled, completed
+  const [statusFilter, setStatusFilter] = useState('all');   // all, pending, confirmed, cancelled, completed
   const [paymentFilter, setPaymentFilter] = useState('all'); // all, paid, unpaid
 
   useEffect(() => {
@@ -84,6 +84,7 @@ export const ViewAppointments = () => {
       case 'PAID':
         return 'bg-green-100 text-green-800';
       case 'UNPAID':
+      case 'REQUIRES_PAYMENT':   // chưa thanh toán cũng đỏ
         return 'bg-red-100 text-red-800';
       case 'REFUNDED':
         return 'bg-purple-100 text-purple-800';
@@ -92,17 +93,31 @@ export const ViewAppointments = () => {
     }
   };
 
-  const filteredAppointments = appointments.filter(apt => {
+  // ========== FILTERED LIST ==========
+  const filteredAppointments = appointments.filter((apt) => {
     // Filter by status
     if (statusFilter !== 'all' && apt.status !== statusFilter.toUpperCase()) {
       return false;
     }
+
     // Filter by payment status
-    if (paymentFilter !== 'all' && apt.paymentStatus !== paymentFilter.toUpperCase()) {
-      return false;
+    if (paymentFilter === 'paid') {
+      // chỉ lấy PAID
+      return apt.paymentStatus === 'PAID';
     }
+
+    if (paymentFilter === 'unpaid') {
+      // cứ KHÔNG phải PAID (kể cả null) thì coi là unpaid
+      return apt.paymentStatus !== 'PAID';
+    }
+
+    // paymentFilter === 'all'
     return true;
   });
+
+  // Count cho nút filter
+  const paidCount = appointments.filter(a => a.paymentStatus === 'PAID').length;
+  const unpaidCount = appointments.filter(a => a.paymentStatus !== 'PAID').length;
 
   return (
     <div>
@@ -171,13 +186,13 @@ export const ViewAppointments = () => {
               variant={paymentFilter === 'paid' ? 'success' : 'outline'}
               onClick={() => setPaymentFilter('paid')}
             >
-              Paid ({appointments.filter(a => a.paymentStatus === 'PAID').length})
+              Paid ({paidCount})
             </Button>
             <Button
               variant={paymentFilter === 'unpaid' ? 'danger' : 'outline'}
               onClick={() => setPaymentFilter('unpaid')}
             >
-              Unpaid ({appointments.filter(a => a.paymentStatus === 'UNPAID').length})
+              Unpaid ({unpaidCount})
             </Button>
           </div>
         </div>
@@ -249,13 +264,21 @@ export const ViewAppointments = () => {
                         : '-'}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(appointment.status)}`}>
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${getStatusColor(
+                          appointment.status
+                        )}`}
+                      >
                         {appointment.status}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 text-xs rounded-full ${getPaymentStatusColor(appointment.paymentStatus)}`}>
-                        {appointment.paymentStatus}
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${getPaymentStatusColor(
+                          appointment.paymentStatus
+                        )}`}
+                      >
+                        {appointment.paymentStatus || 'N/A'}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm">
@@ -265,14 +288,18 @@ export const ViewAppointments = () => {
                             <Button
                               size="sm"
                               variant="success"
-                              onClick={() => handleStatusChange(appointment.id, 'CONFIRMED')}
+                              onClick={() =>
+                                handleStatusChange(appointment.id, 'CONFIRMED')
+                              }
                             >
                               Confirm
                             </Button>
                             <Button
                               size="sm"
                               variant="danger"
-                              onClick={() => handleStatusChange(appointment.id, 'CANCELLED')}
+                              onClick={() =>
+                                handleStatusChange(appointment.id, 'CANCELLED')
+                              }
                             >
                               Cancel
                             </Button>
@@ -282,7 +309,9 @@ export const ViewAppointments = () => {
                           <Button
                             size="sm"
                             variant="success"
-                            onClick={() => handleStatusChange(appointment.id, 'COMPLETED')}
+                            onClick={() =>
+                              handleStatusChange(appointment.id, 'COMPLETED')
+                            }
                           >
                             Complete
                           </Button>
@@ -315,27 +344,32 @@ export const ViewAppointments = () => {
             </div>
             <div>
               <p className="text-sm text-yellow-600">
-                <strong>Pending:</strong> {appointments.filter(a => a.status === 'PENDING').length}
+                <strong>Pending:</strong>{' '}
+                {appointments.filter(a => a.status === 'PENDING').length}
               </p>
             </div>
             <div>
               <p className="text-sm text-blue-600">
-                <strong>Confirmed:</strong> {appointments.filter(a => a.status === 'CONFIRMED').length}
+                <strong>Confirmed:</strong>{' '}
+                {appointments.filter(a => a.status === 'CONFIRMED').length}
               </p>
             </div>
             <div>
               <p className="text-sm text-green-600">
-                <strong>Completed:</strong> {appointments.filter(a => a.status === 'COMPLETED').length}
+                <strong>Completed:</strong>{' '}
+                {appointments.filter(a => a.status === 'COMPLETED').length}
               </p>
             </div>
             <div>
               <p className="text-sm text-red-600">
-                <strong>Cancelled:</strong> {appointments.filter(a => a.status === 'CANCELLED').length}
+                <strong>Cancelled:</strong>{' '}
+                {appointments.filter(a => a.status === 'CANCELLED').length}
               </p>
             </div>
           </div>
           <p className="text-sm text-gray-600 mt-2">
-            <strong>Tip:</strong> Click on any ID to copy it to clipboard. Use action buttons to manage appointment status.
+            <strong>Tip:</strong> Click on any ID to copy it to clipboard. Use action
+            buttons to manage appointment status.
           </p>
         </div>
       )}
