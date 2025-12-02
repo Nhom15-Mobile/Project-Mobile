@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Medical System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 { text-align: center; font-size: 2em; }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 { color: #95a5a6; font-size: 0.9em; margin-bottom: 10px; }
+        .stat-card .number { font-size: 2em; font-weight: bold; color: #667eea; }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .tab.active { background: #667eea; color: white; font-weight: bold; }
+        .tab:hover { background: #f8f9fa; }
+        .tab.active:hover { background: #667eea; }
+
+        .tab-content { display: none; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .tab-content.active { display: block; }
+
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #667eea; }
+        textarea { resize: vertical; min-height: 100px; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+
+        button[type="submit"], .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            display: none;
+        }
+        .alert.show { display: block; }
+        .alert.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+        th { background: #f8f9fa; font-weight: bold; }
+        tr:hover { background: #f8f9fa; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .badge.pending { background: #fff3cd; color: #856404; }
+        .badge.confirmed { background: #d1ecf1; color: #0c5460; }
+        .badge.completed { background: #d4edda; color: #155724; }
+        .badge.cancelled { background: #f8d7da; color: #721c24; }
+        .badge.patient { background: #e3f2fd; color: #1565c0; }
+        .badge.doctor { background: #f3e5f5; color: #6a1b9a; }
+        .badge.admin { background: #ffebee; color: #c62828; }
+
+        .btn-small {
+            padding: 6px 12px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin: 2px;
+        }
+        .btn-delete { background: #e74c3c; }
+        .btn-delete:hover { background: #c0392b; }
+        .btn-info { background: #3498db; }
+        .btn-info:hover { background: #2980b9; }
+
+        .filter-section { background: #f8f9fa; padding: 20px; border-radius: 6px; margin-bottom: 20px; }
+        .loading { text-align: center; padding: 20px; color: #95a5a6; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="login-section">
+        <div class="login-container">
+            <h2 class="section-title" style="text-align: center;">Admin Login</h2>
+            <div id="login-alert" class="alert"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" required placeholder="admin@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" style="width: 100%;">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard-section" class="hidden">
+        <header style="position: relative;">
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <div class="container">
+                <h1>Admin Dashboard</h1>
+                <p style="text-align: center; opacity: 0.9;">Medical Appointment Management System</p>
+            </div>
+        </header>
+
+        <div class="container">
+            <div id="alert" class="alert"></div>
+
+            <!-- Statistics -->
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <div class="number" id="stat-users">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Doctors</h3>
+                    <div class="number" id="stat-doctors">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Patients</h3>
+                    <div class="number" id="stat-patients">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Care Profiles</h3>
+                    <div class="number" id="stat-care-profiles">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Appointments</h3>
+                    <div class="number" id="stat-appointments">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending</h3>
+                    <div class="number" id="stat-pending">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Completed</h3>
+                    <div class="number" id="stat-completed">0</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('users')">Add User</button>
+                <button class="tab" onclick="showTab('doctors')">Add Doctor</button>
+                <button class="tab" onclick="showTab('care-profiles')">Add Care Profile</button>
+                <button class="tab" onclick="showTab('slots')">Add Doctor Slot</button>
+                <button class="tab" onclick="showTab('appointments')">Add Appointment</button>
+                <button class="tab" onclick="showTab('manage-users')">Manage Users</button>
+                <button class="tab" onclick="showTab('view-data')">View All Data</button>
+            </div>
+
+            <!-- Add User Tab -->
+            <div id="users-tab" class="tab-content active">
+                <h2 class="section-title">Add New User</h2>
+                <form id="user-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password *</label>
+                            <input type="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" name="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label>Role *</label>
+                            <select name="role" required>
+                                <option value="PATIENT">Patient</option>
+                                <option value="DOCTOR">Doctor</option>
+                                <option value="ADMIN">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit">Create User</button>
+                </form>
+            </div>
+
+            <!-- Add Doctor Tab -->
+            <div id="doctors-tab" class="tab-content">
+                <h2 class="section-title">Add New Doctor</h2>
+                <form id="doctor-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password *</label>
+                            <input type="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" name="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label>Specialty *</label>
+                            <input type="text" name="specialty" required placeholder="e.g., Cardiology">
+                        </div>
+                        <div class="form-group">
+                            <label>Years of Experience</label>
+                            <input type="number" name="yearsExperience" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Clinic Name</label>
+                            <input type="text" name="clinicName">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Bio</label>
+                        <textarea name="bio" placeholder="Brief introduction..."></textarea>
+                    </div>
+                    <button type="submit">Create Doctor</button>
+                </form>
+            </div>
+
+            <!-- Add Care Profile Tab -->
+            <div id="care-profiles-tab" class="tab-content">
+                <h2 class="section-title">Add New Care Profile</h2>
+                <form id="care-profile-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Owner User ID *</label>
+                            <input type="text" name="ownerId" required placeholder="User ID">
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" name="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Relation *</label>
+                            <input type="text" name="relation" required placeholder="e.g., Bản thân, Cha, Mẹ">
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" name="dob">
+                        </div>
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select name="gender">
+                                <option value="">Select...</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label>National ID</label>
+                            <input type="text" name="nationalId">
+                        </div>
+                        <div class="form-group">
+                            <label>Insurance Number</label>
+                            <input type="text" name="insuranceNo">
+                        </div>
+                        <div class="form-group">
+                            <label>Province</label>
+                            <input type="text" name="province">
+                        </div>
+                        <div class="form-group">
+                            <label>District</label>
+                            <input type="text" name="district">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" name="address">
+                    </div>
+                    <button type="submit">Create Care Profile</button>
+                </form>
+            </div>
+
+            <!-- Add Doctor Slot Tab -->
+            <div id="slots-tab" class="tab-content">
+                <h2 class="section-title">Add Doctor Working Slot</h2>
+                <form id="slot-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Doctor User ID *</label>
+                            <input type="text" name="doctorId" required placeholder="Doctor's User ID">
+                        </div>
+                        <div class="form-group">
+                            <label>Start Date & Time *</label>
+                            <input type="datetime-local" name="start" required>
+                        </div>
+                        <div class="form-group">
+                            <label>End Date & Time *</label>
+                            <input type="datetime-local" name="end" required>
+                        </div>
+                    </div>
+                    <button type="submit">Create Slot</button>
+                </form>
+            </div>
+
+            <!-- Add Appointment Tab -->
+            <div id="appointments-tab" class="tab-content">
+                <h2 class="section-title">Add New Appointment</h2>
+                <form id="appointment-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Care Profile ID *</label>
+                            <input type="text" name="careProfileId" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Doctor Slot ID *</label>
+                            <input type="text" name="slotId" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Service *</label>
+                            <input type="text" name="service" required placeholder="e.g., General Checkup">
+                        </div>
+                    </div>
+                    <button type="submit">Create Appointment</button>
+                </form>
+            </div>
+
+            <!-- Manage Users Tab -->
+            <div id="manage-users-tab" class="tab-content">
+                <h2 class="section-title">Manage Users</h2>
+                <div class="filter-section">
+                    <h3 style="margin-bottom: 15px;">Search & Filter</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Search</label>
+                            <input type="text" id="user-search" placeholder="Name, email, phone...">
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <select id="user-role-filter">
+                                <option value="">All Roles</option>
+                                <option value="PATIENT">Patient</option>
+                                <option value="DOCTOR">Doctor</option>
+                                <option value="ADMIN">Admin</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: flex-end;">
+                            <button onclick="loadUsers()" type="button" class="btn">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="users-loading" class="loading hidden">Loading...</div>
+                <div id="users-table"></div>
+            </div>
+
+            <!-- View All Data Tab -->
+            <div id="view-data-tab" class="tab-content">
+                <h2 class="section-title">View All Data</h2>
+                <div class="filter-section">
+                    <div class="form-group">
+                        <label>Data Type</label>
+                        <select id="view-type" onchange="loadViewData()">
+                            <option value="appointments">Appointments</option>
+                            <option value="doctors">Doctors</option>
+                            <option value="care-profiles">Care Profiles</option>
+                            <option value="doctor-slots">Doctor Slots</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="data-loading" class="loading hidden">Loading...</div>
+                <div id="data-table"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:4000/api/admin';
+        const AUTH_URL = 'http://localhost:4000/api/auth';
+        let authToken = localStorage.getItem('adminToken') || '';
+
+        // Show alert
+        function showAlert(message, type = 'success', containerId = 'alert') {
+            const alert = document.getElementById(containerId);
+            if (!alert) return;
+            alert.textContent = message;
+            alert.className = `alert ${type} show`;
+            setTimeout(() => alert.classList.remove('show'), 5000);
+        }
+
+        // Show tab
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            if (tabName === 'view-data') loadViewData();
+            else if (tabName === 'manage-users') loadUsers();
+        }
+
+        // Auth functions
+        function checkAuth() {
+            const loginSection = document.getElementById('login-section');
+            const dashboardSection = document.getElementById('dashboard-section');
+
+            if (!authToken) {
+                loginSection.classList.remove('hidden');
+                dashboardSection.classList.add('hidden');
+            } else {
+                loginSection.classList.add('hidden');
+                dashboardSection.classList.remove('hidden');
+                loadStatistics();
+            }
+        }
+
+        // Login
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const response = await fetch(`${AUTH_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success && result.data.token) {
+                    if (result.data.user.role !== 'ADMIN') {
+                        showAlert('Access denied. Admin role required.', 'error', 'login-alert');
+                        return;
+                    }
+
+                    authToken = result.data.token;
+                    localStorage.setItem('adminToken', authToken);
+                    showAlert('Login successful!', 'success', 'login-alert');
+                    checkAuth();
+                } else {
+                    showAlert(result.message || 'Login failed', 'error', 'login-alert');
+                }
+            } catch (error) {
+                showAlert('Login error: ' + error.message, 'error', 'login-alert');
+            }
+        });
+
+        // Logout
+        function logout() {
+            authToken = '';
+            localStorage.removeItem('adminToken');
+            checkAuth();
+        }
+
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                const response = await fetch(`${API_URL}/statistics`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = data.data;
+                    document.getElementById('stat-users').textContent = stats.totalUsers;
+                    document.getElementById('stat-doctors').textContent = stats.totalDoctors;
+                    document.getElementById('stat-patients').textContent = stats.totalPatients;
+                    document.getElementById('stat-care-profiles').textContent = stats.totalCareProfiles;
+                    document.getElementById('stat-appointments').textContent = stats.totalAppointments;
+                    document.getElementById('stat-pending').textContent = stats.pendingAppointments;
+                    document.getElementById('stat-completed').textContent = stats.completedAppointments;
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Handle form submit
+        async function handleFormSubmit(event, endpoint) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch(`${API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('Created successfully!', 'success');
+                    event.target.reset();
+                    loadStatistics();
+                } else {
+                    showAlert(result.message || 'Error occurred', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error: ' + error.message, 'error');
+            }
+        }
+
+        // Form event listeners
+        document.getElementById('user-form').addEventListener('submit', (e) => handleFormSubmit(e, '/users'));
+        document.getElementById('doctor-form').addEventListener('submit', (e) => handleFormSubmit(e, '/doctors'));
+        document.getElementById('care-profile-form').addEventListener('submit', (e) => handleFormSubmit(e, '/care-profiles'));
+        document.getElementById('slot-form').addEventListener('submit', (e) => handleFormSubmit(e, '/doctor-slots'));
+        document.getElementById('appointment-form').addEventListener('submit', (e) => handleFormSubmit(e, '/appointments'));
+
+        // Load users
+        async function loadUsers() {
+            const search = document.getElementById('user-search').value;
+            const role = document.getElementById('user-role-filter').value;
+            const loading = document.getElementById('users-loading');
+            const container = document.getElementById('users-table');
+
+            loading.classList.remove('hidden');
+            container.innerHTML = '';
+
+            try {
+                let url = `${API_URL}/users?`;
+                if (search) url += `search=${encodeURIComponent(search)}&`;
+                if (role) url += `role=${role}`;
+
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const result = await response.json();
+
+                loading.classList.add('hidden');
+
+                if (result.success) {
+                    const users = result.data.users || [];
+
+                    if (users.length === 0) {
+                        container.innerHTML = '<p style="text-align:center; padding: 20px;">No users found</p>';
+                        return;
+                    }
+
+                    let table = '<table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Created</th><th>Actions</th></tr></thead><tbody>';
+
+                    users.forEach(user => {
+                        table += `<tr>
+                            <td>${user.id.substring(0, 8)}...</td>
+                            <td>${user.fullName}</td>
+                            <td>${user.email}</td>
+                            <td>${user.phone || '-'}</td>
+                            <td><span class="badge ${user.role.toLowerCase()}">${user.role}</span></td>
+                            <td>${new Date(user.createdAt).toLocaleDateString('vi-VN')}</td>
+                            <td><button onclick="deleteUser('${user.id}')" class="btn-small btn-delete">Delete</button></td>
+                        </tr>`;
+                    });
+
+                    table += '</tbody></table>';
+
+                    if (result.data.pagination) {
+                        const p = result.data.pagination;
+                        table += `<p style="text-align: center; margin-top: 20px; color: #95a5a6;">Page ${p.page} of ${p.pages} (Total: ${p.total})</p>`;
+                    }
+
+                    container.innerHTML = table;
+                }
+            } catch (error) {
+                loading.classList.add('hidden');
+                container.innerHTML = `<p style="text-align:center; color: #e74c3c; padding: 20px;">Error: ${error.message}</p>`;
+            }
+        }
+
+        // Delete user
+        async function deleteUser(userId) {
+            if (!confirm('Are you sure you want to delete this user?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('User deleted successfully!', 'success');
+                    loadUsers();
+                    loadStatistics();
+                } else {
+                    showAlert(result.message || 'Delete failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Update appointment status
+        async function updateAppointmentStatus(appointmentId, currentStatus) {
+            const newStatus = prompt(
+                `Current: ${currentStatus}\n\nEnter new status:\nPENDING / CONFIRMED / COMPLETED / CANCELLED`,
+                currentStatus
+            );
+
+            if (!newStatus || newStatus === currentStatus) return;
+
+            const statuses = ['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'];
+            if (!statuses.includes(newStatus.toUpperCase())) {
+                showAlert('Invalid status!', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/appointments/${appointmentId}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ status: newStatus.toUpperCase() })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('Status updated!', 'success');
+                    loadViewData();
+                    loadStatistics();
+                } else {
+                    showAlert(result.message || 'Update failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Load view data
+        async function loadViewData() {
+            const viewType = document.getElementById('view-type').value;
+            const loading = document.getElementById('data-loading');
+            const container = document.getElementById('data-table');
+
+            loading.classList.remove('hidden');
+            container.innerHTML = '';
+
+            try {
+                const response = await fetch(`${API_URL}/${viewType}`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const result = await response.json();
+
+                loading.classList.add('hidden');
+
+                if (result.success) {
+                    const dataKey = Object.keys(result.data).find(key => Array.isArray(result.data[key]));
+                    const items = result.data[dataKey] || [];
+
+                    if (items.length === 0) {
+                        container.innerHTML = '<p style="text-align:center; padding: 20px;">No data found</p>';
+                        return;
+                    }
+
+                    let table = '<table><thead><tr>';
+
+                    if (viewType === 'appointments') {
+                        table += '<th>ID</th><th>Patient</th><th>Doctor</th><th>Service</th><th>Scheduled</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+                        items.forEach(item => {
+                            table += `<tr>
+                                <td>${item.id.substring(0, 8)}...</td>
+                                <td>${item.patient?.fullName || '-'}</td>
+                                <td>${item.doctor?.fullName || '-'}</td>
+                                <td>${item.service}</td>
+                                <td>${new Date(item.scheduledAt).toLocaleString('vi-VN')}</td>
+                                <td><span class="badge ${item.status.toLowerCase()}">${item.status}</span></td>
+                                <td><button onclick="updateAppointmentStatus('${item.id}', '${item.status}')" class="btn-small btn-info">Update</button></td>
+                            </tr>`;
+                        });
+                    } else if (viewType === 'doctors') {
+                        table += '<th>ID</th><th>Name</th><th>Email</th><th>Specialty</th><th>Experience</th></tr></thead><tbody>';
+                        items.forEach(item => {
+                            table += `<tr>
+                                <td>${item.id.substring(0, 8)}...</td>
+                                <td>${item.fullName}</td>
+                                <td>${item.email}</td>
+                                <td>${item.doctor?.specialty || '-'}</td>
+                                <td>${item.doctor?.yearsExperience || '-'} years</td>
+                            </tr>`;
+                        });
+                    } else if (viewType === 'care-profiles') {
+                        table += '<th>ID</th><th>Name</th><th>Relation</th><th>Owner</th><th>Phone</th></tr></thead><tbody>';
+                        items.forEach(item => {
+                            table += `<tr>
+                                <td>${item.id.substring(0, 8)}...</td>
+                                <td>${item.fullName}</td>
+                                <td>${item.relation}</td>
+                                <td>${item.owner?.fullName || '-'}</td>
+                                <td>${item.phone || '-'}</td>
+                            </tr>`;
+                        });
+                    } else if (viewType === 'doctor-slots') {
+                        table += '<th>ID</th><th>Doctor</th><th>Start</th><th>End</th><th>Booked</th></tr></thead><tbody>';
+                        items.forEach(item => {
+                            table += `<tr>
+                                <td>${item.id.substring(0, 8)}...</td>
+                                <td>${item.doctor?.user?.fullName || '-'}</td>
+                                <td>${new Date(item.start).toLocaleString('vi-VN')}</td>
+                                <td>${new Date(item.end).toLocaleString('vi-VN')}</td>
+                                <td>${item.isBooked ? '✓ Yes' : '✗ No'}</td>
+                            </tr>`;
+                        });
+                    }
+
+                    table += '</tbody></table>';
+                    container.innerHTML = table;
+                }
+            } catch (error) {
+                loading.classList.add('hidden');
+                container.innerHTML = `<p style="text-align:center; color: #e74c3c; padding: 20px;">Error: ${error.message}</p>`;
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>

@@ -8,5 +8,19 @@ const data = await svc.me(req.user.id);
 return R.ok(res, data);
 }
 
+async function getAll(req, res) {
+const data = await svc.getAll();
+return R.ok(res, data);
+}
 
-module.exports = { me };
+async function getById(req, res) {
+const { id } = req.params;
+const data = await svc.getById(id);
+if (!data) {
+return R.notFound(res, 'User not found');
+}
+return R.ok(res, data);
+}
+
+
+module.exports = { me, getAll, getById };

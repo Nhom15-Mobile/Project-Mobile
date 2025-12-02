@@ -45,4 +45,9 @@ async function resetPassword(req, res) {
   }
 }
 
-module.exports = { login, register, forgotPassword, resetPassword };
+async function me(req, res) {
+  const user = req.user;
+  return R.ok(res, { user }, 'Current user');
+}
+
+module.exports = { login, register, forgotPassword, resetPassword, me };
