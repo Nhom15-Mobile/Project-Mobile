@@ -10,7 +10,7 @@ import { AddCareProfile } from './pages/AddCareProfile';
 import { AddDoctorSlot } from './pages/AddDoctorSlot';
 import { AddAppointment } from './pages/AddAppointment';
 import { ManageUsers } from './pages/ManageUsers';
-import { ViewData } from './pages/ViewData';
+// import { ViewData } from './pages/ViewData';
 import { ViewCareProfiles } from './pages/ViewCareProfiles';
 import { ViewDoctorSlots } from './pages/ViewDoctorSlots';
 import { ViewAppointments } from './pages/ViewAppointments';
@@ -34,7 +34,7 @@ function App() {
                     <Route path="/add-doctor-slot" element={<AddDoctorSlot />} />
                     <Route path="/add-appointment" element={<AddAppointment />} />
                     <Route path="/users" element={<ManageUsers />} />
-                    <Route path="/view-data" element={<ViewData />} />
+                    {/* <Route path="/view-data" element={<ViewData />} /> */}
                     <Route path="/care-profiles" element={<ViewCareProfiles />} />
                     <Route path="/doctor-slots" element={<ViewDoctorSlots />} />
                     <Route path="/appointments" element={<ViewAppointments />} />

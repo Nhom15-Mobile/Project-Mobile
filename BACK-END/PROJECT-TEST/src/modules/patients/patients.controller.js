@@ -36,4 +36,20 @@ async function listAppointments(req, res) {
   }
 }
 
-module.exports = { getProfile, updateProfile, listAppointments };
+// CHỈ trả về các lịch đã thanh toán
+async function listPaidAppointments(req, res) {
+  try {
+    const items = await svc.getPaidAppointments(req.user.id);
+    return R.ok(res, items);
+  } catch (e) {
+    console.error(e);
+    return R.badRequest(res, e.message || 'Bad request');
+  }
+}
+
+module.exports = {
+  getProfile,
+  updateProfile,
+  listAppointments,
+  listPaidAppointments,
+};

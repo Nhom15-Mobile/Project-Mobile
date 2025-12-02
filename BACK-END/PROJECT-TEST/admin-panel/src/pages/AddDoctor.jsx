@@ -1,29 +1,7 @@
-import { useState } from 'react';
+// admin-panel/src/pages/AddDoctor.jsx
+import { useState, useEffect } from 'react';
 import { adminAPI } from '../services/api';
 import { Card, Button, Input, Select, Alert } from '../components/common';
-
-const SPECIALTIES = [
-  'Tim mạch',
-  'Thần kinh',
-  'Nhi khoa',
-  'Sản phụ khoa',
-  'Da liễu',
-  'Mắt',
-  'Tai mũi họng',
-  'Nội khoa tổng quát',
-  'Ngoại khoa',
-  'Chỉnh hình',
-  'Răng hàm mặt',
-  'Tiêu hóa',
-  'Hô hấp',
-  'Thận - Tiết niệu',
-  'Nội tiết',
-  'Ung bướu',
-  'Phục hồi chức năng',
-  'Y học cổ truyền',
-  'Dinh dưỡng',
-  'Tâm thần',
-];
 
 export const AddDoctor = () => {
   const [formData, setFormData] = useState({
@@ -38,6 +16,21 @@ export const AddDoctor = () => {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [specialties, setSpecialties] = useState([]);
+
+  // Lấy list chuyên khoa từ backend
+  useEffect(() => {
+    const fetchSpecialties = async () => {
+      try {
+        const res = await adminAPI.getSpecialties();
+        setSpecialties(res.data?.data || []);
+      } catch (err) {
+        console.error('Failed to load specialties', err);
+      }
+    };
+
+    fetchSpecialties();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,7 +40,9 @@ export const AddDoctor = () => {
     try {
       const data = {
         ...formData,
-        yearsExperience: formData.yearsExperience ? parseInt(formData.yearsExperience) : undefined,
+        yearsExperience: formData.yearsExperience
+          ? parseInt(formData.yearsExperience, 10)
+          : undefined,
       };
       await adminAPI.createDoctor(data);
       setMessage({ type: 'success', text: 'Doctor created successfully!' });
@@ -126,9 +121,9 @@ export const AddDoctor = () => {
               onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
               options={[
                 { value: '', label: 'Chọn chuyên khoa...' },
-                ...SPECIALTIES.map((specialty) => ({
-                  value: specialty,
-                  label: specialty,
+                ...specialties.map((s) => ({
+                  value: s.name,
+                  label: s.name,
                 })),
               ]}
             />
@@ -136,7 +131,9 @@ export const AddDoctor = () => {
               label="Số năm kinh nghiệm"
               type="number"
               value={formData.yearsExperience}
-              onChange={(e) => setFormData({ ...formData, yearsExperience: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, yearsExperience: e.target.value })
+              }
             />
           </div>
 

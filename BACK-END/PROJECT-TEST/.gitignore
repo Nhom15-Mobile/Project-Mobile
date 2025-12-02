@@ -1,19 +1,26 @@
-# Node modules
-node_modules/
+# Node modules (tất cả folder con)
+**/node_modules/
 
 # Environment files
 .env
-.env.local
+.env.*
+!.env.example   # giữ lại file mẫu
 
 # Logs
 logs
 *.log
 npm-debug.log*
 
-# Build output
+# Build output (cả root lẫn trong admin-panel, v.v.)
 dist/
 build/
+**/dist/
+**/build/
 
 # System files
 .DS_Store
 Thumbs.db
+
+# Markdown docs: ignore tất cả .md TRỪ README.md
+*.md
+!README.md

@@ -54,6 +54,9 @@ export const adminAPI = {
   getDoctors: (params) => api.get('/admin/doctors', { params }),
   createDoctor: (data) => api.post('/admin/doctors', data),
 
+  // Doctor specialties (public endpoint – dùng chung cho admin)
+  getSpecialties: () => api.get('/doctors/specialties'),
+
   // Care Profiles
   getCareProfiles: (params) => api.get('/admin/care-profiles', { params }),
   createCareProfile: (data) => api.post('/admin/care-profiles', data),

@@ -23,6 +23,8 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  LineChart,
+  Line,
 } from 'recharts';
 
 const StatCard = ({ title, value, icon: Icon, color, subtitle }) => {
@@ -53,6 +55,7 @@ const StatCard = ({ title, value, icon: Icon, color, subtitle }) => {
 export const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [appointments, setAppointments] = useState([]);
+  const [doctorSlots, setDoctorSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -63,14 +66,19 @@ export const Dashboard = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [statsRes, appointmentsRes] = await Promise.all([
+      const [statsRes, appointmentsRes, slotsRes] = await Promise.all([
         adminAPI.getStatistics(),
         adminAPI.getAppointments(),
+        adminAPI.getDoctorSlots({ limit: 1000 }),
       ]);
 
       setStats(statsRes.data.data || statsRes.data);
+
       const apptData = appointmentsRes.data.data || appointmentsRes.data;
       setAppointments(apptData.appointments || apptData || []);
+
+      const slotData = slotsRes.data.data || slotsRes.data;
+      setDoctorSlots(slotData.slots || slotData || []);
 
       setError('');
     } catch (err) {
@@ -80,7 +88,8 @@ export const Dashboard = () => {
     }
   };
 
-  // Prepare chart data
+  // --------- Chart data helpers ----------
+
   const getAppointmentStatusData = () => {
     if (!Array.isArray(appointments)) return [];
 
@@ -95,20 +104,6 @@ export const Dashboard = () => {
     }));
   };
 
-  const getPaymentStatusData = () => {
-    if (!Array.isArray(appointments)) return [];
-
-    const paymentCounts = appointments.reduce((acc, apt) => {
-      acc[apt.paymentStatus] = (acc[apt.paymentStatus] || 0) + 1;
-      return acc;
-    }, {});
-
-    return Object.entries(paymentCounts).map(([name, value]) => ({
-      name,
-      value,
-    }));
-  };
-
   const getUserRoleData = () => {
     return [
       { name: 'Admins', value: stats?.adminUsers || 0 },
@@ -117,11 +112,54 @@ export const Dashboard = () => {
     ];
   };
 
-  const getSlotData = () => {
-    return [
-      { name: 'Available', value: stats?.availableSlots || 0 },
-      { name: 'Booked', value: stats?.bookedSlots || 0 },
-    ];
+  // Doctor slots per month (current year) – vẫn giữ nếu em muốn
+  const getDoctorSlotsMonthlyData = () => {
+    if (!Array.isArray(doctorSlots)) return [];
+
+    const year = new Date().getFullYear();
+    const counts = Array(12).fill(0);
+
+    doctorSlots.forEach((slot) => {
+      const createdAt = slot.createdAt ? new Date(slot.createdAt) : null;
+      if (!createdAt) return;
+      if (createdAt.getFullYear() !== year) return;
+      const monthIndex = createdAt.getMonth(); // 0-11
+      counts[monthIndex] += 1;
+    });
+
+    return counts.map((value, index) => ({
+      month: `${index + 1}`,
+      value,
+    }));
+  };
+
+  // *** Revenue by month from PAID payments ***
+  const getRevenueByMonthData = () => {
+    if (!Array.isArray(appointments)) return [];
+
+    const year = new Date().getFullYear();
+    const totals = Array(12).fill(0);
+
+    appointments.forEach((apt) => {
+      if (apt.paymentStatus !== 'PAID') return;
+
+      const payment = apt.payment || {};
+      const dateRaw = payment.createdAt || apt.scheduledAt || apt.createdAt;
+      if (!dateRaw) return;
+
+      const date = new Date(dateRaw);
+      if (date.getFullYear() !== year) return;
+
+      const monthIndex = date.getMonth(); // 0-11
+      const amount = typeof payment.amount === 'number' ? payment.amount : 0;
+
+      totals[monthIndex] += amount;
+    });
+
+    return totals.map((revenue, index) => ({
+      month: `${index + 1}`,
+      revenue,
+    }));
   };
 
   const COLORS = {
@@ -148,8 +186,8 @@ export const Dashboard = () => {
     return <Alert type="error" message={error} />;
   }
 
-  const paidCount = appointments.filter(a => a.paymentStatus === 'PAID').length;
-  const unpaidCount = appointments.filter(a => a.paymentStatus === 'UNPAID').length;
+  const paidCount = appointments.filter((a) => a.paymentStatus === 'PAID').length;
+  const unpaidCount = appointments.filter((a) => a.paymentStatus === 'UNPAID').length;
 
   return (
     <div className="space-y-6">
@@ -242,27 +280,28 @@ export const Dashboard = () => {
           </ResponsiveContainer>
         </Card>
 
-        {/* Payment Status Chart */}
+        {/* Revenue by Month (PAID) */}
         <Card>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Payment Status</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Revenue by Month (PAID)</h2>
           <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={getPaymentStatusData()}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, value }) => `${name}: ${value}`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {getPaymentStatusData().map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[entry.name] || PIE_COLORS[index]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
+            <LineChart data={getRevenueByMonthData()}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip
+                formatter={(value) =>
+                  `${Number(value || 0).toLocaleString('vi-VN')} đ`
+                }
+                labelFormatter={(label) => `Tháng ${label}`}
+              />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="revenue"
+                stroke="#10B981"
+                name="Revenue (VND)"
+              />
+            </LineChart>
           </ResponsiveContainer>
         </Card>
 
@@ -290,25 +329,20 @@ export const Dashboard = () => {
           </ResponsiveContainer>
         </Card>
 
-        {/* Doctor Slots Status */}
+        {/* Doctor Slots per Month (current year) */}
         <Card>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Doctor Slots Status</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">
+            Doctor Slots per Month (current year)
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={getSlotData()}>
+            <LineChart data={getDoctorSlotsMonthlyData()}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
+              <XAxis dataKey="month" />
+              <YAxis allowDecimals={false} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" fill="#3B82F6">
-                {getSlotData().map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.name === 'Available' ? '#10B981' : '#EF4444'}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
+              <Line type="monotone" dataKey="value" stroke="#3B82F6" name="Doctor Slots" />
+            </LineChart>
           </ResponsiveContainer>
         </Card>
       </div>

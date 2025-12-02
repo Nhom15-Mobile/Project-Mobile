@@ -24,7 +24,7 @@ const menuItems = [
   { path: '/doctor-slots', icon: Clock, label: 'View Doctor Slots' },
   { path: '/add-appointment', icon: CalendarPlus, label: 'Add Appointment' },
   { path: '/appointments', icon: CalendarCheck, label: 'View Appointments' },
-  { path: '/view-data', icon: ClipboardList, label: 'View All Data' },
+  // { path: '/view-data', icon: ClipboardList, label: 'View All Data' },
 ];
 
 export const Sidebar = () => {

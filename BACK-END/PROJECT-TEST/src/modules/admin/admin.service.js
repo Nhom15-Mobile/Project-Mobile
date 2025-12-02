@@ -323,56 +323,111 @@ class AdminService {
     return slot;
   }
 
-  async getDoctorSlots(filters = {}) {
-    const { doctorId, date, isBooked, page = 1, limit = 50 } = filters;
-    const skip = (page - 1) * limit;
+  // async getDoctorSlots(filters = {}) {
+  //   const { doctorId, date, isBooked, page = 1, limit = 50 } = filters;
+  //   const skip = (page - 1) * limit;
 
-    const where = {};
-    if (doctorId) where.doctorId = doctorId;
-    if (typeof isBooked !== 'undefined') where.isBooked = isBooked === 'true';
+  //   const where = {};
+  //   if (doctorId) where.doctorId = doctorId;
+  //   if (typeof isBooked !== 'undefined') where.isBooked = isBooked === 'true';
 
-    if (date) {
-      const startOfDay = new Date(date);
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = new Date(date);
-      endOfDay.setHours(23, 59, 59, 999);
+  //   if (date) {
+  //     const startOfDay = new Date(date);
+  //     startOfDay.setHours(0, 0, 0, 0);
+  //     const endOfDay = new Date(date);
+  //     endOfDay.setHours(23, 59, 59, 999);
 
-      where.start = { gte: startOfDay, lte: endOfDay };
-    }
+  //     where.start = { gte: startOfDay, lte: endOfDay };
+  //   }
 
-    const [slots, total] = await Promise.all([
-      prisma.doctorSlot.findMany({
-        where,
-        skip,
-        take: limit,
-        include: {
-          doctor: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  fullName: true,
-                  email: true,
-                }
+  //   const [slots, total] = await Promise.all([
+  //     prisma.doctorSlot.findMany({
+  //       where,
+  //       skip,
+  //       take: limit,
+  //       include: {
+  //         doctor: {
+  //           include: {
+  //             user: {
+  //               select: {
+  //                 id: true,
+  //                 fullName: true,
+  //                 email: true,
+  //               }
+  //             }
+  //           }
+  //         }
+  //       },
+  //       orderBy: { start: 'asc' }
+  //     }),
+  //     prisma.doctorSlot.count({ where })
+  //   ]);
+
+  //   return {
+  //     slots,
+  //     pagination: {
+  //       total,
+  //       page,
+  //       limit,
+  //       pages: Math.ceil(total / limit)
+  //     }
+  //   };
+  // }
+// ============= DOCTOR SLOT MANAGEMENT =============
+async getDoctorSlots(filters = {}) {
+  let { doctorId, date, isBooked, page = 1, limit = 50 } = filters;
+
+  // query string luôn là string -> ép về number
+  const pageNum = parseInt(page, 10) || 1;
+  const limitNum = parseInt(limit, 10) || 50;
+  const skip = (pageNum - 1) * limitNum;
+
+  const where = {};
+  if (doctorId) where.doctorId = doctorId;
+  if (typeof isBooked !== 'undefined') where.isBooked = isBooked === 'true';
+
+  if (date) {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    where.start = { gte: startOfDay, lte: endOfDay };
+  }
+
+  const [slots, total] = await Promise.all([
+    prisma.doctorSlot.findMany({
+      where,
+      skip,
+      take: limitNum,   // <- dùng number
+      include: {
+        doctor: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                fullName: true,
+                email: true,
               }
             }
           }
-        },
-        orderBy: { start: 'asc' }
-      }),
-      prisma.doctorSlot.count({ where })
-    ]);
+        }
+      },
+      orderBy: { start: 'asc' }
+    }),
+    prisma.doctorSlot.count({ where })
+  ]);
 
-    return {
-      slots,
-      pagination: {
-        total,
-        page,
-        limit,
-        pages: Math.ceil(total / limit)
-      }
-    };
-  }
+  return {
+    slots,
+    pagination: {
+      total,
+      page: pageNum,
+      limit: limitNum,
+      pages: Math.ceil(total / limitNum)
+    }
+  };
+}
 
   async deleteDoctorSlot(slotId) {
     // Check if slot is booked
@@ -494,6 +549,7 @@ class AdminService {
           },
           careProfile: true,
           slot: true,
+          payment: true,
         },
         orderBy: { createdAt: 'desc' }
       }),
@@ -588,35 +644,47 @@ class AdminService {
   }
 
   // ============= STATISTICS =============
-  async getStatistics() {
-    const [
-      totalUsers,
-      totalDoctors,
-      totalPatients,
-      totalCareProfiles,
-      totalAppointments,
-      pendingAppointments,
-      completedAppointments,
-    ] = await Promise.all([
-      prisma.user.count(),
-      prisma.user.count({ where: { role: 'DOCTOR' } }),
-      prisma.user.count({ where: { role: 'PATIENT' } }),
-      prisma.careProfile.count(),
-      prisma.appointment.count(),
-      prisma.appointment.count({ where: { status: 'PENDING' } }),
-      prisma.appointment.count({ where: { status: 'COMPLETED' } }),
-    ]);
+async getStatistics() {
+  const [
+    totalUsers,
+    totalDoctors,
+    totalPatients,
+    adminUsers,
+    totalCareProfiles,
+    totalAppointments,
+    pendingAppointments,
+    completedAppointments,
+    totalDoctorSlots,
+    availableSlots,
+    bookedSlots,
+  ] = await Promise.all([
+    prisma.user.count(),
+    prisma.user.count({ where: { role: 'DOCTOR' } }),
+    prisma.user.count({ where: { role: 'PATIENT' } }),
+    prisma.user.count({ where: { role: 'ADMIN' } }),
+    prisma.careProfile.count(),
+    prisma.appointment.count(),
+    prisma.appointment.count({ where: { status: 'PENDING' } }),
+    prisma.appointment.count({ where: { status: 'COMPLETED' } }),
+    prisma.doctorSlot.count(),
+    prisma.doctorSlot.count({ where: { isBooked: false } }),
+    prisma.doctorSlot.count({ where: { isBooked: true } }),
+  ]);
 
-    return {
-      totalUsers,
-      totalDoctors,
-      totalPatients,
-      totalCareProfiles,
-      totalAppointments,
-      pendingAppointments,
-      completedAppointments,
-    };
-  }
+  return {
+    totalUsers,
+    totalDoctors,
+    totalPatients,
+    adminUsers,          // dùng cho User Roles + System Overview
+    totalCareProfiles,
+    totalAppointments,
+    pendingAppointments,
+    completedAppointments,
+    totalDoctorSlots,    // System Overview: Doctor Slots
+    availableSlots,      // System Overview + Doctor Slots Status chart
+    bookedSlots,
+  };
+}
 }
 
 module.exports = new AdminService();
