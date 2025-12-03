@@ -12,5 +12,11 @@ router.get('/appointments', auth, allow('PATIENT'), ctrl.listAppointments);
 
 // chỉ appointments đã thanh toán
 router.get('/appointments/paid', auth, allow('PATIENT'), ctrl.listPaidAppointments);
-
+// nhắc lịch: các appointment CONFIRMED + PAID, sắp tới trong withinMinutes
+router.get(
+  '/appointments/upcoming-reminders',
+  auth,
+  allow('PATIENT'),
+  ctrl.listUpcomingReminders
+);
 module.exports = router;

@@ -2,6 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
+const UNPAID_EXPIRE_MINUTES = 10;
 
 class AdminService {
   // ============= USER MANAGEMENT =============
@@ -375,6 +376,7 @@ class AdminService {
   // }
 // ============= DOCTOR SLOT MANAGEMENT =============
 async getDoctorSlots(filters = {}) {
+  await this.cleanupExpiredUnpaidAppointments();
   let { doctorId, date, isBooked, page = 1, limit = 50 } = filters;
 
   // query string luôn là string -> ép về number
@@ -518,6 +520,7 @@ async getDoctorSlots(filters = {}) {
   }
 
   async getAllAppointments(filters = {}) {
+    await this.cleanupExpiredUnpaidAppointments();
     const { patientId, doctorId, status, page = 1, limit = 20 } = filters;
     const skip = (page - 1) * limit;
 
@@ -641,6 +644,53 @@ async getDoctorSlots(filters = {}) {
     });
 
     return { message: 'Appointment deleted successfully' };
+  }
+  // ============= AUTO CLEANUP UNPAID & EXPIRED APPOINTMENTS =============
+  async cleanupExpiredUnpaidAppointments() {
+    const cutoff = new Date(Date.now() - UNPAID_EXPIRE_MINUTES * 60 * 1000);
+
+    // tìm các lịch chưa thanh toán đã quá hạn
+    const expired = await prisma.appointment.findMany({
+      where: {
+        status: 'PENDING',
+        paymentStatus: 'REQUIRES_PAYMENT',
+        createdAt: { lt: cutoff },
+      },
+      select: {
+        id: true,
+        slotId: true,
+      },
+    });
+
+    if (!expired.length) return { count: 0 };
+
+    for (const appt of expired) {
+      try {
+        await prisma.$transaction(async (tx) => {
+          // nhả slot nếu có
+          if (appt.slotId) {
+            await tx.doctorSlot.update({
+              where: { id: appt.slotId },
+              data: { isBooked: false },
+            });
+          }
+
+          // xóa mọi payment gắn với appointment này
+          await tx.payment.deleteMany({
+            where: { appointmentId: appt.id },
+          });
+
+          // xóa appointment
+          await tx.appointment.delete({
+            where: { id: appt.id },
+          });
+        });
+      } catch (err) {
+        console.error('Failed to cleanup expired appointment', appt.id, err);
+      }
+    }
+
+    return { count: expired.length };
   }
 
   // ============= STATISTICS =============

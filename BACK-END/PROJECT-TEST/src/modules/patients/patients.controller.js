@@ -46,10 +46,24 @@ async function listPaidAppointments(req, res) {
     return R.badRequest(res, e.message || 'Bad request');
   }
 }
-
+// nhắc lịch trong withinMinutes (default 5)
+async function listUpcomingReminders(req, res) {
+  try {
+    const withinMinutes = req.query.withinMinutes || '5';
+    const items = await svc.getUpcomingAppointmentReminders(
+      req.user.id,
+      withinMinutes
+    );
+    return R.ok(res, items);
+  } catch (e) {
+    console.error(e);
+    return R.badRequest(res, e.message || 'Bad request');
+  }
+}
 module.exports = {
   getProfile,
   updateProfile,
   listAppointments,
   listPaidAppointments,
+  listUpcomingReminders
 };
