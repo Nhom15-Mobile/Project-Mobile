@@ -9,7 +9,7 @@ export const AddDoctorSlot = () => {
     startTime: '',
     endTime: '',
     numberOfSlots: 1,
-    slotDuration: 30, // minutes per slot
+    slotDuration: 30, // phút / slot
   });
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,7 +22,13 @@ export const AddDoctorSlot = () => {
 
   useEffect(() => {
     generatePreview();
-  }, [formData.date, formData.startTime, formData.endTime, formData.numberOfSlots, formData.slotDuration]);
+  }, [
+    formData.date,
+    formData.startTime,
+    formData.endTime,
+    formData.numberOfSlots,
+    formData.slotDuration,
+  ]);
 
   const fetchDoctors = async () => {
     try {
@@ -32,36 +38,69 @@ export const AddDoctorSlot = () => {
       setDoctors(Array.isArray(doctorsList) ? doctorsList : []);
     } catch (error) {
       console.error('Failed to load doctors:', error);
+      setDoctors([]);
     }
   };
 
   const generatePreview = () => {
-    if (!formData.date || !formData.startTime || !formData.endTime || !formData.numberOfSlots) {
+    const { date, startTime, endTime, numberOfSlots, slotDuration } = formData;
+
+    if (!date || !startTime || !endTime) {
       setPreview([]);
       return;
     }
 
-    const startDateTime = new Date(`${formData.date}T${formData.startTime}`);
-    const endDateTime = new Date(`${formData.date}T${formData.endTime}`);
+    const startDateTime = new Date(`${date}T${startTime}`);
+    const endDateTime = new Date(`${date}T${endTime}`);
+
+    if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+      setPreview([]);
+      return;
+    }
 
     if (startDateTime >= endDateTime) {
       setPreview([]);
       return;
     }
 
-    const totalMinutes = (endDateTime - startDateTime) / (1000 * 60);
-    const slotDuration = totalMinutes / formData.numberOfSlots;
-
     const slots = [];
-    for (let i = 0; i < formData.numberOfSlots; i++) {
-      const slotStart = new Date(startDateTime.getTime() + i * slotDuration * 60 * 1000);
-      const slotEnd = new Date(slotStart.getTime() + slotDuration * 60 * 1000);
 
-      slots.push({
-        start: slotStart,
-        end: slotEnd,
-        duration: Math.round(slotDuration),
-      });
+    // Nếu m muốn chia đều theo numberOfSlots:
+    if (numberOfSlots && numberOfSlots > 0) {
+      const totalMinutes = (endDateTime - startDateTime) / (1000 * 60);
+      const perSlot = totalMinutes / numberOfSlots;
+
+      let cursor = new Date(startDateTime);
+      for (let i = 0; i < numberOfSlots; i++) {
+        const slotStart = new Date(cursor);
+        const slotEnd = new Date(slotStart.getTime() + perSlot * 60 * 1000);
+        if (slotEnd > endDateTime) break;
+
+        slots.push({
+          start: slotStart,
+          end: slotEnd,
+          duration: Math.round(perSlot),
+        });
+
+        cursor = slotEnd;
+      }
+    } else {
+      // Nếu muốn chia theo slotDuration (phòng khi m chỉnh sau này)
+      const duration = Number(slotDuration) || 30;
+      let cursor = new Date(startDateTime);
+      while (cursor < endDateTime) {
+        const slotStart = new Date(cursor);
+        const slotEnd = new Date(slotStart.getTime() + duration * 60 * 1000);
+        if (slotEnd > endDateTime) break;
+
+        slots.push({
+          start: slotStart,
+          end: slotEnd,
+          duration,
+        });
+
+        cursor = slotEnd;
+      }
     }
 
     setPreview(slots);
@@ -72,6 +111,12 @@ export const AddDoctorSlot = () => {
     setLoading(true);
     setMessage({ type: '', text: '' });
 
+    if (!formData.doctorId) {
+      setMessage({ type: 'error', text: 'Please select a doctor' });
+      setLoading(false);
+      return;
+    }
+
     if (preview.length === 0) {
       setMessage({ type: 'error', text: 'Please fill in all fields correctly' });
       setLoading(false);
@@ -79,15 +124,15 @@ export const AddDoctorSlot = () => {
     }
 
     try {
-      // Create all slots
-      const promises = preview.map(slot =>
-        adminAPI.createDoctorSlot({
-          doctorId: formData.doctorId,
-          start: slot.start.toISOString(),
-          end: slot.end.toISOString(),
-        })
-      );
+      const payloads = preview.map((slot) => ({
+        doctorId: formData.doctorId,
+        start: slot.start.toISOString(),
+        end: slot.end.toISOString(),
+      }));
 
+      console.log('Creating slots with payloads:', payloads);
+
+      const promises = payloads.map((body) => adminAPI.createDoctorSlot(body));
       await Promise.all(promises);
 
       setMessage({
@@ -105,6 +150,7 @@ export const AddDoctorSlot = () => {
       });
       setPreview([]);
     } catch (error) {
+      console.error('Create slot error:', error);
       setMessage({
         type: 'error',
         text: error.response?.data?.message || 'Failed to create doctor slots',
@@ -145,12 +191,16 @@ export const AddDoctorSlot = () => {
               label="Doctor"
               required
               value={formData.doctorId}
-              onChange={(e) => setFormData({ ...formData, doctorId: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, doctorId: e.target.value })
+              }
               options={[
                 { value: '', label: 'Select Doctor...' },
                 ...doctors.map((doc) => ({
-                  value: doc.id,
-                  label: `${doc.fullName || 'Unknown'} - ${doc.doctor?.specialty || 'No specialty'}`,
+                  value: doc.id, // user.id (đúng với backend)
+                  label: `${doc.fullName || 'Unknown'} - ${
+                    doc.doctor?.specialty || 'No specialty'
+                  }`,
                 })),
               ]}
             />
@@ -160,7 +210,9 @@ export const AddDoctorSlot = () => {
               type="date"
               required
               value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, date: e.target.value })
+              }
               min={new Date().toISOString().split('T')[0]}
             />
 
@@ -170,14 +222,18 @@ export const AddDoctorSlot = () => {
                 type="time"
                 required
                 value={formData.startTime}
-                onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, startTime: e.target.value })
+                }
               />
               <Input
                 label="End Time"
                 type="time"
                 required
                 value={formData.endTime}
-                onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, endTime: e.target.value })
+                }
               />
             </div>
 
@@ -189,20 +245,25 @@ export const AddDoctorSlot = () => {
               max="50"
               value={formData.numberOfSlots}
               onChange={(e) =>
-                setFormData({ ...formData, numberOfSlots: parseInt(e.target.value) || 1 })
+                setFormData({
+                  ...formData,
+                  numberOfSlots: parseInt(e.target.value, 10) || 1,
+                })
               }
             />
 
             <div className="bg-blue-50 p-4 rounded-lg">
               <p className="text-sm text-blue-800">
-                <strong>Info:</strong> The time range will be divided into {formData.numberOfSlots}{' '}
-                equal slots. Each slot will be approximately{' '}
-                {preview.length > 0 ? preview[0].duration : 0} minutes.
+                <strong>Info:</strong> The time range will be divided into{' '}
+                {formData.numberOfSlots} equal slots. Each slot will be
+                approximately {preview.length > 0 ? preview[0].duration : 0}{' '}
+                minutes.
               </p>
             </div>
 
             <Button type="submit" loading={loading} className="w-full">
-              Create {formData.numberOfSlots} Slot{formData.numberOfSlots > 1 ? 's' : ''}
+              Create {formData.numberOfSlots}{' '}
+              Slot{formData.numberOfSlots > 1 ? 's' : ''}
             </Button>
           </form>
         </Card>
@@ -225,7 +286,9 @@ export const AddDoctorSlot = () => {
                       <p className="font-medium text-gray-900">
                         {formatTime(slot.start)} - {formatTime(slot.end)}
                       </p>
-                      <p className="text-xs text-gray-500">{slot.duration} minutes</p>
+                      <p className="text-xs text-gray-500">
+                        {slot.duration} minutes
+                      </p>
                     </div>
                   </div>
                   <span className="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">
@@ -256,8 +319,11 @@ export const AddDoctorSlot = () => {
           {preview.length > 0 && (
             <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
               <p className="text-sm text-green-800">
-                <strong>Total:</strong> {preview.length} slots will be created on{' '}
-                {formData.date ? new Date(formData.date).toLocaleDateString() : ''}
+                <strong>Total:</strong> {preview.length} slots will be created
+                on{' '}
+                {formData.date
+                  ? new Date(formData.date).toLocaleDateString()
+                  : ''}
               </p>
             </div>
           )}
