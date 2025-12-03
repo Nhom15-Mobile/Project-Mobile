@@ -13,13 +13,14 @@ export const ViewDoctorSlots = () => {
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({
     total: 0,
+    availableCount: 0,
+    bookedCount: 0,
     page: 1,
     pages: 1,
     limit: 50,
   });
 
   useEffect(() => {
-    // load trang đầu tiên
     fetchSlots(1);
   }, []);
 
@@ -28,7 +29,6 @@ export const ViewDoctorSlots = () => {
       setLoading(true);
       setMessage({ type: '', text: '' });
 
-      // gọi API có truyền page & limit
       const response = await adminAPI.getDoctorSlots({
         page: pageToLoad,
         limit: 50,
@@ -39,14 +39,18 @@ export const ViewDoctorSlots = () => {
 
       setSlots(Array.isArray(slotsList) ? slotsList : []);
 
-      const pg = data.pagination || {
-        total: Array.isArray(slotsList) ? slotsList.length : 0,
-        page: pageToLoad,
-        pages: 1,
-        limit: 50,
-      };
-      setPagination(pg);
-      setPage(pg.page);
+      const pg = data.pagination || {};
+      setPagination({
+        total: pg.total ?? (Array.isArray(slotsList) ? slotsList.length : 0),
+        availableCount:
+          pg.availableCount ?? slotsList.filter((s) => !s.isBooked).length,
+        bookedCount:
+          pg.bookedCount ?? slotsList.filter((s) => s.isBooked).length,
+        page: pg.page ?? pageToLoad,
+        pages: pg.pages ?? 1,
+        limit: pg.limit ?? 50,
+      });
+      setPage(pg.page ?? pageToLoad);
     } catch (error) {
       setMessage({
         type: 'error',
@@ -98,24 +102,25 @@ export const ViewDoctorSlots = () => {
         </div>
       )}
 
+      {/* filter + count dùng tổng toàn bộ */}
       <div className="mb-4 flex gap-2">
         <Button
           variant={filter === 'all' ? 'primary' : 'outline'}
           onClick={() => setFilter('all')}
         >
-          All ({slots.length})
+          All ({pagination.total})
         </Button>
         <Button
           variant={filter === 'available' ? 'success' : 'outline'}
           onClick={() => setFilter('available')}
         >
-          Available ({slots.filter((s) => !s.isBooked).length})
+          Available ({pagination.availableCount})
         </Button>
         <Button
           variant={filter === 'booked' ? 'danger' : 'outline'}
           onClick={() => setFilter('booked')}
         >
-          Booked ({slots.filter((s) => s.isBooked).length})
+          Booked ({pagination.bookedCount})
         </Button>
       </div>
 
@@ -159,8 +164,7 @@ export const ViewDoctorSlots = () => {
                 <tbody className="divide-y">
                   {filteredSlots.map((slot) => {
                     const duration = Math.round(
-                      (new Date(slot.end) - new Date(slot.start)) /
-                        (1000 * 60)
+                      (new Date(slot.end) - new Date(slot.start)) / (1000 * 60)
                     );
                     return (
                       <tr key={slot.id} className="hover:bg-gray-50">
@@ -180,10 +184,7 @@ export const ViewDoctorSlots = () => {
                           {slot.doctor?.specialty || '-'}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600">
-                          {format(
-                            new Date(slot.start),
-                            'MMM dd, yyyy HH:mm'
-                          )}
+                          {format(new Date(slot.start), 'MMM dd, yyyy HH:mm')}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600">
                           {format(new Date(slot.end), 'HH:mm')}
@@ -269,12 +270,14 @@ export const ViewDoctorSlots = () => {
           </div>
           <div>
             <p className="text-sm text-green-600">
-              <strong>Available:</strong> {slots.filter((s) => !s.isBooked).length}
+              <strong>Available (this page):</strong>{' '}
+              {slots.filter((s) => !s.isBooked).length}
             </p>
           </div>
           <div>
             <p className="text-sm text-red-600">
-              <strong>Booked:</strong> {slots.filter((s) => s.isBooked).length}
+              <strong>Booked (this page):</strong>{' '}
+              {slots.filter((s) => s.isBooked).length}
             </p>
           </div>
           <div className="col-span-3">

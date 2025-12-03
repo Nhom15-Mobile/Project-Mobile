@@ -375,62 +375,128 @@ class AdminService {
   //   };
   // }
 // ============= DOCTOR SLOT MANAGEMENT =============
-async getDoctorSlots(filters = {}) {
-  await this.cleanupExpiredUnpaidAppointments();
-  let { doctorId, date, isBooked, page = 1, limit = 50 } = filters;
+// async getDoctorSlots(filters = {}) {
+//   await this.cleanupExpiredUnpaidAppointments();
+//   let { doctorId, date, isBooked, page = 1, limit = 50 } = filters;
 
-  // query string luôn là string -> ép về number
-  const pageNum = parseInt(page, 10) || 1;
-  const limitNum = parseInt(limit, 10) || 50;
-  const skip = (pageNum - 1) * limitNum;
+//   // query string luôn là string -> ép về number
+//   const pageNum = parseInt(page, 10) || 1;
+//   const limitNum = parseInt(limit, 10) || 50;
+//   const skip = (pageNum - 1) * limitNum;
+
+//   const where = {};
+//   if (doctorId) where.doctorId = doctorId;
+//   if (typeof isBooked !== 'undefined') where.isBooked = isBooked === 'true';
+
+//   if (date) {
+//     const startOfDay = new Date(date);
+//     startOfDay.setHours(0, 0, 0, 0);
+//     const endOfDay = new Date(date);
+//     endOfDay.setHours(23, 59, 59, 999);
+
+//     where.start = { gte: startOfDay, lte: endOfDay };
+//   }
+
+//   const [slots, total] = await Promise.all([
+//     prisma.doctorSlot.findMany({
+//       where,
+//       skip,
+//       take: limitNum,   // <- dùng number
+//       include: {
+//         doctor: {
+//           include: {
+//             user: {
+//               select: {
+//                 id: true,
+//                 fullName: true,
+//                 email: true,
+//               }
+//             }
+//           }
+//         }
+//       },
+//       orderBy: { start: 'asc' }
+//     }),
+//     prisma.doctorSlot.count({ where })
+//   ]);
+
+//   return {
+//     slots,
+//     pagination: {
+//       total,
+//       page: pageNum,
+//       limit: limitNum,
+//       pages: Math.ceil(total / limitNum)
+//     }
+//   };
+// }
+async getDoctorSlots(filters = {}) {
+  // dọn rác appointment hết hạn trước
+  await this.cleanupExpiredUnpaidAppointments();
+
+  const {
+    doctorId,
+    date,
+    isBooked,
+    page = 1,
+    limit = 50,
+  } = filters;
+
+  const skip = (page - 1) * limit;
 
   const where = {};
   if (doctorId) where.doctorId = doctorId;
-  if (typeof isBooked !== 'undefined') where.isBooked = isBooked === 'true';
+
+  // nếu có filter isBooked (true/false) thì apply vào where
+  if (typeof isBooked === 'boolean') {
+    where.isBooked = isBooked;
+  }
 
   if (date) {
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
+
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    where.start = { gte: startOfDay, lte: endOfDay };
+    where.start = { gte: startOfDay, lt: endOfDay };
   }
 
-  const [slots, total] = await Promise.all([
+  const [items, total, availableCount, bookedCount] = await Promise.all([
     prisma.doctorSlot.findMany({
       where,
-      skip,
-      take: limitNum,   // <- dùng number
       include: {
         doctor: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                fullName: true,
-                email: true,
-              }
-            }
-          }
-        }
+          include: { user: true },
+        },
       },
-      orderBy: { start: 'asc' }
+      orderBy: { start: 'asc' },
+      skip,
+      take: Number(limit),
     }),
-    prisma.doctorSlot.count({ where })
+    prisma.doctorSlot.count({ where }),
+    prisma.doctorSlot.count({
+      where: { ...where, isBooked: false },
+    }),
+    prisma.doctorSlot.count({
+      where: { ...where, isBooked: true },
+    }),
   ]);
 
+  const pages = Math.max(Math.ceil(total / limit), 1);
+
   return {
-    slots,
+    slots: items,
     pagination: {
-      total,
-      page: pageNum,
-      limit: limitNum,
-      pages: Math.ceil(total / limitNum)
-    }
+      total,            // tổng slot
+      availableCount,   // tổng slot available
+      bookedCount,      // tổng slot booked
+      page: Number(page),
+      pages,
+      limit: Number(limit),
+    },
   };
 }
-
   async deleteDoctorSlot(slotId) {
     // Check if slot is booked
     const slot = await prisma.doctorSlot.findUnique({
