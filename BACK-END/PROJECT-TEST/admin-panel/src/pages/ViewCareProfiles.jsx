@@ -15,11 +15,12 @@ export const ViewCareProfiles = () => {
   const fetchCareProfiles = async () => {
     try {
       setLoading(true);
+
       const response = await adminAPI.getCareProfiles();
       const data = response.data.data || response.data;
-      // Backend returns { data: { careProfiles: [], pagination: {} } }
-      const profilesList = data.careProfiles || data;
-      setCareProfiles(Array.isArray(profilesList) ? profilesList : []);
+
+      const profileList = data.careProfiles || data;
+      setCareProfiles(Array.isArray(profileList) ? profileList : []);
     } catch (error) {
       setMessage({
         type: 'error',
@@ -33,16 +34,19 @@ export const ViewCareProfiles = () => {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     setMessage({ type: 'success', text: 'ID copied to clipboard!' });
+
     setTimeout(() => setMessage({ type: '', text: '' }), 2000);
   };
 
   return (
     <div>
+      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Care Profiles</h1>
         <Button onClick={fetchCareProfiles}>Refresh</Button>
       </div>
 
+      {/* Message */}
       {message.text && (
         <div className="mb-4">
           <Alert
@@ -53,6 +57,7 @@ export const ViewCareProfiles = () => {
         </div>
       )}
 
+      {/* Table */}
       <Card>
         {loading ? (
           <div className="flex justify-center py-8">
@@ -73,44 +78,48 @@ export const ViewCareProfiles = () => {
                   <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
                 </tr>
               </thead>
+
               <tbody className="divide-y">
                 {careProfiles.map((profile) => (
                   <tr key={profile.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm font-mono">
                       <button
                         onClick={() => copyToClipboard(profile.id)}
-                        className="text-blue-600 hover:text-blue-800 hover:underline"
-                        title="Click to copy"
+                        className="text-blue-600 hover:underline"
                       >
                         {profile.id.slice(0, 8)}...
                       </button>
                     </td>
+
                     <td className="px-4 py-3 text-sm font-medium text-gray-900">
                       {profile.fullName}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
+
+                    <td className="px-4 py-3 text-sm">
                       <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">
                         {profile.relation}
                       </span>
                     </td>
+
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {profile.owner?.fullName || '-'}
                     </td>
+
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {profile.dob ? format(new Date(profile.dob), 'MMM dd, yyyy') : '-'}
                     </td>
+
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {profile.gender || '-'}
                     </td>
+
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {profile.phone || '-'}
                     </td>
+
                     <td className="px-4 py-3 text-sm">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => copyToClipboard(profile.id)}
-                      >
+                      <Button size="sm" variant="outline"
+                        onClick={() => copyToClipboard(profile.id)}>
                         Copy ID
                       </Button>
                     </td>
@@ -133,6 +142,7 @@ export const ViewCareProfiles = () => {
           <p className="text-sm text-gray-600">
             <strong>Total Care Profiles:</strong> {careProfiles.length}
           </p>
+
           <p className="text-sm text-gray-600 mt-1">
             <strong>Tip:</strong> Click on any ID to copy it to clipboard for creating appointments.
           </p>
