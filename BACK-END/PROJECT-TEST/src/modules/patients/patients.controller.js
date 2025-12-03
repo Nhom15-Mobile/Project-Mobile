@@ -36,4 +36,34 @@ async function listAppointments(req, res) {
   }
 }
 
-module.exports = { getProfile, updateProfile, listAppointments };
+// CHỈ trả về các lịch đã thanh toán
+async function listPaidAppointments(req, res) {
+  try {
+    const items = await svc.getPaidAppointments(req.user.id);
+    return R.ok(res, items);
+  } catch (e) {
+    console.error(e);
+    return R.badRequest(res, e.message || 'Bad request');
+  }
+}
+// nhắc lịch trong withinMinutes (default 5)
+async function listUpcomingReminders(req, res) {
+  try {
+    const withinMinutes = req.query.withinMinutes || '5';
+    const items = await svc.getUpcomingAppointmentReminders(
+      req.user.id,
+      withinMinutes
+    );
+    return R.ok(res, items);
+  } catch (e) {
+    console.error(e);
+    return R.badRequest(res, e.message || 'Bad request');
+  }
+}
+module.exports = {
+  getProfile,
+  updateProfile,
+  listAppointments,
+  listPaidAppointments,
+  listUpcomingReminders
+};

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tester - Care Profile & Features</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .subtitle { font-size: 1.1em; opacity: 0.9; }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 0.9em;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .response {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+            color: #333;
+        }
+        
+        .success { color: #28a745; border-left: 4px solid #28a745; }
+        .error { color: #dc3545; border-left: 4px solid #dc3545; }
+        .loading { color: #007bff; }
+        
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .status.ok { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        
+        .grid-full {
+            grid-column: 1 / -1;
+        }
+        
+        .token-section {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .token-section h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .token-text {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.8em;
+            max-height: 100px;
+            overflow-y: auto;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 API Tester</h1>
+            <p class="subtitle">Healthcare Backend - Care Profile & Features</p>
+        </header>
+        
+        <div class="content">
+            <!-- Token Section -->
+            <div class="token-section grid-full">
+                <h3>🔐 Authentication Token</h3>
+                <div class="token-text" id="tokenDisplay">
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWlscHR3dWEwMDAwbmp1czNrd3k5cmFqIiwicm9sZSI6IlBBVElFTlQiLCJpYXQiOjE3NjQ1MTMyMDIsImV4cCI6MTc2NTExODAwMn0.9qupH31fnlsCcguWW6BCHhAXLu0xVnPzq9xdfG94T1w
+                </div>
+            </div>
+
+            <!-- Get Current User -->
+            <div class="section">
+                <h2>👤 Get Current User</h2>
+                <button onclick="getMe()">Get My Profile</button>
+                <div class="response" id="meResponse"></div>
+            </div>
+
+            <!-- Get All Users -->
+            <div class="section">
+                <h2>👥 Get All Users</h2>
+                <button onclick="getAllUsers()">List All Users</button>
+                <div class="response" id="usersResponse"></div>
+            </div>
+
+            <!-- Create Care Profile -->
+            <div class="section">
+                <h2>👨‍👩‍👧 Create Care Profile</h2>
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="firstName" value="Jane" placeholder="First name">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="lastName" value="Doe" placeholder="Last name">
+                </div>
+                <div class="form-group">
+                    <label>Relation</label>
+                    <input type="text" id="relation" value="Spouse" placeholder="e.g. Spouse, Parent">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" id="phone" value="0912345678" placeholder="Phone number">
+                </div>
+                <button onclick="createCareProfile()">Create</button>
+                <div class="response" id="createCareResponse"></div>
+            </div>
+
+            <!-- Get Care Profiles -->
+            <div class="section">
+                <h2>📋 Get Care Profiles</h2>
+                <button onclick="getCareProfiles()">List Care Profiles</button>
+                <div class="response" id="careProfilesResponse"></div>
+            </div>
+
+            <!-- Get Doctors -->
+            <div class="section">
+                <h2>⚕️ Get Doctors</h2>
+                <button onclick="getDoctors()">List Doctors</button>
+                <div class="response" id="doctorsResponse"></div>
+            </div>
+
+            <!-- Get Notifications -->
+            <div class="section">
+                <h2>🔔 Get Notifications</h2>
+                <button onclick="getNotifications()">List Notifications</button>
+                <div class="response" id="notificationsResponse"></div>
+            </div>
+
+            <!-- Get Locations -->
+            <div class="section">
+                <h2>📍 Get Provinces</h2>
+                <button onclick="getProvinces()">List Provinces</button>
+                <div class="response" id="provincesResponse"></div>
+            </div>
+
+            <!-- Get Appointments -->
+            <div class="section">
+                <h2>📅 Get Appointments</h2>
+                <button onclick="getAvailableSlots()">Get Available Slots</button>
+                <div class="response" id="appointmentsResponse"></div>
+            </div>
+
+            <!-- Delete Care Profile -->
+            <div class="section grid-full">
+                <h2>🗑️ Delete Care Profile</h2>
+                <div class="form-group">
+                    <label>Care Profile ID</label>
+                    <input type="text" id="deleteId" placeholder="Paste care profile ID here">
+                </div>
+                <button onclick="deleteCareProfile()">Delete</button>
+                <div class="response" id="deleteResponse"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWlscHR3dWEwMDAwbmp1czNrd3k5cmFqIiwicm9sZSI6IlBBVElFTlQiLCJpYXQiOjE3NjQ1MTMyMDIsImV4cCI6MTc2NTExODAwMn0.9qupH31fnlsCcguWW6BCHhAXLu0xVnPzq9xdfG94T1w";
+        const API = "http://localhost:4000/api";
+
+        async function apiCall(endpoint, method = "GET", body = null) {
+            try {
+                const options = {
+                    method,
+                    headers: {
+                        "Authorization": `Bearer ${TOKEN}`,
+                        "Content-Type": "application/json"
+                    }
+                };
+                if (body) options.body = JSON.stringify(body);
+                
+                const response = await fetch(`${API}${endpoint}`, options);
+                const data = await response.json();
+                return { ok: response.ok, data, status: response.status };
+            } catch (error) {
+                return { ok: false, error: error.message };
+            }
+        }
+
+        async function getMe() {
+            const result = await apiCall("/users/me");
+            const div = document.getElementById("meResponse");
+            if (result.ok) {
+                div.className = "response success";
+                div.textContent = JSON.stringify(result.data.data, null, 2);
+            } else {
+                div.className = "response error";
+                div.textContent = "Error: " + JSON.stringify(result);
+            }
+        }
+
+        async function getAllUsers() {
+            const result = await apiCall("/users");
+            const div = document.getElementById("usersResponse");
+            if (result.ok) {
+                const users = result.data.data;
+                div.className = "response success";
+                div.textContent = `Total: ${users.length}\n\n${JSON.stringify(users.slice(0, 3), null, 2)}`;
+            } else {
+                div.className = "response error";
+                div.textContent = "Error: " + JSON.stringify(result);
+            }
+        }
+
+        async function createCareProfile() {
+            const body = {
+                firstName: document.getElementById("firstName").value,
+                lastName: document.getElementById("lastName").value,
+                relation: document.getElementById("relation").value,
+                phone: document.getElementById("phone").value,
+                dob: "1992-05-20",
+                gender: "FEMALE"
+            };
+            
+            const result = await apiCall("/care-profiles", "POST", body);
+            const div = document.getElementById("createCareResponse");
+            if (result.ok) {
+                div.className = "response success";
+                const careId = result.data.data?.id;
+                div.textContent = `✅ Created!\nID: ${careId}\n\n${JSON.stringify(result.data.data, null, 2)}`;
+                document.getElementById("deleteId").value = careId;
+            } else {
+                div.className = "response error";
+                div.textContent = "Error: " + JSON.stringify(result.data);
+            }
+        }
+
+        async function getCareProfiles() {
+            const result = await apiCall("/care-profiles");
+            const div = document.getElementById("careProfilesResponse");
+            if (result.ok) {
+                const profiles = result.data.data;
+                div.className = "response success";
+                div.textContent = `Total: ${profiles.length}\n\n${JSON.stringify(profiles, null, 2)}`;
+            } else {
+                div.className = "response error";
+                div.textContent = "Error: " + JSON.stringify(result);
+            }
+        }
+
+        async function getDoctors() {
+            const result = await apiCall("/doctors");
+            const div = document.getElementById("doctorsResponse");
+            if (result.ok) {
+                const doctors = result.data.data;
+                div.className = "response success";
+                div.textContent = `Total: ${doctors.length}\n\n${JSON.stringify(doctors.slice(0, 2), null, 2)}`;
+            } else {
+                div.className = "response error";
+                div.textContent = "Error: " + JSON.stringify(result);
+            }
+        }
+
+        async function getNotifications() {
+            const result = await apiCall("/notifications");
+            const div = document.getElementById("notificationsResponse");
+            if (result.ok) {
+                const notifs = result.data.data;
+                div.className = "response success";
+                div.textContent = `Total: ${notifs.length}\n\n${JSON.stringify(notifs, null, 2)}`;
+            } else {
+                div.className = "response error";
+                div.textContent = "Error: " + JSON.stringify(result);
+            }
+        }
+
+        async function getProvinces() {
+            const result = await apiCall("/locations/provinces");
+            const div = document.getElementById("provincesResponse");
+            if (result.ok) {
+                const provinces = result.data;
+                div.className = "response success";
+                div.textContent = `Total: ${provinces.length}\n\n${JSON.stringify(provinces.slice(0, 5), null, 2)}`;
+            } else {
+                div.className = "response error";
+                div.textContent = "Error: " + JSON.stringify(result);
+            }
+        }
+
+        async function getAvailableSlots() {
+            const result = await apiCall("/appointments/available");
+            const div = document.getElementById("appointmentsResponse");
+            if (result.ok) {
+                div.className = "response success";
+                div.textContent = JSON.stringify(result.data, null, 2);
+            } else {
+                div.className = "response error";
+                div.textContent = "Error: " + JSON.stringify(result.data);
+            }
+        }
+
+        async function deleteCareProfile() {
+            const id = document.getElementById("deleteId").value;
+            if (!id) {
+                alert("Please enter Care Profile ID");
+                return;
+            }
+            
+            const result = await apiCall(`/care-profiles/${id}`, "DELETE");
+            const div = document.getElementById("deleteResponse");
+            if (result.ok) {
+                div.className = "response success";
+                div.textContent = `✅ Deleted!\n\n${JSON.stringify(result.data, null, 2)}`;
+            } else {
+                div.className = "response error";
+                div.textContent = "Error: " + JSON.stringify(result.data);
+            }
+        }
+
+        // Auto-load on page load
+        window.onload = () => {
+            getMe();
+            getAllUsers();
+            getCareProfiles();
+            getDoctors();
+        };
+    </script>
+</body>
+</html>

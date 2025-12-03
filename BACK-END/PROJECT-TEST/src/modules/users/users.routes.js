@@ -5,6 +5,8 @@ const ctrl = require('./users.controller');
 
 
 router.get('/me', auth, ctrl.me);
+router.get('/', auth, ctrl.getAll);
+router.get('/:id', auth, ctrl.getById);
 
 
 module.exports = router;

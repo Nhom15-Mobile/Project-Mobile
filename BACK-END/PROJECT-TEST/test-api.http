@@ -1,0 +1,131 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@token = 
+
+### Health Check
+GET {{baseUrl}}/health
+
+### 1. AUTHENTICATION TESTS
+
+### Register User
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Test@123456",
+  "fullName": "Test User"
+}
+
+### Login User
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Test@123456"
+}
+
+### Get Current User Profile
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{token}}
+
+### 2. USER MANAGEMENT TESTS
+
+### Get All Users
+GET {{baseUrl}}/users
+Authorization: Bearer {{token}}
+
+### Get User By ID
+GET {{baseUrl}}/users/1
+Authorization: Bearer {{token}}
+
+### 3. PATIENT TESTS
+
+### Create Patient
+POST {{baseUrl}}/patient
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john@example.com",
+  "phone": "0123456789",
+  "dateOfBirth": "1990-01-01",
+  "gender": "MALE",
+  "address": "123 Main St"
+}
+
+### Get All Patients
+GET {{baseUrl}}/patient
+Authorization: Bearer {{token}}
+
+### 4. DOCTOR TESTS
+
+### Create Doctor
+POST {{baseUrl}}/doctors
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "firstName": "Dr",
+  "lastName": "Smith",
+  "email": "doctor@example.com",
+  "specialization": "Cardiology",
+  "licenseNumber": "LIC123456",
+  "phone": "0987654321"
+}
+
+### Get All Doctors
+GET {{baseUrl}}/doctors
+Authorization: Bearer {{token}}
+
+### 5. APPOINTMENT TESTS
+
+### Create Appointment
+POST {{baseUrl}}/appointments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "patientId": 1,
+  "doctorId": 1,
+  "appointmentDate": "2025-12-20T10:00:00Z",
+  "reason": "Check-up",
+  "status": "SCHEDULED"
+}
+
+### Get All Appointments
+GET {{baseUrl}}/appointments
+Authorization: Bearer {{token}}
+
+### 6. PAYMENT TESTS
+
+### Get All Payments
+GET {{baseUrl}}/payments
+Authorization: Bearer {{token}}
+
+### 7. NOTIFICATIONS TESTS
+
+### Get All Notifications
+GET {{baseUrl}}/notifications
+Authorization: Bearer {{token}}
+
+### 8. CARE PROFILES TESTS
+
+### Get All Care Profiles
+GET {{baseUrl}}/care-profiles
+Authorization: Bearer {{token}}
+
+### 9. LOCATIONS TESTS
+
+### Get All Locations
+GET {{baseUrl}}/locations
+Authorization: Bearer {{token}}
+
+### 10. ADMIN TESTS
+
+### Get Admin Dashboard Stats
+GET {{baseUrl}}/admin/stats
+Authorization: Bearer {{token}}

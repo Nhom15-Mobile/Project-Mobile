@@ -17,6 +17,7 @@ const notifRoutes = require('./modules/notifications/notifications.routes');
 const userRoutes = require('./modules/users/users.routes');
 const careProfileRoutes = require('./modules/careProfiles/careProfiles.routes');
 const locationRoutes = require('./modules/locations/locations.routes');
+const adminRoutes = require('./modules/admin/admin.routes');
 
 const app = express();
 
@@ -26,6 +27,9 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json({ limit: '1mb' }));
+
+// Serve static files (admin frontend)
+app.use(express.static('public'));
 
 // Health
 app.get('/api/health', (req, res) => res.json({ ok: true }));
@@ -40,6 +44,7 @@ app.use('/api/notifications', notifRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/care-profiles', careProfileRoutes);
 app.use('/api/locations', locationRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Errors (always last)
 app.use(notFound);
