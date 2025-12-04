@@ -3,20 +3,30 @@ const Joi = require('joi');
 
 // Base fields (UI yêu cầu)
 const base = {
-  fullName: Joi.string().min(2).required(),
-  relation: Joi.string().min(1).required(),
+  // Bắt buộc
+  fullName: Joi.string().min(2).required().messages({
+    'any.required': 'Tên đầy đủ không được để trống',
+    'string.empty': 'Tên đầy đủ không được để trống',
+    
+  }),
+  relation: Joi.string().min(1).required().messages({
+    'any.required': 'Quan hệ không được để trống',
+    'string.empty': 'Quan hệ không được để trống',
+    
+  }),
+  dob: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}$/).required().messages({
+    'any.required': 'Ngày sinh không được để trống',
+    'string.empty': 'Ngày sinh không được để trống',
+    
+  }),
 
-  // Các field UI hay có — service hiện tại có thể chưa lưu hết, nhưng ta cho đi qua để sau muốn lưu thì không phải sửa validate
-  phone: Joi.string().pattern(/^[0-9+\s\-().]{6,20}$/).required(),
-  country: Joi.string().min(2).required(),
-
-  gender: Joi.string().valid('male', 'female', 'other').required(),
-  dob: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}$/).required(),
-
-  // optional metadata
-  email: Joi.string().email().allow('', null),
-  insuranceNo: Joi.string().allow('', null),
-  note: Joi.string().allow('', null),
+  // Optional, nhập gì cũng được
+  phone: Joi.any().optional(),
+  country: Joi.any().optional(),
+  gender: Joi.any().optional(),
+  email: Joi.any().optional(),
+  insuranceNo: Joi.any().optional(),
+  note: Joi.any().optional(),
 };
 
 // Nhóm địa chỉ theo "tên"
