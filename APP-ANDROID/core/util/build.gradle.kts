@@ -29,9 +29,15 @@ android {
 dependencies {
     // Module util là tiện ích thuần, KHÔNG cần UI libs như appcompat/material.
     // Chỉ thêm khi thật sự dùng.
+    implementation(libs.appcompat)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation(libs.activity)
+    implementation(libs.constraintlayout)
+    implementation(libs.core.splashscreen)
 
     // Nếu viết Kotlin và cần các tiện ích KTX, có thể thêm (không bắt buộc):
     // implementation(libs.androidx.core.ktx)

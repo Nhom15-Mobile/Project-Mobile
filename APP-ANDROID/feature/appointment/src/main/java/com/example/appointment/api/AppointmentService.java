@@ -18,7 +18,6 @@ import retrofit2.http.POST;
 
 public interface AppointmentService {
 
-
     @POST("api/appointments/book")
     Call<AppointmentResponse> bookAppointment(@Body AppointmentRequest request);
 

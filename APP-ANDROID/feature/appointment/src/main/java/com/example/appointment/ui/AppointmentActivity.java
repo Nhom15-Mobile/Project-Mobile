@@ -1,7 +1,6 @@
 package com.example.appointment.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -11,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appointment.R;
+import com.example.appointment.api.CareProfileService;
 import com.example.appointment.model.ItemRecord;
 import com.example.appointment.adapter.RecordAdapter;
 import com.google.android.material.button.MaterialButton;
@@ -18,6 +18,9 @@ import com.uithealthcare.domain.appointment.AppointmentInfo;
 import com.uithealthcare.domain.appointment.AppointmentRequest;
 import com.uithealthcare.domain.careProfile.CareProfile;
 import com.uithealthcare.domain.careProfile.CareProfilesResponse;
+import com.uithealthcare.network.ApiServices;
+import com.uithealthcare.network.SessionInterceptor;
+import com.uithealthcare.util.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +30,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AppointmentActivity extends AppCompatActivity {
-    private SharedPreferences sp;
-    private String TOKEN = null;
-
     private RecyclerView recyclerView;
-    private MaterialButton btnBack;
-    private MaterialButton btnCreateRecord;
-
+    private MaterialButton btnBack, btnCreateRecord;
     private List<ItemRecord> itemRecords;
 
     private AppointmentRequest req;
@@ -43,10 +41,25 @@ public class AppointmentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.appointment_activity);
+        initView();
+        initEvent();
 
-        sp = getSharedPreferences("app_prefs", MODE_PRIVATE); // OK, context đã có
-        TOKEN = sp.getString("access_token", null);
+        SessionManager manager = new SessionManager(this);
 
+        SessionInterceptor.TokenProvider tokenProvider = new SessionInterceptor.TokenProvider() {
+            @Override
+            public String getToken() {
+                return manager.getBearer();
+            }
+        };
+
+        CareProfileService careProfileService = ApiServices.create(CareProfileService.class, tokenProvider);
+
+
+        showOnCardRecord(careProfileService);
+    }
+
+    private void initView(){
         req = new AppointmentRequest();
         appointmentInfo = new AppointmentInfo();
 
@@ -54,20 +67,21 @@ public class AppointmentActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
-
         btnCreateRecord = findViewById(R.id.btnCreateRecord);
-//        btnCreateRecord.setOnClickListener(v ->{
-//            Intent data = new Intent(this, CreateProfileActivity.class);
-//            startActivity(data);
-//        });
 
         itemRecords = new ArrayList<>();
-        showOnCardRecord();
     }
 
-    private void showOnCardRecord(){
-        com.example.appointment.api.CareProfileService.CARE_PROFILE_API.showOnCardCareProfile(this.TOKEN)
+    private void initEvent(){
+        btnBack.setOnClickListener(v -> finish());
+
+        btnCreateRecord.setOnClickListener(v -> {
+            startActivity(new Intent(AppointmentActivity.this, CreateProfileActivity.class));
+        });
+    }
+
+    private void showOnCardRecord(CareProfileService careProfileService){
+        careProfileService.showOnCardCareProfile()
                 .enqueue(new Callback<CareProfilesResponse>() {
                     @Override
                     public void onResponse(Call<CareProfilesResponse> call, Response<CareProfilesResponse> response) {
@@ -77,22 +91,22 @@ public class AppointmentActivity extends AppCompatActivity {
                             for (CareProfile care : list){
                                 itemRecords.add(new ItemRecord(care.getFullName(), care.getId(), care.getPhone()));
                             }
+                            RecordAdapter adapter = new RecordAdapter(itemRecords);
+                            recyclerView.setAdapter(adapter);
+
+                            adapter.setOnItemClickListener(item -> {
+                                Intent i = new Intent(AppointmentActivity.this, SpecialtyActivity.class);
+
+                                req.setCareProfileId(item.getId());
+                                appointmentInfo.setPatientName(item.getName());
+
+                                i.putExtra(AppointmentRequest.EXTRA, req);
+                                i.putExtra(AppointmentInfo.EXTRA, appointmentInfo);
+
+                                Log.d("Req", "Đã có care profile ID: " + req.getCareProfileId());
+                                startActivity(i);
+                            });
                         }
-                        RecordAdapter adapter = new RecordAdapter(itemRecords);
-                        recyclerView.setAdapter(adapter);
-
-                        adapter.setOnItemClickListener(item -> {
-                            Intent i = new Intent(AppointmentActivity.this, SpecialtyActivity.class);
-
-                            req.setCareProfileId(item.getId());
-                            appointmentInfo.setPatientName(item.getName());
-
-                            i.putExtra(AppointmentRequest.EXTRA, req);
-                            i.putExtra(AppointmentInfo.EXTRA, appointmentInfo);
-
-                            Log.d("Req", "Đã có care profile ID: " + req.getCareProfileId());
-                            startActivity(i);
-                        });
                     }
 
                     @Override

@@ -13,6 +13,11 @@ public class ConvertDate {
         return parts[2] + "-" + parts[1] + "-" + parts[0]; // "11-12-2025";
     }
 
+    public static String VNtoDateUS(String date){
+        String[] parts = date.split("/"); // [dd, MM, yyyy]
+        return  parts[2] + "-" + parts[1] + "-" + parts[0];
+    }
+
     public static String ISOtoDateVN(String isoDate){
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
