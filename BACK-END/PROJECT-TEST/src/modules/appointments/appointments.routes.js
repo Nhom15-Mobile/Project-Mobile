@@ -1,10 +1,8 @@
-// src/modules/appointments/appointments.routes.js
 const router = require('express').Router();
 const auth = require('../../middlewares/auth');
 const { allow } = require('../../middlewares/role');
 const ctrl = require('./appointments.controller');
-const validate = require('../../middlewares/validate');
-const v = require('./appointments.validation')
+
 // sau khi login, cả PATIENT/DOCTOR/ADMIN đều có thể xem slot available
 router.get('/available', auth, allow('PATIENT','DOCTOR','ADMIN'), ctrl.available);
 

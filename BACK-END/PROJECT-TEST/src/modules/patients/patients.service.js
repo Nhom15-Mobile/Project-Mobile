@@ -1,7 +1,7 @@
-// src/modules/patients/patients.service.js
 const prisma = require('../../config/db');
 const UNPAID_EXPIRE_MINUTES = 10;
 const REMINDER_WINDOW_DEFAULT_MINUTES = 5;
+
 async function getProfile(userId) {
   return prisma.patientProfile.findUnique({
     where: { userId },
@@ -16,6 +16,7 @@ async function upsertProfile(userId, payload) {
     create: { userId, ...payload },
   });
 }
+
 /// cleanup các lịch PENDING + REQUIRES_PAYMENT đã quá hạn của 1 patient
 async function cleanupExpiredForPatient(patientId) {
   const cutoff = new Date(Date.now() - UNPAID_EXPIRE_MINUTES * 60 * 1000);
@@ -85,6 +86,7 @@ async function getPaidAppointments(userId) {
     orderBy: { updatedAt: 'desc' },
   });
 }
+
 // ========== UPCOMING REMINDERS (nhắc lịch trước X phút) ==========
 async function getUpcomingAppointmentReminders(
   patientId,
@@ -156,10 +158,71 @@ async function getUpcomingAppointmentReminders(
     };
   });
 }
+
+// ========== LIST CÁC APPOINTMENT ĐÃ CÓ KẾT QUẢ KHÁM ==========
+async function getAppointmentResults(patientId) {
+  const appts = await prisma.appointment.findMany({
+    where: {
+      patientId,
+      examResult: { not: null }, // chỉ lấy lịch có kết quả
+    },
+    include: {
+      patient: {
+        select: { id: true, fullName: true, email: true, phone: true },
+      },
+      doctor: {
+        select: { id: true, fullName: true, email: true, phone: true },
+      },
+      careProfile: {
+        select: { id: true, fullName: true, relation: true },
+      },
+    },
+    orderBy: { scheduledAt: 'desc' },
+  });
+
+  // map gọn cho app dùng
+  return appts.map((a) => ({
+    id: a.id,
+    service: a.service,
+    examResult: a.examResult,
+    examDate: a.scheduledAt,
+
+    status: a.status,
+    paymentStatus: a.paymentStatus,
+
+    patient: a.patient
+      ? {
+          id: a.patient.id,
+          fullName: a.patient.fullName, // tên user (owner)
+          email: a.patient.email,
+          phone: a.patient.phone,
+        }
+      : null,
+
+    careProfile: a.careProfile
+      ? {
+          id: a.careProfile.id,
+          fullName: a.careProfile.fullName, // tên care profile
+          relation: a.careProfile.relation,
+        }
+      : null,
+
+    doctor: a.doctor
+      ? {
+          id: a.doctor.id,
+          fullName: a.doctor.fullName, // tên bác sĩ
+          email: a.doctor.email,
+          phone: a.doctor.phone,
+        }
+      : null,
+  }));
+}
+
 module.exports = {
   getProfile,
   upsertProfile,
   getAppointments,
   getPaidAppointments,
-  getUpcomingAppointmentReminders
+  getUpcomingAppointmentReminders,
+  getAppointmentResults, // <--- nhớ export
 };
