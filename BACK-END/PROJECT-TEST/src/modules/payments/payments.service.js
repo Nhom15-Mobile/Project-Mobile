@@ -1,4 +1,3 @@
-// src/modules/payments/payments.service.js
 const axios = require('axios');
 const crypto = require('crypto');
 const prisma = require('../../config/db');
@@ -6,35 +5,30 @@ const config = require('../../config/env');
 const { notifyBooked } = require('../notifications/notifications.service');
 const { generateAppointmentQR } = require('../../utils/qr');
 const QRCode = require('qrcode'); // generate QR cho payUrl
+const { generateInvoicePdf } = require('../../utils/invoicePdf');
+const { sendInvoiceEmail } = require('../../utils/invoiceEmail');
 
 // --- helpers ---
 function signRaw(raw, secretKey) {
   return crypto.createHmac('sha256', secretKey).update(raw).digest('hex');
 }
 
-/**
- * Lấy phí khám theo chuyên khoa:
- * - Ưu tiên đọc từ config.specialties: [{ name, fee }]
- * - Fallback sang config.fees.specialtyFees hoặc fees.defaultSpecialtyFee
- */
 function getFeeBySpecialty(specialty) {
   const name = String(specialty || '').trim();
-  // 1) specialties (mới)
   if (Array.isArray(config.specialties) && config.specialties.length) {
     const found = config.specialties.find(
-      s => String(s.name).trim().toLowerCase() === name.toLowerCase()
+      (s) => String(s.name).trim().toLowerCase() === name.toLowerCase(),
     );
     if (found && Number(found.fee)) return Math.max(1, Math.floor(Number(found.fee)));
   }
-  // 2) fees (cũ)
   const map = config.fees?.specialtyFees || {};
   const v = Number(map[name]) || Number(config.fees?.defaultSpecialtyFee || 150000);
-  return Math.max(1, Math.floor(v)); // int >= 1
+  return Math.max(1, Math.floor(v));
 }
 
 function ensureMomoConfig() {
   const reqKeys = ['partnerCode', 'accessKey', 'secretKey', 'endpoint', 'returnUrl', 'notifyUrl'];
-  const missing = reqKeys.filter(k => !config.momo?.[k]);
+  const missing = reqKeys.filter((k) => !config.momo?.[k]);
   if (missing.length) throw new Error(`MoMo config missing: ${missing.join(', ')}`);
 }
 
@@ -42,54 +36,48 @@ function trimTrailingSlash(u = '') {
   return String(u || '').replace(/\/+$/, '');
 }
 
-// --- MoMo create for an appointment ---
+
+// ------------------ CREATE MOMO -----------------------
 async function createMoMoForAppointment({ appointmentId, byUserId }) {
-  // 0) config guard
   ensureMomoConfig();
 
-  // 1) load appointment + quyền sở hữu
   const appt = await prisma.appointment.findUnique({
     where: { id: appointmentId },
     include: {
       patient: { select: { id: true, fullName: true } },
-      doctor:  { select: { id: true, fullName: true } },
+      doctor: { select: { id: true, fullName: true } },
       careProfile: true,
-      slot: true
-    }
+      slot: true,
+    },
   });
+
   if (!appt) throw new Error('Appointment not found');
   if (appt.patientId !== byUserId) throw new Error('Forbidden');
   if (appt.status === 'CANCELLED') throw new Error('Appointment cancelled');
   if (appt.paymentStatus === 'PAID') throw new Error('Appointment already paid');
 
-  // 2) fee theo specialty của bác sĩ (doctorId là User.id)
   const dp = await prisma.doctorProfile.findUnique({ where: { userId: appt.doctorId } });
   const specialty = dp?.specialty || 'GENERAL';
   const amount = getFeeBySpecialty(specialty);
 
-  // 3) chuẩn bị Payment record
   const provider = 'MOMO';
   const currency = 'VND';
-  // base để encode appointmentId
   const orderIdBase = `APPT_${appointmentId}`;
-  // thêm suffix cho mỗi lần gọi → orderId luôn khác nhau
   const orderId = `${orderIdBase}_${Date.now()}`;
   const requestId = `${orderId}_${Math.floor(Math.random() * 1000)}`;
 
   await prisma.payment.upsert({
     where: { appointmentId },
     update: { provider, amount, currency, status: 'REQUIRES_PAYMENT' },
-    create: { appointmentId, provider, amount, currency, status: 'REQUIRES_PAYMENT' }
+    create: { appointmentId, provider, amount, currency, status: 'REQUIRES_PAYMENT' },
   });
 
-  // 4) call MoMo create
   const endpoint = `${trimTrailingSlash(config.momo.endpoint)}/create`;
   const orderInfo = `Thanh toán đặt khám - ${specialty}`;
   const redirectUrl = config.momo.returnUrl;
   const ipnUrl = config.momo.notifyUrl;
   const requestType = 'captureWallet';
 
-  // raw signature (MoMo v2)
   const raw = `accessKey=${config.momo.accessKey}`
     + `&amount=${amount}`
     + `&extraData=`
@@ -105,9 +93,9 @@ async function createMoMoForAppointment({ appointmentId, byUserId }) {
 
   const payload = {
     partnerCode: config.momo.partnerCode,
-    accessKey:   config.momo.accessKey,
+    accessKey: config.momo.accessKey,
     requestId,
-    amount:      String(amount),
+    amount: String(amount),
     orderId,
     orderInfo,
     redirectUrl,
@@ -115,32 +103,29 @@ async function createMoMoForAppointment({ appointmentId, byUserId }) {
     requestType,
     extraData: '',
     lang: 'vi',
-    signature
+    signature,
   };
 
   try {
     const { data } = await axios.post(endpoint, payload, { timeout: 10000 });
 
-    // 5) lưu providerRef / meta
     await prisma.payment.update({
       where: { appointmentId },
       data: {
         providerRef: data.transId ? String(data.transId) : null,
-        meta: data
-      }
+        meta: data,
+      },
     });
 
-    // giữ trạng thái chờ thanh toán
     await prisma.appointment.update({
       where: { id: appointmentId },
-      data: { paymentStatus: 'REQUIRES_PAYMENT' }
+      data: { paymentStatus: 'REQUIRES_PAYMENT' },
     });
 
-    // 6) Generate QR base64 từ payUrl (cho app hiển thị trực tiếp)
     let qrImage = null;
     if (data.payUrl) {
       try {
-        qrImage = await QRCode.toDataURL(data.payUrl); // data:image/png;base64,...
+        qrImage = await QRCode.toDataURL(data.payUrl);
       } catch (e) {
         console.error('QR generate error:', e);
       }
@@ -150,9 +135,9 @@ async function createMoMoForAppointment({ appointmentId, byUserId }) {
       amount,
       orderInfo,
       payUrl: data.payUrl || null,
-      qrImage, // BASE64 QR CHO MOBILE
+      qrImage,
       qrCodeUrl: data.qrCodeUrl || null,
-      deeplink: data.deeplink || data.deeplinkWebInApp || null
+      deeplink: data.deeplink || data.deeplinkWebInApp || null,
     };
   } catch (err) {
     if (err.response) {
@@ -164,11 +149,23 @@ async function createMoMoForAppointment({ appointmentId, byUserId }) {
   }
 }
 
-// --- verify MoMo IPN signature ---
+
+// ------------------ VERIFY SIGNATURE + IPN -----------------------
 function verifyMomoSignature(params) {
   const {
-    partnerCode, orderId, requestId, amount, orderInfo, orderType,
-    transId, resultCode, message, payType, responseTime, extraData, signature
+    partnerCode,
+    orderId,
+    requestId,
+    amount,
+    orderInfo,
+    orderType,
+    transId,
+    resultCode,
+    message,
+    payType,
+    responseTime,
+    extraData,
+    signature,
   } = params;
 
   const raw = `accessKey=${config.momo.accessKey}`
@@ -189,7 +186,8 @@ function verifyMomoSignature(params) {
   return sign === signature;
 }
 
-// CHỖ NÀY ĐÃ ĐỔI: thêm opts = { skipVerify }
+
+// -------------- HANDLE MOMO IPN ----------------
 async function handleMomoIPN(body, opts = {}) {
   const { skipVerify = false } = opts;
 
@@ -197,103 +195,136 @@ async function handleMomoIPN(body, opts = {}) {
     return { ok: false, code: 97, msg: 'Signature mismatch' };
   }
 
-  const { orderId, resultCode } = body; // APPT_<appointmentId>_...
+  const { orderId, resultCode } = body;
   if (!orderId || !orderId.startsWith('APPT_')) {
     return { ok: false, code: 98, msg: 'Invalid orderId' };
   }
 
-  // orderId = APPT_<appointmentId>_<suffix>
-  const core = orderId.substring('APPT_'.length); // "<appointmentId>_<suffix>"
-  const [appointmentId] = core.split('_');        // phần trước _ đầu tiên
+  const core = orderId.substring('APPT_'.length);
+  const [appointmentId] = core.split('_');
 
-  // Lấy trạng thái trước update để chặn bắn notify trùng khi IPN bị gọi lại
+  // trạng thái trước update để check chuyển từ chưa PAID -> PAID
   const apptBefore = await prisma.appointment.findUnique({
     where: { id: appointmentId },
     include: {
-      patient: { select: { id: true, fullName: true } },
-      doctor:  { select: { id: true, fullName: true } },
-    }
+      patient: true,
+      doctor: true,
+      careProfile: true,
+      payment: true,
+      slot: true,
+    },
   });
+
   if (!apptBefore) return { ok: false, code: 99, msg: 'Appointment not found' };
 
   const paid = Number(resultCode) === 0;
 
+  // update payment + appointment
   await prisma.$transaction(async (tx) => {
     await tx.payment.updateMany({
       where: { appointmentId },
-      data: { status: paid ? 'PAID' : 'FAILED', meta: body }
+      data: { status: paid ? 'PAID' : 'FAILED', meta: body },
     });
     await tx.appointment.update({
       where: { id: appointmentId },
       data: {
         paymentStatus: paid ? 'PAID' : 'FAILED',
-        status: paid ? 'CONFIRMED' : 'PENDING'
-      }
+        status: paid ? 'CONFIRMED' : 'PENDING',
+      },
     });
   });
 
-  // Chỉ gửi thông báo khi từ trạng thái CHƯA-PAID -> PAID
+  // chỉ xử lý tiếp nếu thanh toán thành công
   if (paid && apptBefore.paymentStatus !== 'PAID') {
+    // 1) gửi notifyBooked như cũ
     await notifyBooked({
       patientId: apptBefore.patientId,
-      doctorId:  apptBefore.doctorId,
+      doctorId: apptBefore.doctorId,
       appointment: {
         id: appointmentId,
         service: apptBefore.service,
         scheduledAt: apptBefore.scheduledAt,
         patientName: apptBefore.patient?.fullName || 'Người bệnh',
-        doctorName:  apptBefore.doctor?.fullName  || 'Bác sĩ'
-      }
+        doctorName: apptBefore.doctor?.fullName || 'Bác sĩ',
+      },
     });
+
+    // 2) tạo + gửi invoice qua email
+    try {
+      const apptFull = await prisma.appointment.findUnique({
+        where: { id: appointmentId },
+        include: {
+          patient: true,
+          doctor: true,
+          careProfile: true,
+          slot: true,
+          payment: true,
+        },
+      });
+
+      if (apptFull && apptFull.patient?.email && apptFull.payment) {
+        // lấy specialty từ DoctorProfile để đưa vào invoice
+        const dp = await prisma.doctorProfile.findUnique({
+          where: { userId: apptFull.doctorId },
+        });
+
+        const apptForInvoice = dp
+          ? { ...apptFull, doctorProfile: dp }
+          : apptFull;
+
+        const pdfBuffer = await generateInvoicePdf({
+          appointment: apptForInvoice,
+          payment: apptFull.payment,
+        });
+
+        await sendInvoiceEmail({
+          to: apptFull.patient.email,
+          pdfBuffer,
+          filename: `invoice-${apptFull.payment.id || appointmentId}.pdf`,
+          appointment: apptForInvoice,
+          payment: apptFull.payment,
+        });
+      }
+    } catch (err) {
+      console.error('Send invoice email failed:', err);
+    }
   }
 
   return { ok: true, code: 0, msg: 'OK' };
 }
 
-// ================== FAKE PAYMENT (KHÔNG QUA MOMO) ==================
+// ================== FAKE PAYMENT ==================
 
-/**
- * Tạo "QR FAKE" cho một appointment:
- * - Không gọi MoMo, chỉ tạo Payment provider = 'FAKE'
- * - Generate QR = dataURL chứa JSON { appointmentId, amount, ... }
- */
 async function createFakePayment({ appointmentId, byUserId }) {
-  // 1) load appointment + check quyền
   const appt = await prisma.appointment.findUnique({
     where: { id: appointmentId },
     include: {
       patient: { select: { id: true, fullName: true } },
-      doctor:  { select: { id: true, fullName: true } },
+      doctor: { select: { id: true, fullName: true } },
       slot: true,
     },
   });
+
   if (!appt) throw new Error('Appointment not found');
   if (appt.patientId !== byUserId) throw new Error('Forbidden');
   if (appt.status === 'CANCELLED') throw new Error('Appointment cancelled');
   if (appt.paymentStatus === 'PAID') throw new Error('Appointment already paid');
 
-  // 2) tính phí theo specialty (tận dụng hàm có sẵn)
   const dp = await prisma.doctorProfile.findUnique({ where: { userId: appt.doctorId } });
   const specialty = dp?.specialty || 'GENERAL';
   const amount = getFeeBySpecialty(specialty);
 
-  // 3) upsert Payment provider = 'FAKE'
-  const provider = 'FAKE';
-  const currency = 'VND';
-
   await prisma.payment.upsert({
     where: { appointmentId },
-    update: { provider, amount, currency, status: 'REQUIRES_PAYMENT' },
-    create: { appointmentId, provider, amount, currency, status: 'REQUIRES_PAYMENT' }
+    update: { provider: 'FAKE', amount, currency: 'VND', status: 'REQUIRES_PAYMENT' },
+    create: { appointmentId, provider: 'FAKE', amount, currency: 'VND', status: 'REQUIRES_PAYMENT' },
   });
 
-  // 4) cập nhật trạng thái appointment -> chờ thanh toán
   await prisma.appointment.update({
     where: { id: appointmentId },
-    data: { paymentStatus: 'REQUIRES_PAYMENT' }
+    data: { paymentStatus: 'REQUIRES_PAYMENT' },
   });
 
-  // 5) generate QR nội bộ
   const qrPayload = {
     appointmentId,
     amount,
@@ -302,33 +333,25 @@ async function createFakePayment({ appointmentId, byUserId }) {
     scheduledAt: appt.scheduledAt,
     fake: true,
   };
-  const qrCode = await generateAppointmentQR(qrPayload); // data:image/png;base64,...
 
-  return {
-    amount,
-    specialty,
-    qrCode, // FE chỉ cần <img :src="qrCode" />
-  };
+  const qrCode = await generateAppointmentQR(qrPayload);
+
+  return { amount, specialty, qrCode };
 }
 
-/**
- * Xác nhận "fake payment":
- * - Đặt appointment = PAID + CONFIRMED
- * - Payment.status = PAID
- * - Gọi notifyBooked để bắn thông báo
- */
-async function confirmFakePayment({ appointmentId, byUserId }) {
+
+async function confirmFakePayment({ appointmentId }) {
   const apptBefore = await prisma.appointment.findUnique({
     where: { id: appointmentId },
     include: {
-      patient: { select: { id: true, fullName: true } },
-      doctor:  { select: { id: true, fullName: true } },
+      patient: true,
+      doctor: true,
       payment: true,
-    }
+      careProfile: true,
+    },
   });
-  if (!apptBefore) throw new Error('Appointment not found');
 
-  // nếu đã PAID rồi thì thôi
+  if (!apptBefore) throw new Error('Appointment not found');
   if (apptBefore.paymentStatus === 'PAID') {
     return { alreadyPaid: true };
   }
@@ -336,36 +359,79 @@ async function confirmFakePayment({ appointmentId, byUserId }) {
   await prisma.$transaction(async (tx) => {
     await tx.payment.updateMany({
       where: { appointmentId },
-      data: { status: 'PAID' }
+      data: { status: 'PAID' },
     });
     await tx.appointment.update({
       where: { id: appointmentId },
       data: {
         paymentStatus: 'PAID',
-        status: 'CONFIRMED'
-      }
+        status: 'CONFIRMED',
+      },
     });
   });
 
-  // bắn notification giống MoMo IPN
+  const apptAfter = await prisma.appointment.findUnique({
+    where: { id: appointmentId },
+    include: {
+      patient: true,
+      doctor: true,
+      payment: true,
+      careProfile: true,
+    },
+  });
+
+  // notifyBooked như cũ
   await notifyBooked({
-    patientId: apptBefore.patientId,
-    doctorId:  apptBefore.doctorId,
+    patientId: apptAfter.patientId,
+    doctorId: apptAfter.doctorId,
     appointment: {
       id: appointmentId,
-      service: apptBefore.service,
-      scheduledAt: apptBefore.scheduledAt,
-      patientName: apptBefore.patient?.fullName || 'Người bệnh',
-      doctorName:  apptBefore.doctor?.fullName  || 'Bác sĩ'
-    }
+      service: apptAfter.service,
+      scheduledAt: apptAfter.scheduledAt,
+      patientName: apptAfter.patient?.fullName || 'Người bệnh',
+      doctorName: apptAfter.doctor?.fullName || 'Bác sĩ',
+    },
   });
+
+  // gửi invoice
+  try {
+    if (apptAfter?.patient?.email && apptAfter?.payment) {
+      const dp = await prisma.doctorProfile.findUnique({
+        where: { userId: apptAfter.doctorId },
+      });
+
+      const apptForInvoice = dp
+        ? { ...apptAfter, doctorProfile: dp }
+        : apptAfter;
+
+      const pdfBuffer = await generateInvoicePdf({
+        appointment: apptForInvoice,
+        payment: apptAfter.payment,
+      });
+
+      await sendInvoiceEmail({
+        to: apptAfter.patient.email,
+        appointment: apptForInvoice,
+        payment: apptAfter.payment,
+        pdfBuffer,
+        filename: `invoice-${apptAfter.payment.id || appointmentId}.pdf`,
+      });
+    }
+  } catch (e) {
+    console.error(
+      'Failed to send invoice email (fake payment)',
+      appointmentId,
+      e,
+    );
+  }
 
   return { ok: true };
 }
+
 
 module.exports = {
   createMoMoForAppointment,
   handleMomoIPN,
   createFakePayment,
-  confirmFakePayment
+  confirmFakePayment,
 };
