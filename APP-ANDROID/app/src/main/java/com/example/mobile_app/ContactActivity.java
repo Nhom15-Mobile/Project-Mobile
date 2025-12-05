@@ -1,5 +1,7 @@
 package com.example.mobile_app;
 
+
+
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ContactActivity extends AppCompatActivity {
 
-    private ImageView imgMap;
+    private ImageView imgMap, btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,12 @@ public class ContactActivity extends AppCompatActivity {
         imgMap = findViewById(R.id.imgMap);
 
         imgMap.setOnClickListener(v -> openMap());
+
+
+
+        btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) btnBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
     }
 
     private void openMap() {

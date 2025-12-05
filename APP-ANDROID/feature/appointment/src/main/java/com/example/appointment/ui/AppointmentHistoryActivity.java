@@ -26,10 +26,6 @@ public class AppointmentHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.appointment_his);
 
-//        MaterialToolbar toolbar = findViewById(R.id.toolbarHistory);
-//        setSupportActionBar(toolbar);
-//        toolbar.setNavigationOnClickListener(v -> onBackPressed());
-
         btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) btnBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -47,9 +43,6 @@ public class AppointmentHistoryActivity extends AppCompatActivity {
                             break;
                         case 1:
                             tab.setText("Đã khám");
-                            break;
-                        case 2:
-                            tab.setText("Đã huỷ");
                             break;
                     }
                 }).attach();

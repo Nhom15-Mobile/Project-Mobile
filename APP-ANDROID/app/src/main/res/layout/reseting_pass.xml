@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_wave"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_back"
+                android:padding="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Quy trình đặt mật khẩu mới"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#004AC9" />
+        </LinearLayout>
+
+        <!-- TIÊU ĐỀ TRANG -->
+
+
+        <!-- ==== KHUNG  MẬT KHẨU ==== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_section"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="QUÊN MẬT KHẨU / ĐẶT MẬT KHẨU MỚI"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"
+                android:textColor="#C91E1E"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/bg_line"
+                android:layout_marginVertical="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:lineSpacingExtra="2dp"
+                android:textColor="#333333"
+                android:text="• Tại màn hình Đăng nhập, chọn 'Quên mật khẩu'.\n• Nhập địa chỉ email đã đăng ký trên ứng dụng.\n• Nhấn 'Gửi mã xác thực'. Hệ thống sẽ gửi mã OTP gồm 6 số vào Gmail của bạn.\n• Nhập mã xác thực vừa nhận được và nhấn 'Xác nhận'.\n• Nếu mã đúng, ứng dụng sẽ chuyển sang màn hình đặt mật khẩu mới.\n• Nhập mật khẩu mới và nhấn 'Hoàn tất'.\n• Bạn có thể đăng nhập bằng mật khẩu mới từ bây giờ.\n
+\n Lưu ý:\n
+• Email phải là Gmail chính xác và đã được đăng ký trên ứng dụng." />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

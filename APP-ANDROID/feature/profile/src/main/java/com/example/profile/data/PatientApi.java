@@ -9,20 +9,15 @@ import retrofit2.http.POST;
 
 public interface PatientApi {
 
-    // ========= API =========
 
-    // 2) Get My Profile
+    // 2) Get Profil
     @GET("api/patient/profile")
     Call<GetProfileResp> getMyProfile();
 
-    // 3) Update My Profile (Basic)
+    // 3) Update
     @POST("api/patient/profile")
     Call<UpdateResp> updateMyProfile(@Body UpdateReq body);
 
-    // 4 notification
-
-
-    // ========= MODELS =========
 
     // --- GET response ---
     class GetProfileResp {
@@ -98,24 +93,22 @@ public interface PatientApi {
                          String dob,
                          String address,
                          String insuranceNumber,
-                         String emergencyContact,
-                         String phone,
-                         String fullName,
-                         String email) {
+                         String emergencyContact
+                         ) {
             this.gender = gender;
             this.dob = dob;
             this.address = address;
             this.insuranceNumber = insuranceNumber;
-            this.emergencyContact = phone;
-            this.phone = phone;
+            this.emergencyContact = emergencyContact;
+//            this.phone = phone;
             //this.fullName = fullName;
 //            this.email = email;
 //
         }
 
         // Tiện lợi: constructor rút gọn cho các field cơ bản bạn đang dùng
-        public static UpdateReq basic(String gender, String dob, String address, String phone) {
-            return new UpdateReq(gender, dob, address, null, null, phone, null, null);
+        public static UpdateReq basic(String gender, String dob, String address, String emergencyContact) {
+            return new UpdateReq(gender, dob, address, null, emergencyContact );
         }
     }
 }

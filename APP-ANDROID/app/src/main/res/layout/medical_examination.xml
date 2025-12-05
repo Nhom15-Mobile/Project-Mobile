@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_wave"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_back"
+                android:padding="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Quy trình khám bệnh"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#004AC9" />
+        </LinearLayout>
+
+        <!-- ==== KHUNG ĐẶT KHÁM ==== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_section"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="QUY TRÌNH KHÁM BỆNH"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"
+                android:textColor="#1FB64D"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/bg_line"
+                android:layout_marginVertical="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:lineSpacingExtra="2dp"
+                android:textColor="#333333"
+                android:text="• Kiểm tra lịch hẹn trong mục 'Lịch hẹn của tôi' để xem thời gian, chuyên khoa và mã QR.\n
+• Đến bệnh viện trước giờ khám 10–15 phút để làm thủ tục tiếp nhận.\n
+• Xuất trình mã lịch hẹn hoặc QR Code tại quầy tiếp nhận.\n
+• Hoàn tất các bước cần thiết như kiểm tra thông tin, bảo hiểm y tế, giấy tờ tùy thân.\n
+• Chờ đến lượt theo số thứ tự hoặc thông báo từ hệ thống.\n
+• Gặp bác sĩ, thăm khám và thực hiện xét nghiệm/chẩn đoán (nếu được chỉ định).\n
+• Nhận kết quả và được bác sĩ tư vấn hướng điều trị phù hợp.\n
+• Nhận thuốc tại nhà thuốc bệnh viện và nghe hướng dẫn sử dụng."/>
+        </LinearLayout>
+
+        </LinearLayout>
+
+</ScrollView>

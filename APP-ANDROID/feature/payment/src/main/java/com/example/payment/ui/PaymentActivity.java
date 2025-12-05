@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.payment.api.PaymentService;
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
 import com.uithealthcare.domain.appointment.AppointmentData;
 import com.uithealthcare.domain.appointment.AppointmentInfo;
 import com.uithealthcare.domain.payment.Payment;
@@ -26,6 +28,8 @@ import com.uithealthcare.network.ApiServices;
 import com.uithealthcare.network.SessionInterceptor;
 import com.uithealthcare.util.SessionManager;
 import com.example.payment.R;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -114,7 +118,9 @@ public class PaymentActivity extends AppCompatActivity {
                 public void onResponse(Call<ProcessPaymentResponse> call, Response<ProcessPaymentResponse> response) {
                     if (response.isSuccessful() && response.body() != null){
                         ProcessPaymentResponse mResponse = response.body();
-                        AppointmentData appointmentData = mResponse.getData().get(0);
+                        List<AppointmentData> listAppoitmentData = mResponse.getData();
+                        AppointmentData appointmentData = listAppoitmentData.get(0);
+
                         if (appointmentData.getId().equals(appointmentInfo.getId())){
                             Intent data = new Intent(PaymentActivity.this, ExamFormActivity.class);
                             data.putExtra(AppointmentInfo.EXTRA, appointmentInfo);
@@ -125,8 +131,27 @@ public class PaymentActivity extends AppCompatActivity {
                         else {
                             Toast.makeText(getApplicationContext(), "Thanh toán thất bại, vui lòng thanh toán lại",
                                     Toast.LENGTH_SHORT).show();
-                        }
+                       }
                     }
+//                    if (response.isSuccessful() && response.body() != null){
+//                        ProcessPaymentResponse mResponse = response.body();
+//                        List<AppointmentData> list = mResponse.getData();
+//
+//                        Log.d("PAYMENT", "Response: " + new Gson().toJson(mResponse));
+//                        Log.d("PAYMENT", "Current appointmentInfo id: " + appointmentInfo.getId());
+//
+//                        if (list != null && !list.isEmpty()) {
+//                            for (AppointmentData ad : list) {
+//                                Log.d("PAYMENT", "Item id: " + ad.getId());
+//                            }
+//                        }
+//
+//                        // tạm thời bỏ so sánh id để test:
+//                        Toast.makeText(getApplicationContext(), "API trả về OK, kiểm tra log", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        Log.e("PAYMENT", "API error: code = " + response.code());
+//                        Toast.makeText(getApplicationContext(), "Lỗi kết nối hệ thống thanh toán", Toast.LENGTH_SHORT).show();
+//                    }
                 }
 
                 @Override

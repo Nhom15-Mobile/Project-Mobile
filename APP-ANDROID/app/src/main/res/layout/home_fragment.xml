@@ -5,26 +5,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:paddingTop="40dp"
-    android:background="@color/secondary">
+    android:background="@drawable/bg_homepage">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="36dp"
         android:orientation="horizontal">
         <TextView
-            android:layout_width="279dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textAlignment="textStart"
-            android:text="Xin chào?\nNguyễn Văn A"
+            android:text="Xin chào!"
             android:textStyle="bold"
-            android:textSize="20sp">
+            android:textSize="24sp">
         </TextView>
 
+
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/ic_user"
-            android:layout_marginStart="36dp">
+            android:layout_marginStart="16dp"
+            >
         </ImageView>
     </LinearLayout>
 
@@ -34,7 +37,7 @@
         android:text="Chào mừng đến với UIT HealthCare"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:textAlignment="center"
+
         android:layout_marginVertical="16dp"
         android:layout_marginHorizontal="36dp">
     </TextView>
@@ -159,8 +162,9 @@
         android:layout_height="wrap_content"
         android:src="@drawable/img_home"
         android:layout_marginHorizontal="36dp"
-        android:layout_marginTop="100dp">
+        android:layout_marginTop="85dp">
     </ImageView>
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnContact"

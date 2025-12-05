@@ -7,16 +7,34 @@
 
 
 
-    <ImageButton
-        android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
+    <!-- HEADER: Back + Tiêu đề -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@android:color/transparent"
-        android:padding="8dp"
-        android:src="@drawable/ic_back"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
 
-        android:layout_gravity="start" />
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@android:color/transparent"
+            android:padding="4dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/tvHeaderTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chi tiết thanh toán"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1F57E7"
+            android:layout_marginStart="12dp" />
+
+    </LinearLayout>
+
 
     <ScrollView
         android:layout_width="match_parent"

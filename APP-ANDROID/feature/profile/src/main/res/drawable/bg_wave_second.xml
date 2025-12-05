@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="160dp"
+    android:viewportWidth="360"
+    android:viewportHeight="160">
+
+    <!-- Nền xanh rất nhạt -->
+    <path
+        android:fillColor="#E6F7FF"
+        android:pathData="M0,0 L360,0 L360,160 L0,160 Z" />
+
+    <!-- Sóng 1 (giảm đậm ~40%) -->
+    <path
+        android:fillColor="#99D9FF"
+        android:fillAlpha="0.55"
+        android:pathData="M0,70
+            C70,90 140,50 200,65
+            C260,80 310,110 360,95
+            L360,160 L0,160 Z" />
+
+    <!-- Sóng 2 (mềm hơn + nhạt hơn, alpha thấp hơn) -->
+    <path
+        android:fillColor="#C9EDFF"
+        android:fillAlpha="0.55"
+        android:pathData="M0,95
+            C80,115 150,80 220,100
+            C280,120 330,140 360,130
+            L360,160 L0,160 Z" />
+
+    <!-- Hoạ tiết bubble 1 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.35"
+        android:pathData="M50,40
+            a12,12 0 1,1 24,0
+            a12,12 0 1,1 -24,0" />
+
+    <!-- Hoạ tiết bubble 2 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.28"
+        android:pathData="M300,55
+            a10,10 0 1,1 20,0
+            a10,10 0 1,1 -20,0" />
+
+    <!-- Hoạ tiết bubble 3 nhỏ -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.22"
+        android:pathData="M180,30
+            a7,7 0 1,1 14,0
+            a7,7 0 1,1 -14,0" />
+</vector>

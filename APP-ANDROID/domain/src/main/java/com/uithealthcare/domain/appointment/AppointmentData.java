@@ -5,6 +5,7 @@ import com.uithealthcare.domain.careProfile.CareProfile;
 import com.uithealthcare.domain.doctor.Doctor;
 import com.uithealthcare.domain.doctor.Slot;
 import com.uithealthcare.domain.patient.Patient;
+import com.uithealthcare.domain.payment.Payment;
 
 public class AppointmentData {
     private String id;
@@ -26,7 +27,7 @@ public class AppointmentData {
     private Doctor doctor;
     private Slot slot;
     private CareProfile careProfile;
-    private Object payment; // Vì có thể null, nên để Object hoặc tạo class riêng nếu sau này có chi tiết
+    private Payment payment; // bên domain
 
     public String getId() { return id; }
     public String getPatientId() { return patientId; }
@@ -47,6 +48,6 @@ public class AppointmentData {
     public Doctor getDoctor() { return doctor; }
     public Slot getSlot() { return slot; }
     public CareProfile getCareProfile() { return careProfile; }
-    public Object getPayment() { return payment; }
+    public Payment getPayment() { return payment; }
 }
 

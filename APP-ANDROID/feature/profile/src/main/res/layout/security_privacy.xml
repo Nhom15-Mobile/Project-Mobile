@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        >
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="20dp"
+            >
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Bảo mật và quyền riêng tư"
+                android:textColor="#1F57E7"
+                android:textStyle="bold"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <!-- Card nội dung -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- ĐOẠN MỞ ĐẦU -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Chúng tôi hiểu rằng thông tin sức khỏe và cá nhân của bạn là tài sản quan trọng. Ứng dụng cam kết bảo vệ dữ liệu của người dùng theo các nguyên tắc minh bạch, an toàn và tôn trọng quyền riêng tư."
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Thu thập thông tin -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thu thập thông tin"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#111111"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Chúng tôi chỉ thu thập các dữ liệu cần thiết để phục vụ việc đặt lịch khám, lưu trữ hồ sơ y tế và cải thiện trải nghiệm sử dụng."
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Bảo mật dữ liệu -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bảo mật dữ liệu"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#111111"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Toàn bộ thông tin được mã hóa và lưu trữ an toàn. Chúng tôi không chia sẻ dữ liệu của bạn cho bên thứ ba nếu không có sự đồng ý."
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Quyền của bạn -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quyền của bạn"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#111111"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bạn có thể xem, chỉnh sửa thông tin cá nhân bất kỳ lúc nào trong phần 'Chỉnh sửa thông tin cá nhân'."
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Quyền truy cập ứng dụng -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quyền truy cập ứng dụng"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#111111"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ứng dụng có thể yêu cầu quyền truy cập Camera (để chụp hồ sơ hoặc quét mã QR), Bộ nhớ (để lưu kết quả khám). Bạn hoàn toàn có thể bật/tắt các quyền này trong cài đặt thiết bị."
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Liên hệ -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Liên hệ"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#111111"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nếu bạn có bất kỳ thắc mắc nào liên quan đến quyền riêng tư, vui lòng liên hệ qua email: bv.uit.healthcare@gm.uit.edu.vn.vn."
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Kết -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Chúng tôi luôn nỗ lực để bạn yên tâm sử dụng và kiểm soát toàn bộ dữ liệu của chính mình."
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingExtra="4dp" />
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+</ScrollView>

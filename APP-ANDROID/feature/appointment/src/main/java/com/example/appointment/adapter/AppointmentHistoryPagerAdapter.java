@@ -21,13 +21,15 @@ public class AppointmentHistoryPagerAdapter extends FragmentStateAdapter {
                 return AppointmentHistoryListFragment.newInstance("UPCOMING");  // Chưa khám
             case 1:
                 return AppointmentHistoryListFragment.newInstance("DONE");      // Đã khám
+//            default:
+//                return AppointmentHistoryListFragment.newInstance("CANCELED");  // Đã huỷ
             default:
-                return AppointmentHistoryListFragment.newInstance("CANCELED");  // Đã huỷ
+                throw new IllegalStateException("Invalid position: " + position);
         }
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 2;
     }
 }

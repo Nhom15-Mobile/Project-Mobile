@@ -31,7 +31,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     @Override
     public RecordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_view_record, parent, false);
+                .inflate(R.layout.item_view_record_1, parent, false);
         return new RecordViewHolder(view);
     }
 
@@ -67,8 +67,8 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             tvName = itemView.findViewById(R.id.name);
             tvId = itemView.findViewById(R.id.id);
             tvPhone = itemView.findViewById(R.id.phone);
-
             card = itemView.findViewById(R.id.btnProfileCard);
+
         }
     }
 }

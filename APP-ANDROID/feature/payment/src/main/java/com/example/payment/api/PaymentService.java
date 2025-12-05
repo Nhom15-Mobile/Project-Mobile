@@ -15,6 +15,6 @@ public interface PaymentService {
             @Body PaymentRequest request
     );
 
-    @GET("api/patient/appointments")
+    @GET("api/patient/appointments/paid")
     Call<ProcessPaymentResponse> processPayment();
 }

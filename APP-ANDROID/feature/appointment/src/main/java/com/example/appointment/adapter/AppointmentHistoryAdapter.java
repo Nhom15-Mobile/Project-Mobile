@@ -84,7 +84,7 @@ public class AppointmentHistoryAdapter
         private String convertStatusToLabel(String status) {
             if ("UPCOMING".equals(status)) return "Chưa khám";
             if ("DONE".equals(status)) return "Đã khám";
-            if ("CANCELED".equals(status)) return "Đã huỷ";
+            //if ("CANCELED".equals(status)) return "Đã huỷ";
             return status;
         }
     }

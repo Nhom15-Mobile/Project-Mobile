@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.auth.ui.LoginActivity;
-import com.example.profile.ui.EditProfileActivity;
 import com.example.profile.R;
 import com.uithealthcare.util.SessionManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -45,6 +44,21 @@ public class ProfileFragment extends Fragment {
                 startActivity(i);
             });
         }
+
+        // nút bảo mật và priv
+        View rowSeAndPri = v.findViewById(R.id.rowSeAndPri);
+        rowSeAndPri.setOnClickListener(view -> {
+            Intent i = new Intent(requireContext(), SecuAndPrivacyActivity.class);
+            startActivity(i);
+        });
+
+        // nút about app
+        View rowAboutApp = v.findViewById(R.id.rowAboutApp);
+        rowAboutApp.setOnClickListener(view -> {
+            Intent i = new Intent(requireContext(), AboutAppActivity.class);
+            startActivity(i);
+        });
+
     }
 
     private void doLogout() {

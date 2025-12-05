@@ -10,18 +10,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <!-- TIÊU ĐỀ TRANG -->
-        <TextView
-            android:id="@+id/tvTitlePage"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Quy trình đặt khám"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#004AC9"
-            android:layout_gravity="center_horizontal"
-            android:paddingVertical="12dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_back"
+                android:padding="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Quy trình tạo hồ sơ bệnh nhân"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#004AC9" />
+        </LinearLayout>
 
         <!-- ==== KHUNG ĐẶT KHÁM ==== -->
         <LinearLayout
@@ -35,7 +46,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ĐẶT KHÁM"
+                android:text="TẠO HỒ SƠ"
                 android:textStyle="bold"
                 android:layout_marginTop="5dp"
                 android:textColor="#1FB64D"
@@ -53,23 +64,13 @@
                 android:textSize="15sp"
                 android:lineSpacingExtra="2dp"
                 android:textColor="#333333"
-                android:text="• Chọn Đặt khám\n
-• Thông tin người bệnh:\n
-    - Chọn số hồ sơ\n
-    - Hoặc Thêm người bệnh (Xem quy trình Đồng bộ số hồ sơ)\n
-
-• Chọn hình thức đặt khám:\n
-    - Theo chuyên khoa\n
-    - Theo ngày\n
-    - Theo bác sĩ\n
-
-• Thông tin khám:\n
-    - Chọn chuyên khoa, bác sĩ, ngày khám, giờ khám\n
-
-Lưu ý:\n
-• Đọc kỹ ghi chú để chọn chuyên khoa phù hợp\n
-• Đăng ký trước ngày: trước 22h00 và không quá 90 ngày" />
-
+                android:text="•Tại màn hình chính \n• Chọn Đặt khám, chọn Tạo hồ sơ.\n• Điền đầy đủ thông tin người bệnh:\n
+    - Họ và tên\n
+    - Ngày sinh\n
+    - Giới tính\n
+    - Số điện thoại\n
+    - Địa chỉ\n
+    - Các thông tin cần thiết khác\n• Kiểm tra lại thông tin, sau đó chọn Tạo mới để lưu hồ sơ.\n• Quan trọng : Bạn cũng có thể sử dụng CCCD để tự động điền thông tin bằng cách nhấn nút 'Quét CCCD'" />
         </LinearLayout>
 
     </LinearLayout>
