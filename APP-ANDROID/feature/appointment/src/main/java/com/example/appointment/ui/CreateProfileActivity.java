@@ -1,11 +1,16 @@
 package com.example.appointment.ui;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.se.omapi.Session;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,6 +32,7 @@ import com.uithealthcare.network.ApiServices;
 import com.uithealthcare.network.SessionInterceptor;
 import com.uithealthcare.util.ConvertDate;
 import com.uithealthcare.util.HandleAutoComplete;
+import com.uithealthcare.util.HandleImage;
 import com.uithealthcare.util.SessionManager;
 
 import java.io.IOException;
@@ -42,12 +48,10 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     private MaterialAutoCompleteTextView autoCountry, autoGender, autoProvince, autoDistrict, autoWard;
 
-    private MaterialButton btnCreate, btnBack;
+    private MaterialButton btnCreate, btnBack, btnScan;
     private ProgressBar progressBar;
     private CareProfileService careProfileService;
     private LocationService locationService;
-
-
     private List<Province> provinceList;
     private List<District> districtList;
     private List<Ward> wardList;
@@ -58,7 +62,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     private String selectedDistrictCode;
     private String selectedWardCode;
 
-
+    private ActivityResultLauncher<Intent> pickImageLauncher;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +77,19 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         careProfileService = ApiServices.create(CareProfileService.class, tokenProvider);
         locationService = ApiServices.create(LocationService.class, tokenProvider);
+
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri imageUri = result.getData().getData();
+
+                        // TODO: gửi imageUri vào hàm OCR của bạn
+//                        processOCR(imageUri);
+                        Toast.makeText(CreateProfileActivity.this, "Lấy ảnh thành công", Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
 
         initView();
 
@@ -97,11 +114,13 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         btnCreate = findViewById(R.id.btnCreate);
         btnBack = findViewById(R.id.btnBack);
+        btnScan = findViewById(R.id.btnScan);
 
     }
 
     private void initEvent(){
         btnBack.setOnClickListener(v -> finish());
+        btnScan.setOnClickListener(v -> HandleImage.openGallery(pickImageLauncher));
         btnCreate.setOnClickListener(v -> sendRequest(careProfileService));
     }
 

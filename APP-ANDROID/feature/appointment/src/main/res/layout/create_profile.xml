@@ -410,7 +410,7 @@
                 android:layout_marginTop="20dp">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnScanCccd"
+                    android:id="@+id/btnScan"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_weight="1"
