@@ -51,6 +51,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         holder.name.setText(it.getName());
         holder.idRecord.setText(it.getId());
         holder.phone.setText(it.getPhone());
+        holder.relationship.setText(it.getRelation());
 
         holder.card.setOnClickListener(v ->{
             if (listener != null && holder.getAdapterPosition() != RecyclerView.NO_POSITION) {
@@ -65,7 +66,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     }
 
     public static class RecordViewHolder extends RecyclerView.ViewHolder {
-        TextView name, idRecord, phone;
+        TextView name, idRecord, phone, relationship;
         MaterialCardView card;
 
         public RecordViewHolder(@NonNull View itemView) {
@@ -74,6 +75,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
             idRecord = itemView.findViewById(R.id.id);
             phone = itemView.findViewById(R.id.phone);
             card = itemView.findViewById(R.id.btnProfileCard);
+            relationship = itemView.findViewById(R.id.tvRelationship);
         }
     }
 }

@@ -11,6 +11,7 @@ import com.example.payment.R;
 import com.google.android.material.button.MaterialButton;
 import com.uithealthcare.domain.appointment.AppointmentInfo;
 
+
 public class ExamFormActivity extends AppCompatActivity {
 
     private AppointmentInfo appointmentInfo;
@@ -21,7 +22,12 @@ public class ExamFormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initLayout();
 
-        tvAppointmentId.setText(appointmentInfo.getId());
+        // mã phiếu gen
+        String genCode = generateTicketCode(appointmentInfo.getId());
+
+
+
+        tvAppointmentId.setText(genCode);
         tvPatientName.setText(appointmentInfo.getPatientName());
         tvSpecialty.setText(appointmentInfo.getSpecialty());
         tvExamDate.setText(appointmentInfo.getExamDate());
@@ -31,6 +37,13 @@ public class ExamFormActivity extends AppCompatActivity {
         tvCreatedDate.setText(appointmentInfo.getCreatedDate());
 
         btnBackHome.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setClassName(
+                    getPackageName(),
+                    "com.example.mobile_app.HomeActivity"
+            );
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             finish();
         });
         btnBack.setOnClickListener(v -> finish());
@@ -54,4 +67,16 @@ public class ExamFormActivity extends AppCompatActivity {
         btnScreenshot = findViewById(R.id.btnTakePhoto);
         btnBack = findViewById(R.id.btnBack);
     }
+    private String generateTicketCode(String appointmentId) {
+        // Lấy 4 ký tự cuối từ appointmentId (nếu dài)
+        String tail = appointmentId;
+        if (appointmentId != null && appointmentId.length() > 4) {
+            tail = appointmentId.substring(appointmentId.length() - 4);
+        }
+//        // Lấy phần ngày: ddMMyy
+//        String datePart = new java.text.SimpleDateFormat("ddMMyy", java.util.Locale.getDefault())
+//                .format(new java.util.Date());
+        return "KVK" + "_" + tail.toUpperCase();
+    }
+
 }

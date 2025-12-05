@@ -54,7 +54,9 @@ public class ReceiptDetailActivity extends AppCompatActivity {
         // Set UI
         tvReceiptStatus.setText("Thanh toán thành công"); // có thể set động theo API nếu muốn
 
-        tvReceiptNo.setText("Mã phiếu: " + n(receiptNo));
+        String genCode = generateTicketCode(receiptNo);
+
+        tvReceiptNo.setText("Mã phiếu: " + genCode );
         tvPatientName.setText("Bệnh nhân: " + n(patientName));
         tvSpecialty.setText("Chuyên khoa: " + n(specialty));
 
@@ -100,4 +102,18 @@ public class ReceiptDetailActivity extends AppCompatActivity {
         NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
         return nf.format(amount) + " đ";
     }
+    private String generateTicketCode(String appointmentId) {
+        // Lấy 4 ký tự cuối từ appointmentId (nếu dài)
+        String tail = appointmentId;
+        if (appointmentId != null && appointmentId.length() > 4) {
+            tail = appointmentId.substring(appointmentId.length() - 4);
+        }
+//        // Lấy phần ngày: ddMMyy
+//        String datePart = new java.text.SimpleDateFormat("ddMMyy", java.util.Locale.getDefault())
+//                .format(new java.util.Date());
+
+        // Ghép lại: PK-241204-AB12
+        return "KVK" + "_" + tail.toUpperCase();
+    }
+
 }

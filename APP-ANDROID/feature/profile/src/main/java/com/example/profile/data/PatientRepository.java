@@ -48,8 +48,7 @@ public class PatientRepository {
         PatientApi.UpdateReq body = new PatientApi.UpdateReq(
                 // gender, dob, address, insuranceNumber, emergencyContact, phone, fullName, email
                 nz(args.gender), nz(args.dob), nz(args.address),
-                nz(args.insuranceNumber), nz(args.emergencyContact),
-                nz(args.phone), null, null
+                nz(args.insuranceNumber), nz(args.emergencyContact)
         );
         api.updateMyProfile(body).enqueue(new Callback<PatientApi.UpdateResp>() {
             @Override public void onResponse(Call<PatientApi.UpdateResp> call, Response<PatientApi.UpdateResp> resp) {
@@ -81,7 +80,7 @@ public class PatientRepository {
         public String address;
         public String insuranceNumber;   // optional
         public String emergencyContact;  // map từ etPhone
-        public String phone;             // để null nếu không dùng
+                // để null nếu không dùng
 
         public UpdateArgs(String gender, String dob, String address, String emergencyContact) {
             this.gender = gender;
@@ -91,6 +90,6 @@ public class PatientRepository {
         }
 
         public UpdateArgs withInsurance(String insurance) { this.insuranceNumber = insurance; return this; }
-        public UpdateArgs withPhone(String phone) { this.phone = phone; return this; }
+        //public UpdateArgs withPhone(String phone) { this.phone = phone; return this; }
     }
 }

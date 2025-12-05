@@ -234,7 +234,7 @@
         android:gravity="bottom">
         <!-- Nút Chụp ảnh -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnTakePhoto"
+            android:id="@+id/btnEdit"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"

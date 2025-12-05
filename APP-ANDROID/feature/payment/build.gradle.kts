@@ -52,5 +52,6 @@ dependencies {
     implementation(project(":core:db"))
     implementation(project(":core:util"))
     implementation(project(":domain"))
+ //   implementation(project(":core:ui"))
 //    implementation(project(":feature:appointment"))
 }

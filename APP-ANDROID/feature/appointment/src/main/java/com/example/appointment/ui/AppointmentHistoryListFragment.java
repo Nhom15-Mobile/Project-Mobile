@@ -1,5 +1,6 @@
 package com.example.appointment.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import com.example.appointment.api.AppointmentService;
 import com.example.appointment.model.AppointmentHistoryItem;
 import com.uithealthcare.domain.appointment.AppointmentData;
 import com.uithealthcare.domain.appointment.AppointmentHistoryResponse;
+import com.uithealthcare.domain.payment.Payment;
+import com.uithealthcare.domain.payment.PaymentMeta;
 import com.uithealthcare.network.ApiServices;
 import com.uithealthcare.network.SessionInterceptor;
 import com.uithealthcare.util.SessionManager;
@@ -81,9 +84,15 @@ public class AppointmentHistoryListFragment extends Fragment {
         // luôn đảm bảo adapter được tạo
         if (adapter == null) {
             adapter = new AppointmentHistoryAdapter(item -> {
-                // TODO: mở màn chi tiết lịch hẹn nếu muốn
+                // item ở đây là AppointmentHistoryItem
+                if (getContext() == null) return;
+
+                Intent intent = new Intent(getContext(), DetailHistoryActivity.class);
+                intent.putExtra("EXTRA_APPOINTMENT_ITEM", item);
+                startActivity(intent);
             });
         }
+
 
         rvHistory.setLayoutManager(new LinearLayoutManager(getContext()));
         rvHistory.setAdapter(adapter);
@@ -102,6 +111,8 @@ public class AppointmentHistoryListFragment extends Fragment {
 
         loadData();
     }
+
+
 
     private void loadData() {
         progressBar.setVisibility(View.VISIBLE);
@@ -205,15 +216,10 @@ public class AppointmentHistoryListFragment extends Fragment {
             case "DONE":       // Tab "Đã khám"
                 return isAfterEnd;
 
-            case "CANCELED":   // Tạm thời chưa xử lý
-                return false;
-
             default:
                 return false;
         }
     }
-
-
     /**
      * Map dữ liệu API -> item cho RecyclerView
      */
@@ -222,15 +228,14 @@ public class AppointmentHistoryListFragment extends Fragment {
      */
     private AppointmentHistoryItem mapToHistoryItem(AppointmentData dto) {
         AppointmentHistoryItem item = new AppointmentHistoryItem();
-
+        //appointId
         item.setAppointmentId(dto.getId());
-
         if (dto.getDoctor() != null) {
             item.setDoctorName(dto.getDoctor().getFullName());
         } else {
             item.setDoctorName("Bác sĩ");
         }
-
+        // chuyên khoa
         item.setSpecialtyName(dto.getService());
 
         String[] dateTime = convertUtcToVnDateTime(dto.getScheduledAt());
@@ -254,13 +259,33 @@ public class AppointmentHistoryListFragment extends Fragment {
                 item.setStatus("DONE");       // Đã khám
             }
         }
-
+        if (dto.getCareProfile() != null) {
+            item.setPatientName(dto.getCareProfile().getFullName());
+        } else {
+            item.setPatientName("");
+        }
         // Thanh toán
         if ("PAID".equalsIgnoreCase(dto.getPaymentStatus())) {
             item.setPaymentStatus("Đã thanh toán");
         } else {
             item.setPaymentStatus("Chưa thanh toán");
         }
+
+        // tgian đặt
+        String[] dateTime1 = convertUtcToVnDateTime(dto.getCreatedAt());
+        item.setCreateAt(dateTime1[0] + " " + dateTime1[1]);
+
+
+        // amount và transid
+        Payment payment = dto.getPayment();
+        if (payment != null) {
+            item.setAmount(payment.getAmount());
+            PaymentMeta meta = payment.getMeta();
+            if (meta != null) {
+                item.setTransId(meta.getTransId());
+            }
+        }
+
 
         return item;
     }

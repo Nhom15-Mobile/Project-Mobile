@@ -30,7 +30,7 @@ public class BookingAppointmentActivity extends AppCompatActivity {
     private AppointmentRequest req;
     private AppointmentInfo appointmentInfo;
     MaterialButton btnBooking;
-    MaterialButton btnBack;
+    MaterialButton btnBack , btnEdit;
 
     TextView tvSpecialty, tvDate, tvTime, tvClinic, tvPrice;
     @Override
@@ -57,6 +57,12 @@ public class BookingAppointmentActivity extends AppCompatActivity {
         tvPrice.setText(appointmentInfo.getPrice());
 
         btnBooking.setOnClickListener(v-> booking(appointmentService));
+
+        btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) btnBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
+        btnEdit = findViewById(R.id.btnEdit);
+        if (btnEdit != null) btnEdit.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
     }
 
     private void initLayout(){

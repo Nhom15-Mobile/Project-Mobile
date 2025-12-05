@@ -117,6 +117,7 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         // etPhone hiển thị emergencyContact (yêu cầu của bạn)
+
         etPhone.setText(nz(d.emergencyContact));
 
         // Editable

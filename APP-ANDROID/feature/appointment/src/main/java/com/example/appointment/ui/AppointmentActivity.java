@@ -35,7 +35,7 @@ public class AppointmentActivity extends AppCompatActivity {
     private List<ItemRecord> itemRecords;
 
     private AppointmentRequest req;
-
+    private CareProfileService careProfileService;
     private AppointmentInfo appointmentInfo;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,10 +53,9 @@ public class AppointmentActivity extends AppCompatActivity {
             }
         };
 
-        CareProfileService careProfileService = ApiServices.create(CareProfileService.class, tokenProvider);
+        careProfileService = ApiServices.create(CareProfileService.class, tokenProvider);
 
-
-        showOnCardRecord(careProfileService);
+        //showOnCardRecord();  show bỏ qua bên resume để load sau create
     }
 
     private void initView(){
@@ -72,6 +71,7 @@ public class AppointmentActivity extends AppCompatActivity {
         itemRecords = new ArrayList<>();
     }
 
+
     private void initEvent(){
         btnBack.setOnClickListener(v -> finish());
 
@@ -79,8 +79,14 @@ public class AppointmentActivity extends AppCompatActivity {
             startActivity(new Intent(AppointmentActivity.this, CreateProfileActivity.class));
         });
     }
+    @Override
+    protected void onResume() { // show lại record sau pause
+        super.onResume();
+        showOnCardRecord();
+    }
 
-    private void showOnCardRecord(CareProfileService careProfileService){
+
+    private void showOnCardRecord(){
         careProfileService.showOnCardCareProfile()
                 .enqueue(new Callback<CareProfilesResponse>() {
                     @Override
@@ -88,9 +94,12 @@ public class AppointmentActivity extends AppCompatActivity {
                         CareProfilesResponse data = response.body();
                         if(data != null && data.isSuccess()){
                             List<CareProfile> list = data.getData();
+                            itemRecords.clear(); // clear tránh x2
+                            // id gen
                             for (CareProfile care : list){
-                                itemRecords.add(new ItemRecord(care.getFullName(), care.getId(), care.getPhone()));
+                                itemRecords.add(new ItemRecord(care.getFullName(), genCareId(care.getId()), care.getPhone(),care.getRelation()));
                             }
+
                             RecordAdapter adapter = new RecordAdapter(itemRecords);
                             recyclerView.setAdapter(adapter);
 
@@ -115,4 +124,13 @@ public class AppointmentActivity extends AppCompatActivity {
                     }
                 });
     }
+    private String genCareId(String careprofileId) {
+        // Lấy 4 ký tự cuối từ appointmentId (nếu dài)
+        String tail = careprofileId;
+        if (careprofileId != null && careprofileId.length() > 4) {
+            tail = careprofileId.substring(careprofileId.length() - 4);
+        }
+        return "HS" + "_" + tail.toUpperCase();
+    }
+
 }

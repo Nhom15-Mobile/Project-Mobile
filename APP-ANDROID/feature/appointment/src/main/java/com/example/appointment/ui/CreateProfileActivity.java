@@ -167,12 +167,13 @@ public class CreateProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CreateCareProfileResponse> call, Response<CreateCareProfileResponse> response) {
                 if(response.isSuccessful() && response.body()!= null){
-                    Toast.makeText(CreateProfileActivity.this, response.body().getMessage(),
-                            Toast.LENGTH_LONG).show();
-                }
-                if (!response.isSuccessful() && response.body() != null) {
                     Toast.makeText(CreateProfileActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                }}
+                    finish();
+                }
+//                if (!response.isSuccessful() && response.body() != null) {
+//                    Toast.makeText(CreateProfileActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                }
+            }
 
             @Override
             public void onFailure(Call<CreateCareProfileResponse> call, Throwable throwable) {

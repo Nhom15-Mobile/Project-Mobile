@@ -4,13 +4,19 @@ public class ItemRecord {
     private String name;
     private String id;
     private String phone;
+    private String relationship;
 
-    public ItemRecord(String name, String id, String phone) {
+    public ItemRecord(String name, String id, String phone,String relationship) {
         this.name = name;
         this.id = id;
         this.phone = phone;
+        this.relationship = relationship;
     }
 
+    public String getRelation(){return relationship;}
+    public void setRelation(String relationship){
+        this.relationship = relationship;
+    }
     public String getName() {
         return name;
     }

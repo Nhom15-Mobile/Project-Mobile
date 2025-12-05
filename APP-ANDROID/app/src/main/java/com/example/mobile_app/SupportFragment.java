@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 public class SupportFragment extends Fragment {
 
 
-    CardView how_to_book,how_to_cancel ;
+    CardView how_to_book,how_to_cancel, newPass ;
 
     public SupportFragment() {super(R.layout.support_fragment);}
 
@@ -25,7 +25,7 @@ public class SupportFragment extends Fragment {
         //quy trình đặt khám
         how_to_book = v.findViewById(R.id.how_to_book);
         how_to_book.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), BookingActivity.class);
+            Intent intent = new Intent(getActivity(), BookActivity.class);
             startActivity(intent);
         });
 
@@ -33,9 +33,17 @@ public class SupportFragment extends Fragment {
         // cách huỷ
         how_to_cancel = v.findViewById(R.id.how_to_cancel);
         how_to_cancel.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), CancelActivity.class);
+            Intent intent = new Intent(getActivity(), CreateCareProfileActivity.class);
             startActivity(intent);
         });
+
+        newPass = v.findViewById(R.id.newPass);
+        newPass.setOnClickListener(view ->{
+           Intent intent = new Intent(getActivity(), ResetPassActivity.class);
+           startActivity(intent);
+        });
+
+
 
 
     }

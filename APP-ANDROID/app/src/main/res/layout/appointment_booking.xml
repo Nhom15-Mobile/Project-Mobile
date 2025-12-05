@@ -12,16 +12,30 @@
         android:orientation="vertical">
 
         <!-- TIÊU ĐỀ TRANG -->
-        <TextView
-            android:id="@+id/tvTitlePage"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Quy trình đặt khám"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#004AC9"
-            android:layout_gravity="center_horizontal"
-            android:paddingVertical="12dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_back"
+                android:padding="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Quy trình đặt lịch khám"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#004AC9" />
+        </LinearLayout>
+
 
         <!-- ==== KHUNG ĐẶT KHÁM ==== -->
         <LinearLayout
@@ -55,74 +69,16 @@
                 android:textColor="#333333"
                 android:text="• Chọn Đặt khám\n• Thông tin người bệnh:\n
     - Chọn số hồ sơ\n
-    - Hoặc Thêm người bệnh (Xem quy trình Đồng bộ số hồ sơ)\n
-
-• Chọn hình thức đặt khám:\n
+    - Hoặc thêm người bệnh \n• Chọn thông tin đặt khám:\n
     - Theo chuyên khoa\n
     - Theo ngày\n
-    - Theo bác sĩ\n
-
-• Thông tin khám:\n
+    - Theo bác sĩ\n• Thông tin khám:\n
     - Chọn chuyên khoa, bác sĩ, ngày khám, giờ khám\n
 
 Lưu ý:\n
-• Đọc kỹ ghi chú để chọn chuyên khoa phù hợp\n
-• Đăng ký trước ngày: trước 22h00 và không quá 90 ngày" />
+• Đọc kỹ ghi chú để chọn thông tin đặt phù hợp\n
+• Đăng ký: không đăng ký được ngày nghỉ và ngày lễ" />
 
         </LinearLayout>
-
-
-        <!-- ==== KHUNG THANH TOÁN PHÍ KHÁM ==== -->
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:background="@drawable/bg_section"-->
-<!--            android:orientation="vertical"-->
-<!--            android:padding="16dp">-->
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="THANH TOÁN PHÍ KHÁM"-->
-<!--                android:textStyle="bold"-->
-<!--                android:textColor="#1FB64D"-->
-<!--                android:textSize="18sp" />-->
-
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="1dp"-->
-<!--                android:background="@drawable/bg_line"-->
-<!--                android:layout_marginVertical="12dp" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textSize="15sp"-->
-<!--                android:lineSpacingExtra="2dp"-->
-<!--                android:textColor="#333333"-->
-<!--                android:text="-->
-<!--• Chọn phương thức thanh toán:\n-->
-<!-- - Thẻ khám bệnh Bệnh viện Đại học Y Dược TPHCM\n-->
-<!-- - Ví MoMo\n-->
-<!-- - Ứng dụng Mobile Banking\n-->
-<!-- - Thẻ ATM/Thẻ quốc tế\n-->
-
-<!--• Kiểm tra lại thông tin thanh toán\n-->
-
-<!--• Xác nhận thanh toán\n-->
-
-<!--• Nhận biên lai điện tử trong mục Thanh toán" />-->
-
-<!--        </LinearLayout>-->
-        <!-- Họa tiết đáy trang -->
-<!--        <ImageView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="100dp"-->
-<!--            android:src="@drawable/bg_leaf_corner"-->
-<!--            android:scaleType="fitEnd"-->
-<!--            android:layout_marginTop="12dp" />-->
-
     </LinearLayout>
-
 </ScrollView>
