@@ -1,4 +1,3 @@
-// src/modules/appointments/appointments.service.js
 const prisma = require('../../config/db');
 const { notifyCancelled } = require('../notifications/notifications.service');
 
@@ -169,5 +168,5 @@ module.exports = {
   availableSlots,
   book,
   cancel,
-  daysWithAvailability
+  daysWithAvailability,
 };
