@@ -1,0 +1,9 @@
+1. Tải các môi trường cần thiết: 
+ - pip install -r requirements.txt
+ - python -m pip install paddlepaddle==3.2.0 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
+2. Chạy sever:
+ - uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+3. Truy cập vào: http://localhost:8000/docs để test api trên local
+
+
+
