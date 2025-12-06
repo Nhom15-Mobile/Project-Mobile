@@ -1,4 +1,3 @@
-// src/modules/appointments/appointments.controller.js
 const R = require('../../utils/apiResponse');
 const svc = require('./appointments.service');
 
@@ -60,6 +59,7 @@ async function calendar(req, res) {
     const days = await svc.daysWithAvailability({ specialty, month });
     return R.ok(res, days);
   } catch (e) {
+    console.error(e);
     return R.error(res, e.message || 'Failed to load calendar');
   }
 }

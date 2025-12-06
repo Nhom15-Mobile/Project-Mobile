@@ -17,6 +17,7 @@ public class CareProfile {
     private String province;
     private String district;
     private String address;
+    private String ward;
     private String insuranceNo;
     private String note;
     private String createdAt;
@@ -175,5 +176,9 @@ public class CareProfile {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getWard() {
+        return ward;
     }
 }

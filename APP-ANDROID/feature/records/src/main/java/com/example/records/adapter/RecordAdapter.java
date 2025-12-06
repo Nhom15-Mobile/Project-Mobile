@@ -50,7 +50,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     public void onBindViewHolder(@NonNull RecordViewHolder holder, int position) {
         ItemRecord it = items.get(position);
         holder.name.setText(it.getName());
-        holder.idRecord.setText(it.getId());
+        holder.idRecord.setText(it.getGenId());
         holder.phone.setText(it.getPhone());
         holder.relationship.setText(it.getRelation());
 

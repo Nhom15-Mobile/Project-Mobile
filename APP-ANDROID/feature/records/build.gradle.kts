@@ -56,4 +56,6 @@ dependencies {
     implementation(project(":core:db"))
     implementation(project(":core:util"))
     implementation(project(":domain"))
+
+    implementation(project(":feature:results"))
 }

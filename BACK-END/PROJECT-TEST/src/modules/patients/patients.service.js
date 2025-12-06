@@ -1,7 +1,7 @@
-// src/modules/patients/patients.service.js
 const prisma = require('../../config/db');
 const UNPAID_EXPIRE_MINUTES = 10;
 const REMINDER_WINDOW_DEFAULT_MINUTES = 5;
+
 async function getProfile(userId) {
   return prisma.patientProfile.findUnique({
     where: { userId },
@@ -16,6 +16,7 @@ async function upsertProfile(userId, payload) {
     create: { userId, ...payload },
   });
 }
+
 /// cleanup các lịch PENDING + REQUIRES_PAYMENT đã quá hạn của 1 patient
 async function cleanupExpiredForPatient(patientId) {
   const cutoff = new Date(Date.now() - UNPAID_EXPIRE_MINUTES * 60 * 1000);
@@ -85,6 +86,7 @@ async function getPaidAppointments(userId) {
     orderBy: { updatedAt: 'desc' },
   });
 }
+
 // ========== UPCOMING REMINDERS (nhắc lịch trước X phút) ==========
 async function getUpcomingAppointmentReminders(
   patientId,
@@ -156,10 +158,52 @@ async function getUpcomingAppointmentReminders(
     };
   });
 }
+
+// CHỈ trả về các lịch đã có examResult (kết quả khám)
+async function getAppointmentResults(userId) {
+  const items = await prisma.appointment.findMany({
+    where: {
+      patientId: userId,
+      examResult: { not: null },
+    },
+    include: {
+      doctor: true,
+      careProfile: true,
+    },
+    orderBy: { scheduledAt: 'desc' },
+  });
+
+  return items.map((appt) => ({
+    id: appt.id,
+    service: appt.service,
+    scheduledAt: appt.scheduledAt,
+    status: appt.status,
+    examResult: appt.examResult || '',
+    treatmentPlan: appt.treatmentPlan || '',   // <--- MỚI
+
+    doctor: appt.doctor
+      ? {
+          id: appt.doctor.id,
+          fullName: appt.doctor.fullName,
+          email: appt.doctor.email,
+        }
+      : null,
+    careProfile: appt.careProfile
+      ? {
+          id: appt.careProfile.id,
+          fullName: appt.careProfile.fullName,
+          relation: appt.careProfile.relation,
+        }
+      : null,
+  }));
+}
+
+
 module.exports = {
   getProfile,
   upsertProfile,
   getAppointments,
   getPaidAppointments,
-  getUpcomingAppointmentReminders
+  getUpcomingAppointmentReminders,
+  getAppointmentResults, // <--- nhớ export
 };

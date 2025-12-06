@@ -66,4 +66,5 @@ dependencies {
     implementation(project(":feature:appointment"))
     implementation(project(":feature:payment"))
     implementation(project(":feature:records"))
+    implementation (project(":feature:results"))
 }

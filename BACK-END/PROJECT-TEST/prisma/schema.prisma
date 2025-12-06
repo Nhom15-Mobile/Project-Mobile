@@ -161,8 +161,9 @@ model Appointment {
   cancelReason  String?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
-
+   examResult    String?  @db.Text   // <--- mới: kết quả khám (nullable)
   payment Payment?
+  treatmentPlan String?  @db.Text        // hướng dẫn điều trị
 }
 
 model Payment {

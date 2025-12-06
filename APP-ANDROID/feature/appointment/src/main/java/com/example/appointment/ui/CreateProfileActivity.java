@@ -122,6 +122,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         autoDistrict = findViewById(R.id.autoDistrict);
         autoWard = findViewById(R.id.autoWard);
         etAddressDetail = findViewById(R.id.edtAddress);
+        //edtCCCD = findViewById(R.id.edtCCCD);
 
         HandleAutoComplete.setupDropDown(autoCountry, countryList);
         HandleAutoComplete.setupDropDown(autoGender, genderList);
