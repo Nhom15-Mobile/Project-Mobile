@@ -159,19 +159,23 @@ class AdminController {
     }
   }
 
-  // ============= APPOINTMENT RESULT (ADMIN) =============
+   // ============= APPOINTMENT RESULT (ADMIN) =============
   async setAppointmentResult(req, res) {
     try {
-      const { result } = req.body; // text kết quả khám
+      const { result, treatmentPlan } = req.body; // text kết quả + hướng dẫn
+
       const data = await adminService.updateAppointmentResult(
         req.params.id,
-        result
+        result,
+        treatmentPlan
       );
+
       res.json({ success: true, data });
     } catch (error) {
       res.status(400).json({ success: false, message: error.message });
     }
   }
+
 }
 
 module.exports = new AdminController();

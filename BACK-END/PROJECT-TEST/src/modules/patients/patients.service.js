@@ -159,64 +159,45 @@ async function getUpcomingAppointmentReminders(
   });
 }
 
-// ========== LIST CÁC APPOINTMENT ĐÃ CÓ KẾT QUẢ KHÁM ==========
-async function getAppointmentResults(patientId) {
-  const appts = await prisma.appointment.findMany({
+// CHỈ trả về các lịch đã có examResult (kết quả khám)
+async function getAppointmentResults(userId) {
+  const items = await prisma.appointment.findMany({
     where: {
-      patientId,
-      examResult: { not: null }, // chỉ lấy lịch có kết quả
+      patientId: userId,
+      examResult: { not: null },
     },
     include: {
-      patient: {
-        select: { id: true, fullName: true, email: true, phone: true },
-      },
-      doctor: {
-        select: { id: true, fullName: true, email: true, phone: true },
-      },
-      careProfile: {
-        select: { id: true, fullName: true, relation: true },
-      },
+      doctor: true,
+      careProfile: true,
     },
     orderBy: { scheduledAt: 'desc' },
   });
 
-  // map gọn cho app dùng
-  return appts.map((a) => ({
-    id: a.id,
-    service: a.service,
-    examResult: a.examResult,
-    examDate: a.scheduledAt,
+  return items.map((appt) => ({
+    id: appt.id,
+    service: appt.service,
+    scheduledAt: appt.scheduledAt,
+    status: appt.status,
+    examResult: appt.examResult || '',
+    treatmentPlan: appt.treatmentPlan || '',   // <--- MỚI
 
-    status: a.status,
-    paymentStatus: a.paymentStatus,
-
-    patient: a.patient
+    doctor: appt.doctor
       ? {
-          id: a.patient.id,
-          fullName: a.patient.fullName, // tên user (owner)
-          email: a.patient.email,
-          phone: a.patient.phone,
+          id: appt.doctor.id,
+          fullName: appt.doctor.fullName,
+          email: appt.doctor.email,
         }
       : null,
-
-    careProfile: a.careProfile
+    careProfile: appt.careProfile
       ? {
-          id: a.careProfile.id,
-          fullName: a.careProfile.fullName, // tên care profile
-          relation: a.careProfile.relation,
-        }
-      : null,
-
-    doctor: a.doctor
-      ? {
-          id: a.doctor.id,
-          fullName: a.doctor.fullName, // tên bác sĩ
-          email: a.doctor.email,
-          phone: a.doctor.phone,
+          id: appt.careProfile.id,
+          fullName: appt.careProfile.fullName,
+          relation: appt.careProfile.relation,
         }
       : null,
   }));
 }
+
 
 module.exports = {
   getProfile,

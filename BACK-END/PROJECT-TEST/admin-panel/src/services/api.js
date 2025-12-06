@@ -74,6 +74,8 @@ export const adminAPI = {
     api.patch(`/admin/appointments/${id}/payment-status`, { paymentStatus }),
   updateAppointmentResult: (id, result) =>
     api.patch(`/admin/appointments/${id}/result`, { result }),
+   updateAppointmentResult: (id, payload) =>
+    api.patch(`/admin/appointments/${id}/result`, payload),
 };
 
 export default api;

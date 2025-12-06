@@ -88,6 +88,7 @@ async function listAppointmentResults(req, res) {
     return R.badRequest(res, e.message || 'Bad request');
   }
 }
+
 module.exports = {
   getProfile,
   updateProfile,
