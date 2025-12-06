@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.se.omapi.Session;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -32,10 +30,9 @@ import com.uithealthcare.network.ApiServices;
 import com.uithealthcare.network.SessionInterceptor;
 import com.uithealthcare.util.ConvertDate;
 import com.uithealthcare.util.HandleAutoComplete;
-import com.uithealthcare.util.HandleImage;
+import com.uithealthcare.util.ScanManager;
 import com.uithealthcare.util.SessionManager;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,6 +60,8 @@ public class CreateProfileActivity extends AppCompatActivity {
     private String selectedWardCode;
 
     private ActivityResultLauncher<Intent> pickImageLauncher;
+    private ActivityResultLauncher<Uri> takePictureLauncher;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,10 +90,25 @@ public class CreateProfileActivity extends AppCompatActivity {
                 }
         );
 
+        takePictureLauncher = registerForActivityResult(
+                new ActivityResultContracts.TakePicture(),
+                isSuccess -> {
+                    if (isSuccess && ScanManager.cameraImageUri != null) {
+                        // Dùng Uri từ ScanManager
+//                        processOCR(ScanManager.cameraImageUri);
+                        Toast.makeText(CreateProfileActivity.this, "Chụp ảnh thành công",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+
         initView();
 
         loadProvinces(locationService);
         initEvent();
+        btnScan.setOnClickListener(v -> {
+            ScanManager.openGallery(pickImageLauncher);
+        });
     }
 
     private void initView(){
@@ -120,7 +134,6 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     private void initEvent(){
         btnBack.setOnClickListener(v -> finish());
-        btnScan.setOnClickListener(v -> HandleImage.openGallery(pickImageLauncher));
         btnCreate.setOnClickListener(v -> sendRequest(careProfileService));
     }
 
