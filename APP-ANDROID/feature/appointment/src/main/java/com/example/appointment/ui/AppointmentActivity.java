@@ -96,9 +96,12 @@ public class AppointmentActivity extends AppCompatActivity {
                             List<CareProfile> list = data.getData();
                             itemRecords.clear(); // clear tránh x2
                             // id gen
-                            for (CareProfile care : list){
-                                itemRecords.add(new ItemRecord(care.getFullName(), genCareId(care.getId()), care.getPhone(),care.getRelation()));
+                            for (CareProfile care : list) {
+                                itemRecords.add(new ItemRecord(care.getFullName(), care.getId(), care.getPhone(), care.getRelation(),
+                                        genCareId(care.getId()))
+                                );
                             }
+
 
                             RecordAdapter adapter = new RecordAdapter(itemRecords);
                             recyclerView.setAdapter(adapter);

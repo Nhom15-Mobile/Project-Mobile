@@ -17,6 +17,7 @@ import com.example.records.adapter.RecordAdapter;
 import com.example.records.api.CareProfileService;
 import com.example.records.model.ItemRecord;
 import com.example.records.model.Record;
+import com.example.results.ui.ChooseResultActivity;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -80,11 +81,20 @@ public class RecordsActivity extends AppCompatActivity {
                             if (list != null) {
                                 for (CareProfile care : list) {
                                     // chỉnh getter cho đúng với CareProfile của bạn
+
+                                    // đổi construtỏ
                                     itemRecords.add(new ItemRecord(
+                                            care.getId(),
                                             care.getFullName(),
                                             genCareId(care.getId()),
                                             care.getPhone(),
-                                            care.getRelation()
+                                            care.getRelation(),
+                                            formatDob(care.getDob()),
+                                            care.getGender(),
+                                            care.getProvince(),
+                                            care.getDistrict(),
+                                            care.getWard(),
+                                            care.getAddress()
                                     ));
                                 }
                             }
@@ -92,9 +102,11 @@ public class RecordsActivity extends AppCompatActivity {
 
                         RecordAdapter adapter = new RecordAdapter(itemRecords);
                         rcv.setAdapter(adapter);
+
                         adapter.setOnItemClickListener(item -> {
-                            name = item.getName();
-                            showProfileActionBottomSheet();
+                            //name = item.getName();
+
+                            showProfileActionBottomSheet(item);
                         });
                     }
 
@@ -108,7 +120,7 @@ public class RecordsActivity extends AppCompatActivity {
                 });
     }
 
-    private void showProfileActionBottomSheet() {
+    private void showProfileActionBottomSheet(ItemRecord item) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         View view = getLayoutInflater().inflate(R.layout.bottom_sheet_profile_actions, null);
         bottomSheetDialog.setContentView(view);
@@ -121,13 +133,23 @@ public class RecordsActivity extends AppCompatActivity {
         btnViewInfo.setOnClickListener(v -> {
             Intent data = new Intent(this, ProfileActivity.class);
             data.putExtra("labelName", name);
+            data.putExtra("name", item.getName());
+            data.putExtra("dob", item.getDob());
+            data.putExtra("gender", item.getGender());
+            data.putExtra("phone", item.getPhone());
+            data.putExtra("relation", item.getRelation());
+            data.putExtra("province", item.getProvince());
+            data.putExtra("district", item.getDistrict());
+            data.putExtra("ward", item.getWard());
+            data.putExtra("addressDetail", item.getAddressDetail());
             startActivity(data);
             bottomSheetDialog.dismiss();
         });
 
         btnViewResult.setOnClickListener(v -> {
             Intent data = new Intent(this, ChooseResultActivity.class);
-            data.putExtra("labelName", name);
+            data.putExtra("careProfileId", item.getCareProfileId());
+            data.putExtra("careProfileName", item.getName());
             startActivity(data);
             // TODO: mở màn hình xem kết quả cận lâm sàng
             bottomSheetDialog.dismiss();
@@ -135,6 +157,11 @@ public class RecordsActivity extends AppCompatActivity {
 
         btnViewHistory.setOnClickListener(v -> {
             // TODO: mở màn hình xem lịch sử đặt khám
+            Intent intent = new Intent(this, AppointmentHistoryActivity.class);
+            intent.putExtra("careProfileId", item.getCareProfileId());
+            intent.putExtra("name", item.getName());
+            startActivity(intent);
+
             bottomSheetDialog.dismiss();
         });
 
@@ -150,6 +177,10 @@ public class RecordsActivity extends AppCompatActivity {
             tail = careprofileId.substring(careprofileId.length() - 4);
         }
         return "HS" + "_" + tail.toUpperCase();
+    }
+    private String formatDob(String isoDate) {
+        if (isoDate == null) return "";
+        return isoDate.substring(0, 10).replace("-", "/");
     }
 
 

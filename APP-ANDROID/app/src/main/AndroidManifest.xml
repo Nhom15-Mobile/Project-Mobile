@@ -62,11 +62,21 @@
         <activity android:name="com.example.records.ui.RecordsActivity"/>
         <activity android:name="com.example.records.ui.ProfileActivity"/>
         <activity android:name="com.example.records.ui.ChooseResultActivity"/>
+        <activity android:name="com.example.records.ui.AppointmentHistoryActivity"/>
+        <activity android:name="com.example.records.ui.DetailHistoryActivity"/>
+
 
 
         <!--        module payment-->
         <activity android:name="com.example.payment.ui.PaymentActivity"/>
         <activity android:name="com.example.payment.ui.ExamFormActivity"/>
+
+        <!--        module result-->
+        <activity android:name="com.example.results.ui.ChooseResultActivity"/>
+        <activity android:name="com.example.results.ui.DetailResultActivity"/>
+
+
+
     </application>
 
 

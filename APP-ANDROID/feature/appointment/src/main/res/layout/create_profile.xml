@@ -66,8 +66,6 @@
                 app:boxCornerRadiusTopEnd="8dp"
                 app:boxCornerRadiusTopStart="8dp"
                 app:boxStrokeColor="#1F57E7"
-
-
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -105,6 +103,8 @@
                     android:hint="SĐT"
                     android:inputType="phone"/>
             </com.google.android.material.textfield.TextInputLayout>
+
+
 
             <!-- Mối quan hệ -->
             <TextView
