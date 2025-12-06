@@ -25,4 +25,6 @@
     <color name="holidayRed">#E53935</color>
     <color name="disabledGrey">#BDBDBD</color>
 
+    <color name="lightGray">#D3D3D3</color>
+
 </resources>

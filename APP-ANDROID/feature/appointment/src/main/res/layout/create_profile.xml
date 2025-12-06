@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Họ tên"
                     android:inputType="textPersonName"
-
+                    android:textColorHint="@color/primary"
                     />
             </com.google.android.material.textfield.TextInputLayout>
             <!-- Số điện thoại -->
@@ -170,7 +170,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingHorizontal="15dp"
-                            android:hint="Việt Nam"
+                            android:hint="Quốc Gia"
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
@@ -215,7 +215,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingHorizontal="15dp"
-                            android:hint="Nam"
+                            android:textColorHint="@color/gray_700"
+                            android:hint="Giới tính"
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
