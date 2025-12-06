@@ -1,7 +1,9 @@
 package com.example.payment.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -10,13 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.payment.R;
 import com.google.android.material.button.MaterialButton;
 import com.uithealthcare.domain.appointment.AppointmentInfo;
+import com.uithealthcare.util.SaveImage;
 
 
 public class ExamFormActivity extends AppCompatActivity {
 
     private AppointmentInfo appointmentInfo;
     TextView tvAppointmentId, tvPatientName, tvSpecialty, tvExamDate, tvExamTime, tvClinic, tvFee, tvCreatedDate;
-    MaterialButton btnBackHome, btnScreenshot, btnBack;
+    MaterialButton btnBackHome, btnTakePhoto, btnBack;
+
+    private View cardAppointment;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +51,18 @@ public class ExamFormActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        btnTakePhoto.setOnClickListener(v -> {
+            // 1. Chụp View thành Bitmap
+            Bitmap bitmap = SaveImage.captureViewToBitmap(cardAppointment);
+
+            // 2. Tạo tên file kiểu: phieu_kham_20251206_153000.png
+            String fileName = "phieu_kham_" + System.currentTimeMillis() + ".png";
+
+            // 3. Lưu vào Gallery
+            SaveImage.saveBitmapToGallery(this, bitmap, fileName);
+        });
+
         btnBack.setOnClickListener(v -> finish());
     }
 
@@ -64,7 +81,12 @@ public class ExamFormActivity extends AppCompatActivity {
         tvCreatedDate= findViewById(R.id.tvBookingDate);
 
         btnBackHome = findViewById(R.id.btnBackHome);
-        btnScreenshot = findViewById(R.id.btnTakePhoto);
+        //nút save
+        btnTakePhoto = findViewById(R.id.btnTakePhoto);
+
+        // card phiếu khám để lưu
+        cardAppointment = findViewById(R.id.cardAppointment);
+
         btnBack = findViewById(R.id.btnBack);
     }
     private String generateTicketCode(String appointmentId) {

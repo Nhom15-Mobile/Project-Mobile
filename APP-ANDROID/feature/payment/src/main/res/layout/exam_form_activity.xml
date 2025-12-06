@@ -5,35 +5,40 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:padding="27dp">
+    android:padding="24dp">
 
+    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginVertical="10dp">
+        android:gravity="center_vertical"
+        android:layout_marginVertical="8dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBack"
-            android:layout_width="43dp"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:backgroundTint="@color/white"
+            app:cornerRadius="20dp"
             app:icon="@drawable/ic_arrow"
             app:iconGravity="textStart"
-            app:iconTint="@null">
-        </com.google.android.material.button.MaterialButton>
+            app:iconTint="@null" />
+
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
             android:text="Phiếu khám bệnh"
-
             android:textColor="@color/primary"
             android:textStyle="bold"
-            android:textSize="20sp">
-        </androidx.appcompat.widget.AppCompatTextView>
+            android:textSize="20sp" />
     </LinearLayout>
 
+<!--    fix tỉ lệ-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,69 +68,101 @@
             android:layout_weight="1">
         </ImageView>
     </LinearLayout>
-    
+
+    <!-- PHIẾU KHÁM -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardAppointment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         app:cardUseCompatPadding="true"
-        app:cardElevation="6dp"
+        app:cardElevation="4dp"
         app:cardCornerRadius="16dp"
+        app:cardBackgroundColor="@android:color/white"
         app:strokeColor="@color/gray3"
         app:strokeWidth="1dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="16dp">
 
-            <!-- Mã phiếu -->
+            <!-- Header nhỏ trên phiếu -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thông tin phiếu khám"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:layout_gravity="center"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/gray3" />
+
+            <!-- Mã phiếu (làm nổi bật) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="4dp">
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical">
+
+                <!-- Label bên trái -->
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Mã phiếu:"
+                    android:text="Mã phiếu"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textSize="14sp" />
+
+                <!-- Value bên phải -->
                 <TextView
                     android:id="@+id/tvAppointmentId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text=" 00xx01"
+                    android:text="00xx01"
                     android:textStyle="bold"
                     android:textColor="@color/red"
-                    android:textSize="20sp" />
+                    android:textSize="22sp"
+                    android:gravity="end" />
             </LinearLayout>
 
+
+            <!-- Dòng tiện dùng lại: label trái – value phải -->
             <!-- Bệnh nhân -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="4dp">
+                android:layout_marginVertical="4dp"
+                android:gravity="center_vertical">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Bệnh nhân:"
+                    android:text="Bệnh nhân"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/tvPatientName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text=" Nguyễn Văn A"
+                    android:gravity="end"
+                    android:text="Nguyễn Văn A"
                     android:textColor="@color/primary"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <!-- Chuyên khoa -->
@@ -133,24 +170,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="4dp">
+                android:layout_marginVertical="4dp"
+                android:gravity="center_vertical">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Chuyên khoa:"
+                    android:text="Chuyên khoa"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/tvSpecialty"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="BỆNH LÝ CỘT SỐNG"
                     android:textStyle="bold"
-                    android:text=" BỆNH LÝ CỘT SỐNG"
                     android:textColor="@color/primary"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <!-- Ngày khám -->
@@ -158,21 +199,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="4dp">
+                android:layout_marginVertical="4dp"
+                android:gravity="center_vertical">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Ngày khám:"
+                    android:text="Ngày khám"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/tvDate"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text=" 30/10/2025"
+                    android:gravity="end"
+                    android:text="30/10/2025"
                     android:textColor="@color/primary"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -182,21 +227,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="4dp">
+                android:layout_marginVertical="4dp"
+                android:gravity="center_vertical">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Giờ khám:"
+                    android:text="Giờ khám"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/tvTime"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text=" 7:30 - 8:30"
+                    android:gravity="end"
+                    android:text="7:30 - 8:30"
                     android:textStyle="bold"
                     android:textColor="@color/primary"
                     android:textSize="14sp" />
@@ -207,21 +256,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="4dp">
+                android:layout_marginVertical="4dp"
+                android:gravity="center_vertical">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Phòng khám:"
+                    android:text="Phòng khám"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/tvClinic"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text=" Phòng B3.22 - Toà B - Lầu 3"
+                    android:gravity="end"
+                    android:text="Phòng B3.22 - Toà B - Lầu 3"
                     android:textStyle="bold"
                     android:textColor="@color/primary"
                     android:textSize="14sp" />
@@ -232,21 +285,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="4dp">
+                android:layout_marginVertical="4dp"
+                android:gravity="center_vertical">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Tiền khám:"
+                    android:text="Tiền khám"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/tvFee"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text=" 150.000đ"
+                    android:gravity="end"
+                    android:text="150.000đ"
                     android:textColor="@color/primary"
                     android:textStyle="bold"
                     android:textSize="14sp" />
@@ -257,33 +314,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="4dp">
+                android:layout_marginVertical="4dp"
+                android:gravity="center_vertical">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Ngày đặt:"
+                    android:text="Ngày đặt"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/tvBookingDate"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text=" 10/10/2025"
+                    android:gravity="end"
+                    android:text="10/10/2025"
                     android:textColor="@color/primary"
                     android:textSize="14sp" />
             </LinearLayout>
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- Button dưới cùng -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="horizontal"
-        android:gravity="bottom">
-        <!-- Nút Chụp ảnh -->
+        android:gravity="bottom"
+        android:paddingTop="8dp">
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTakePhoto"
             android:layout_width="0dp"
@@ -299,7 +364,6 @@
             app:backgroundTint="@android:color/white"
             android:layout_marginEnd="12dp" />
 
-        <!-- Nút Quay về (nền xanh) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBackHome"
             android:layout_width="0dp"
@@ -312,4 +376,5 @@
             app:cornerRadius="10dp"
             app:backgroundTint="@color/primary" />
     </LinearLayout>
+
 </LinearLayout>
