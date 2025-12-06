@@ -4,9 +4,15 @@ public class ResultItem {
     private String id;
     private String service;
     private String examResult;
-    private String examDate;
+    private String scheduledAt;
     private String status;
     private Doctor doctor;
+
+    private String recommendation;
+    public String getRecommendation(){
+        return recommendation;
+    }
+    public String getScheduledAt() { return scheduledAt; }
 
     public static class Doctor {
         private String fullName;
@@ -28,9 +34,6 @@ public class ResultItem {
         return examResult;
     }
 
-    public String getExamDate() {
-        return examDate;
-    }
 
     public String getStatus() {
         return status;

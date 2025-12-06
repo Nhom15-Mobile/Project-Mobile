@@ -22,13 +22,13 @@ public class DetailResultActivity extends AppCompatActivity {
     private TextView tvService;
     private TextView tvExamDate;
     private TextView tvStatus;
-    private TextView tvPaymentStatus;
+
     private TextView tvExamResult;
 
-    //private TextView tvPatientName;
     private TextView tvCareProfileName;
     private TextView tvRelation;
     private TextView tvDoctorName;
+    private TextView tvRecommendation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +47,15 @@ public class DetailResultActivity extends AppCompatActivity {
         tvService = findViewById(R.id.tvService);
         tvExamDate = findViewById(R.id.tvExamDate);
         tvStatus = findViewById(R.id.tvStatus);
-        tvPaymentStatus = findViewById(R.id.tvPaymentStatus);
+        //tvPaymentStatus = findViewById(R.id.tvPaymentStatus);
         tvExamResult = findViewById(R.id.tvExamResult);
 
-        //tvPatientName = findViewById(R.id.tvPatientName);
+
         tvCareProfileName = findViewById(R.id.tvCareProfileName);
         tvRelation = findViewById(R.id.tvRelation);
         tvDoctorName = findViewById(R.id.tvDoctorName);
+
+        tvRecommendation = findViewById(R.id.tvRecommendation);
 
         btnBack.setOnClickListener(v -> onBackPressed());
     }
@@ -64,28 +66,30 @@ public class DetailResultActivity extends AppCompatActivity {
 
         // Lấy dữ liệu từ Intent (phải trùng key với bên ChooseResultActivity)
         String service = intent.getStringExtra("service");
-        String examDate = intent.getStringExtra("examDate");
+        String scheduledAt = intent.getStringExtra("scheduledAt");
         String status = intent.getStringExtra("status");
-        String paymentStatus = intent.getStringExtra("paymentStatus");
+        //String paymentStatus = intent.getStringExtra("paymentStatus");
         String examResult = intent.getStringExtra("examResult");
 
-       // String patientName = intent.getStringExtra("patientName");
+
         String careProfileName = intent.getStringExtra("careProfileName");
         String relation = intent.getStringExtra("relation");
         String doctorName = intent.getStringExtra("doctorName");
+        String RecommendationLabel = intent.getStringExtra("recommend");
+
 
         // Set dữ liệu vào UI
         tvService.setText("Dịch vụ: " + safeText(service));
-        tvExamDate.setText("Thời gian khám: " + formatDate(examDate));
+        tvExamDate.setText("Thời gian khám: " + formatDate(scheduledAt));
         tvStatus.setText("Trạng thái: " + safeText(status));
-        tvPaymentStatus.setText("Thanh toán: " + safeText(paymentStatus));
+//        tvPaymentStatus.setText("Thanh toán: " + safeText(paymentStatus));
         tvExamResult.setText(safeText(examResult));
 
-        //tvPatientName.setText("Tài khoản: " + safeText(patientName));
         tvCareProfileName.setText("Hồ sơ khám: " + safeText(careProfileName));
         tvRelation.setText("Quan hệ: " + safeText(relation));
 
         tvDoctorName.setText("Tên bác sĩ: " + safeText(doctorName));
+        tvRecommendation.setText(safeText(RecommendationLabel));
     }
 
     private String safeText(String s) {

@@ -15,6 +15,10 @@ public class ResultData {
     private Patient patient;
     private CareProfile careProfile;
     private Doctor doctor;
+    private String recommendation;
+
+    private String scheduledAt;
+    public String getScheduledAt() { return scheduledAt; }
 
     // ====== NESTED MODELS ======
     public static class Patient {
@@ -65,6 +69,14 @@ public class ResultData {
     public String getPaymentStatus() {
         return paymentStatus;
     }
+    public String getRecommendation(){
+        return recommendation;
+
+    }
+    public void setRecommendation(String recommendation){
+        this.recommendation = recommendation;
+
+    }
 
     public Patient getPatient() {
         return patient;
@@ -77,4 +89,5 @@ public class ResultData {
     public Doctor getDoctor() {
         return doctor;
     }
+
 }

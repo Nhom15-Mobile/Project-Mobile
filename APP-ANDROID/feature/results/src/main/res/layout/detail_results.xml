@@ -37,6 +37,7 @@
         </LinearLayout>
 
         <!-- Thông tin dịch vụ & kết quả -->
+        <!-- Thông tin dịch vụ & kết quả -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,18 +68,12 @@
                 android:layout_marginTop="4dp"
                 android:text="Trạng thái:" />
 
-            <TextView
-                android:id="@+id/tvPaymentStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Thanh toán:" />
 
             <TextView
                 android:id="@+id/tvExamResultLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:text="Kết quả khám"
                 android:textStyle="bold"
                 android:textSize="15sp" />
@@ -90,7 +85,27 @@
                 android:layout_marginTop="4dp"
                 android:lineSpacingExtra="3dp"
                 android:text="..." />
+
+            <!-- 💡 Trường mới: Đề nghị -->
+            <TextView
+                android:id="@+id/tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Đề nghị"
+                android:textStyle="bold"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tvRecommendation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="3dp"
+                android:text="..." />
+
         </LinearLayout>
+
 
         <!-- Thông tin bệnh nhân / hồ sơ -->
         <LinearLayout

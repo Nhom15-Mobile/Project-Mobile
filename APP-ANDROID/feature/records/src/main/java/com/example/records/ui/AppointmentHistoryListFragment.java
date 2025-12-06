@@ -86,8 +86,6 @@ public class AppointmentHistoryListFragment extends Fragment {
 
         }
 
-        Log.d(TAG, "Fragment " + statusType + " nhận careProfileId = " + careProfileId);
-
         rvHistory = view.findViewById(R.id.rvHistory);
         progressBar = view.findViewById(R.id.progressBar);
         tvEmpty = view.findViewById(R.id.tvEmpty);
@@ -136,7 +134,7 @@ public class AppointmentHistoryListFragment extends Fragment {
                         }
 
                         List<AppointmentData> dtoList = body.getData();
-                        Log.d(TAG, "Tổng số lịch backend trả về = " + (dtoList == null ? 0 : dtoList.size()));
+
                         if (dtoList == null || dtoList.isEmpty()) {
                             showEmpty();
                             return;
@@ -148,21 +146,11 @@ public class AppointmentHistoryListFragment extends Fragment {
                             boolean matchCare = matchesCareProfile(dto);
                             boolean matchTab = shouldShowOnThisTab(dto);
 
-                            Log.d(TAG,
-                                    "Check item id=" + dto.getId()
-                                            + " careIdApi=" + dto.getCareProfileId()
-                                            + " status=" + dto.getStatus()
-                                            + " payStatus=" + dto.getPaymentStatus()
-                                            + " -> matchCare=" + matchCare
-                                            + ", matchTab(" + statusType + ")=" + matchTab);
-
                             if (!matchCare) continue;
                             if (!matchTab) continue;
 
                             items.add(mapToHistoryItem(dto));
                         }
-
-                        Log.d(TAG, "Số item sau filter cho tab " + statusType + " = " + items.size());
 
                         if (items.isEmpty()) {
                             showEmpty();

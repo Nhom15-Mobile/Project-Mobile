@@ -3,6 +3,7 @@ package com.example.results.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +37,7 @@ public class ChooseResultActivity extends AppCompatActivity {
 
     private ImageView btnBack;
     private MaterialAutoCompleteTextView spinnerYear, spinnerMonth;
-    private MaterialButton btnClear;
+    //private MaterialButton btnClear;
     private RecyclerView rvResults;
     private SharedPreferences sp;
     private String TOKEN = null;
@@ -78,7 +79,7 @@ public class ChooseResultActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         spinnerYear = findViewById(R.id.spinnerYear);
         spinnerMonth = findViewById(R.id.spinnerMonth);
-        btnClear = findViewById(R.id.btnClear);
+        //btnClear = findViewById(R.id.btnClear);
         rvResults = findViewById(R.id.rvResults);
 
         TextView tvTitle = findViewById(R.id.tvTitle);
@@ -98,10 +99,11 @@ public class ChooseResultActivity extends AppCompatActivity {
             Intent intent = new Intent(ChooseResultActivity.this, DetailResultActivity.class);
 
             intent.putExtra("service", item.getService());
-            intent.putExtra("examDate", item.getExamDate());
+            intent.putExtra("scheduledAt", item.getScheduledAt());
             intent.putExtra("status", item.getStatus());
             intent.putExtra("paymentStatus", item.getPaymentStatus());
             intent.putExtra("examResult", item.getExamResult());
+            intent.putExtra("recommend", item.getRecommendation());
 
             if (item.getPatient() != null) {
                 intent.putExtra("patientName", item.getPatient().getFullName());
@@ -135,11 +137,11 @@ public class ChooseResultActivity extends AppCompatActivity {
         spinnerMonth.setOnItemClickListener((parent, view, position, id) -> applyFilter());
 
         // Nút clear: reset lại filter năm/tháng, vẫn giữ filter careProfile (nếu có)
-        btnClear.setOnClickListener(v -> {
-            spinnerYear.setText("Tất cả", false);
-            spinnerMonth.setText("Tất cả", false);
-            applyFilter();
-        });
+//        btnClear.setOnClickListener(v -> {
+//            spinnerYear.setText("Tất cả", false);
+//            spinnerMonth.setText("Tất cả", false);
+//            applyFilter();
+//        });
     }
 
     private void loadResults() {
@@ -172,43 +174,25 @@ public class ChooseResultActivity extends AppCompatActivity {
     }
 
     private void applyFilter() {
-        String yearText = spinnerYear.getText() != null ? spinnerYear.getText().toString() : "Tất cả";
-        String monthText = spinnerMonth.getText() != null ? spinnerMonth.getText().toString() : "Tất cả";
-
-        Integer year = null;
-        Integer month = null;
-
-        if (!"Tất cả".equals(yearText)) {
-            try {
-                year = Integer.parseInt(yearText);
-            } catch (NumberFormatException ignored) {}
-        }
-
-        if (!"Tất cả".equals(monthText)) {
-            try {
-                month = Integer.parseInt(monthText);
-            } catch (NumberFormatException ignored) {}
-        }
-
         filteredResults.clear();
-        for (ResultData item : allResults) {
+        boolean filterByCareProfile = careProfileIdFilter != null && !careProfileIdFilter.trim().isEmpty();
 
+        for (ResultData item : allResults) {
             // 1. Nếu đang xem theo hồ sơ (careProfileIdFilter != null)
-            if (careProfileIdFilter != null) {
+            if (filterByCareProfile) {
                 if (item.getCareProfile() == null ||
                         item.getCareProfile().getId() == null ||
                         !careProfileIdFilter.equals(item.getCareProfile().getId())) {
                     continue; // bỏ item không thuộc hồ sơ này
                 }
             }
-
-            // 2. Lọc tiếp theo năm / tháng như cũ
-            if (matchDateFilter(item.getExamDate(), year, month)) {
-                filteredResults.add(item);
-            }
+            // 2. KHÔNG LỌC NĂM/THÁNG NỮA → ADD THẲNG
+            filteredResults.add(item);
         }
+
         adapter.updateData(filteredResults);
     }
+
 
     private boolean matchDateFilter(String isoDate, Integer year, Integer month) {
         if (isoDate == null) return false;

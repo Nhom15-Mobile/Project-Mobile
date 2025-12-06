@@ -53,7 +53,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultView
         }
 
         // Ngày
-        holder.tvDate.setText(formatDate(item.getExamDate()));
+        holder.tvDate.setText(formatDate(item.getScheduledAt()));
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onClick(item);
