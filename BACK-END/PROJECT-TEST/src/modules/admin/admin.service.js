@@ -748,75 +748,84 @@ class AdminService {
   }
 
     // ============= APPOINTMENT RESULT (ADMIN) =============
-  async updateAppointmentResult(appointmentId, resultText) {
-    if (!resultText || !resultText.trim()) {
-      throw new Error('Result text is required');
-    }
-
-    const appt = await prisma.appointment.update({
-      where: { id: appointmentId },
-      data: {
-        // KHÔNG đụng status, KHÔNG đụng paymentStatus
-        examResult: resultText.trim(),
-      },
-      include: {
-        patient: {
-          select: { id: true, fullName: true, email: true, phone: true },
-        },
-        doctor: {
-          select: { id: true, fullName: true, email: true },
-        },
-        careProfile: {
-          select: { id: true, fullName: true, relation: true },
-        },
-        slot: true,
-        payment: true,
-      },
-    });
-
-    // format gọn cho FE/app
-    return {
-      id: appt.id,
-      examResult: appt.examResult || '',
-      service: appt.service,
-      status: appt.status,
-      paymentStatus: appt.paymentStatus,
-      scheduledAt: appt.scheduledAt,
-      doctor: appt.doctor
-        ? {
-            id: appt.doctor.id,
-            fullName: appt.doctor.fullName,
-            email: appt.doctor.email,
-          }
-        : null,
-      patient: appt.patient
-        ? {
-            id: appt.patient.id,
-            fullName: appt.patient.fullName,
-            email: appt.patient.email,
-            phone: appt.patient.phone,
-          }
-        : null,
-      careProfile: appt.careProfile
-        ? {
-            id: appt.careProfile.id,
-            fullName: appt.careProfile.fullName,
-            relation: appt.careProfile.relation,
-          }
-        : null,
-      slot: appt.slot
-        ? { id: appt.slot.id, start: appt.slot.start, end: appt.slot.end }
-        : null,
-      payment: appt.payment
-        ? {
-            id: appt.payment.id,
-            amount: appt.payment.amount,
-            currency: appt.payment.currency,
-            status: appt.payment.status,
-          }
-        : null,
-    };
+async updateAppointmentResult(appointmentId, resultText, treatmentText) {
+  if (!resultText || !resultText.trim()) {
+    throw new Error('Result text is required');
   }
+
+  const appt = await prisma.appointment.update({
+    where: { id: appointmentId },
+    data: {
+      // KHÔNG đụng status, chỉ lưu kết quả & hướng dẫn điều trị
+      examResult: resultText.trim(),
+      treatmentPlan: treatmentText && treatmentText.trim() ? treatmentText.trim() : null,
+    },
+    include: {
+      patient: {
+        select: { id: true, fullName: true, email: true, phone: true },
+      },
+      doctor: {
+        select: { id: true, fullName: true, email: true },
+      },
+      careProfile: {
+        select: { id: true, fullName: true, relation: true },
+      },
+      slot: true,
+      payment: true,
+    },
+  });
+
+  // format “đẹp” để FE/app xài
+  return {
+    id: appt.id,
+    examResult: appt.examResult || '',
+    treatmentPlan: appt.treatmentPlan || '',
+
+    service: appt.service,
+    status: appt.status,
+    paymentStatus: appt.paymentStatus,
+    scheduledAt: appt.scheduledAt,
+
+    doctor: appt.doctor
+      ? {
+          id: appt.doctor.id,
+          fullName: appt.doctor.fullName,
+          email: appt.doctor.email,
+        }
+      : null,
+
+    patient: appt.patient
+      ? {
+          id: appt.patient.id,
+          fullName: appt.patient.fullName,
+          email: appt.patient.email,
+          phone: appt.patient.phone,
+        }
+      : null,
+
+    careProfile: appt.careProfile
+      ? {
+          id: appt.careProfile.id,
+          fullName: appt.careProfile.fullName,
+          relation: appt.careProfile.relation,
+        }
+      : null,
+
+    slot: appt.slot
+      ? { id: appt.slot.id, start: appt.slot.start, end: appt.slot.end }
+      : null,
+
+    payment: appt.payment
+      ? {
+          id: appt.payment.id,
+          amount: appt.payment.amount,
+          currency: appt.payment.currency,
+          status: appt.payment.status,
+        }
+      : null,
+  };
+}
+
 
 }
 
