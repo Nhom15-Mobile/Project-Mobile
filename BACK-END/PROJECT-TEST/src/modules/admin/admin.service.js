@@ -51,9 +51,9 @@ class AdminService {
     if (role) where.role = role;
     if (search) {
       where.OR = [
-        { email: { contains: search, mode: 'insensitive' } },
-        { fullName: { contains: search, mode: 'insensitive' } },
-        { phone: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search } },
+        { fullName: { contains: search } },
+        { phone: { contains: search } },
       ];
     }
 
@@ -164,9 +164,9 @@ class AdminService {
 
     if (search) {
       where.OR = [
-        { email: { contains: search, mode: 'insensitive' } },
-        { fullName: { contains: search, mode: 'insensitive' } },
-        { phone: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search} },
+        { fullName: { contains: search } },
+        { phone: { contains: search } },
       ];
     }
 
@@ -267,9 +267,9 @@ class AdminService {
     if (ownerId) where.ownerId = ownerId;
     if (search) {
       where.OR = [
-        { fullName: { contains: search, mode: 'insensitive' } },
-        { phone: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
+        { fullName: { contains: search} },
+        { phone: { contains: search, } },
+        { email: { contains: search,  } },
       ];
     }
 
