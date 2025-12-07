@@ -49,11 +49,13 @@
         android:layout_marginVertical="5dp"
         android:orientation="horizontal"
         android:baselineAligned="false"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:weightSum="2">
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAppointment"
-            android:layout_width="160dp"
+            android:layout_width="0dp"
             android:layout_height="60dp"
+            android:layout_weight="1"
             android:text="@string/appointment"
             android:textStyle="bold"
             android:textColor="@color/primary"
@@ -73,8 +75,9 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBookingHistory"
-            android:layout_width="160dp"
+            android:layout_width="0dp"
             android:layout_height="60dp"
+            android:layout_weight="1"
             android:text="@string/appointment_history"
             android:textStyle="bold"
             android:textColor="@color/primary"
@@ -97,11 +100,13 @@
         android:layout_marginVertical="5dp"
         android:orientation="horizontal"
         android:baselineAligned="false"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:weightSum="2">
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRecord"
-            android:layout_width="160dp"
+            android:layout_width="0dp"
             android:layout_height="60dp"
+            android:layout_weight="1"
             android:text="@string/record"
             android:textStyle="bold"
             android:textColor="@color/primary"
@@ -120,8 +125,9 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAppointmentResult"
-            android:layout_width="160dp"
+            android:layout_width="0dp"
             android:layout_height="60dp"
+            android:layout_weight="1"
             android:text="@string/results"
             android:textStyle="bold"
             android:textColor="@color/primary"
