@@ -60,6 +60,7 @@ public class PaymentActivity extends AppCompatActivity {
         PaymentService paymentService = ApiServices.create(PaymentService.class, tokenProvider);
         createQr(paymentService);
 
+        btnBack.setOnClickListener(v -> finish());
         btnProcessPayment.setOnClickListener(v -> payment(paymentService));
     }
 
@@ -68,6 +69,7 @@ public class PaymentActivity extends AppCompatActivity {
 
         qrImage = findViewById(R.id.qrImage);
         btnProcessPayment = findViewById(R.id.btnProcessPayment);
+        btnBack = findViewById(R.id.btnBack);
     }
 
     private void createQr(PaymentService paymentService){

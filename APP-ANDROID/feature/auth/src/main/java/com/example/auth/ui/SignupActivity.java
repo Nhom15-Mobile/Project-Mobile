@@ -3,6 +3,7 @@ package com.example.auth.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText etName, etEmail, etPass, etConfirm;
     private MaterialButton btnSignup;
     private AuthRepository repo;
+    private ImageView btnBack;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,8 +31,10 @@ public class SignupActivity extends AppCompatActivity {
         etPass     = findViewById(R.id.editTextPass);
         etConfirm  = findViewById(R.id.editTextPassConfirm);
         btnSignup  = findViewById(R.id.buttonSignup);
+        btnBack = findViewById(R.id.btnBack);
 
         btnSignup.setOnClickListener(v -> doRegister());
+        btnBack.setOnClickListener((v -> finish()));
     }
 
     private void doRegister() {

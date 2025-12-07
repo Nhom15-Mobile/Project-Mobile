@@ -81,7 +81,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Số điện thoại *"
+                android:text="Số điện thoại"
                 android:textStyle="bold"
                 android:layout_marginTop="14dp"
                 android:textSize="18sp"/>
@@ -114,7 +114,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mối quan hệ"
+                android:text="Mối quan hệ *"
                 android:textStyle="bold"
                 android:layout_marginTop="14dp"
                 android:textSize="18sp"/>
@@ -158,7 +158,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quốc gia *"
+                        android:text="Quốc gia"
                         android:textStyle="bold"
                         android:textSize="18sp"/>
 
@@ -207,7 +207,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Giới tính *"
+                        android:text="Giới tính"
                         android:textStyle="bold"
                         android:textSize="18sp"/>
 
@@ -294,7 +294,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tỉnh thành *"
+                        android:text="Tỉnh thành"
                         android:textStyle="bold"
                         android:textSize="18sp"/>
 
@@ -335,7 +335,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quận huyện *"
+                        android:text="Quận huyện"
                         android:textStyle="bold"
                         android:textSize="18sp"/>
 
@@ -369,7 +369,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Phường xã *"
+                android:text="Phường xã"
                 android:textStyle="bold"
                 android:layout_marginTop="14dp"
                 android:textSize="18sp"/>
@@ -404,7 +404,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Địa chỉ thường trú *"
+                android:text="Địa chỉ thường trú"
                 android:textStyle="bold"
                 android:layout_marginTop="14dp"
                 android:textSize="18sp"/>

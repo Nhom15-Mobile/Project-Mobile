@@ -3,6 +3,7 @@ package com.example.auth.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private AuthRepository repo;
     private EditText editTextEmail;
 
+    private ImageView btnBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +29,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         buttonLogin = findViewById(R.id.buttonLogin);
         editTextEmail = findViewById(R.id.editTextEmail);
+        btnBack = findViewById(R.id.btnBack);
+        
+        btnBack.setOnClickListener(v -> finish());
 
         buttonLogin.setOnClickListener(v -> {
             String email = editTextEmail.getText().toString().trim();

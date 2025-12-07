@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private EditText etNewPassword;
     private EditText etConfirmPassword;
     private MaterialButton btnResetPassword;
+
+    private ImageView btnBack;
 
     private AuthRepository repo;
 
@@ -43,6 +46,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
         etNewPassword     = findViewById(R.id.etNewPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnResetPassword  = findViewById(R.id.buttonConfirm);
+        btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
 
         btnResetPassword.setOnClickListener(v -> {
             String newPass = etNewPassword.getText().toString().trim();

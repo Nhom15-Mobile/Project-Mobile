@@ -192,9 +192,9 @@ public class CreateProfileActivity extends AppCompatActivity {
                     Toast.makeText(CreateProfileActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
                     finish();
                 }
-//                if (!response.isSuccessful() && response.body() != null) {
-//                    Toast.makeText(CreateProfileActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
-//                }
+                if (!response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(CreateProfileActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override

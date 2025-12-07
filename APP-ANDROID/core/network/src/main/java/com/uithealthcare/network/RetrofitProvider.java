@@ -23,7 +23,7 @@ public final class RetrofitProvider {
                     .addInterceptor(log)
                     .connectTimeout(30, TimeUnit.SECONDS)  // thời gian chờ connect
                     .writeTimeout(60, TimeUnit.SECONDS)    // upload ảnh
-                    .readTimeout(120, TimeUnit.SECONDS)
+                    .readTimeout(600, TimeUnit.SECONDS)
                     .build();
 
             Gson gson = new GsonBuilder().setLenient().create();
