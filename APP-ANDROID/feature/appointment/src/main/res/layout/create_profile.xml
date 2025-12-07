@@ -66,16 +66,16 @@
                 app:boxCornerRadiusTopEnd="8dp"
                 app:boxCornerRadiusTopStart="8dp"
                 app:boxStrokeColor="#1F57E7"
-                >
+                android:hint="Họ tên"
+                app:hintTextColor="@color/primary">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtFullName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Họ tên"
+
                     android:inputType="textPersonName"
-                    android:textColorHint="@color/primary"
-                    />
+                    android:textColorHint="@color/hintColor"/>
             </com.google.android.material.textfield.TextInputLayout>
             <!-- Số điện thoại -->
             <TextView
@@ -94,14 +94,18 @@
                 app:boxCornerRadiusTopEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusBottomEnd="8dp"
-                app:boxStrokeColor="#1F57E7">
+                app:boxStrokeColor="#1F57E7"
+                app:hintTextColor="@color/hintColor"
+                app:counterTextColor="@color/hintColor"
+                app:placeholderTextColor="@color/hintColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="SĐT"
-                    android:inputType="phone"/>
+                    android:inputType="phone"
+                    android:textColorHint="@color/hintColor"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -123,14 +127,18 @@
                 app:boxCornerRadiusTopEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusBottomEnd="8dp"
-                app:boxStrokeColor="#1F57E7">
+                app:boxStrokeColor="#1F57E7"
+                app:hintTextColor="@color/hintColor"
+                app:counterTextColor="@color/hintColor"
+                app:placeholderTextColor="@color/hintColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtRelation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Mối quan hệ với chủ tài khoản"
-                    android:inputType="textCapSentences"/>
+                    android:inputType="textCapSentences"
+                    android:textColorHint="@color/hintColor"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Hàng: Quốc gia | Dân tộc -->
@@ -163,7 +171,10 @@
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
+                        app:boxCornerRadiusBottomEnd="8dp"
+                        app:hintTextColor="@color/hintColor"
+                        app:counterTextColor="@color/hintColor"
+                        app:placeholderTextColor="@color/hintColor">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/autoCountry"
@@ -171,7 +182,8 @@
                             android:layout_height="match_parent"
                             android:paddingHorizontal="15dp"
                             android:hint="Quốc Gia"
-                            android:inputType="none"/>
+                            android:inputType="none"
+                            android:textColorHint="@color/hintColor"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -208,14 +220,17 @@
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
+                        app:boxCornerRadiusBottomEnd="8dp"
+                        app:hintTextColor="@color/hintColor"
+                        app:counterTextColor="@color/hintColor"
+                        app:placeholderTextColor="@color/hintColor">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/autoGender"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingHorizontal="15dp"
-                            android:textColorHint="@color/gray_700"
+                            android:textColorHint="@color/hintColor"
                             android:hint="Giới tính"
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -245,7 +260,10 @@
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
+                        app:boxCornerRadiusBottomEnd="8dp"
+                        app:hintTextColor="@color/hintColor"
+                        app:counterTextColor="@color/hintColor"
+                        app:placeholderTextColor="@color/hintColor">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edtDob"
@@ -253,7 +271,8 @@
                             android:layout_height="match_parent"
                             android:hint="DD/MM/YYYY"
                             android:inputType="date"
-                            android:drawableEnd="@drawable/ic_home_calen1"/>
+                            android:drawableEnd="@drawable/ic_home_calen1"
+                            android:textColorHint="@color/hintColor"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -288,7 +307,10 @@
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
+                        app:boxCornerRadiusBottomEnd="8dp"
+                        app:hintTextColor="@color/hintColor"
+                        app:counterTextColor="@color/hintColor"
+                        app:placeholderTextColor="@color/hintColor">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/autoProvince"
@@ -296,7 +318,8 @@
                             android:layout_height="match_parent"
                             android:paddingHorizontal="15dp"
                             android:hint="Tỉnh thành"
-                            android:inputType="none"/>
+                            android:inputType="none"
+                            android:textColorHint="@color/hintColor"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -325,7 +348,10 @@
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
+                        app:boxCornerRadiusBottomEnd="8dp"
+                        app:hintTextColor="@color/hintColor"
+                        app:counterTextColor="@color/hintColor"
+                        app:placeholderTextColor="@color/hintColor">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/autoDistrict"
@@ -333,7 +359,8 @@
                             android:layout_height="match_parent"
                             android:paddingHorizontal="15dp"
                             android:hint="Quận huyện"
-                            android:inputType="none"/>
+                            android:inputType="none"
+                            android:textColorHint="@color/hintColor"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -356,17 +383,21 @@
                 app:boxCornerRadiusTopStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusBottomEnd="8dp">
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:hintTextColor="@color/hintColor"
+                app:counterTextColor="@color/hintColor"
+                app:placeholderTextColor="@color/hintColor">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/autoWard"
                     android:layout_width="150dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:paddingHorizontal="15dp"
                     android:hint="Phường xã"
                     android:inputType="none"
                     android:focusable="false"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:textColorHint="@color/hintColor"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Địa chỉ thường trú -->
@@ -386,7 +417,10 @@
                 app:boxCornerRadiusTopStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusBottomEnd="8dp">
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:hintTextColor="@color/hintColor"
+                app:counterTextColor="@color/hintColor"
+                app:placeholderTextColor="@color/hintColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtAddress"
@@ -395,7 +429,8 @@
                     android:minLines="3"
                     android:gravity="top|start"
                     android:hint="Địa chỉ thường trú bệnh nhân"
-                    android:inputType="textMultiLine"/>
+                    android:inputType="textMultiLine"
+                    android:textColorHint="@color/hintColor"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Nút hành động -->

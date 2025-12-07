@@ -26,5 +26,7 @@
     <color name="disabledGrey">#BDBDBD</color>
 
     <color name="lightGray">#D3D3D3</color>
+    <color name="hintColor">#9AA0A6</color> <!-- Màu xám nhạt -->
+
 
 </resources>
