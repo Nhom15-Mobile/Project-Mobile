@@ -37,7 +37,7 @@ async def ocr_cccd(file: UploadFile = File(...)):
             tmp_path = tmp.name
 
         # 3. Gọi pipeline OCR hiện tại
-        info = run_ocr(tmp_path)
+        info, texts = run_ocr(tmp_path)
 
         # 4. Xoá file tạm
         try:
@@ -49,7 +49,8 @@ async def ocr_cccd(file: UploadFile = File(...)):
         return JSONResponse(
             content={
                 "filename": file.filename,
-                "data": info  # {'fullName', 'gender', 'dateOfBirth', 'address', ...}
+                "data": info,  # {'fullName', 'gender', 'dateOfBirth', 'address', ...}
+                "texts": texts  # Danh sách các đoạn text nhận dạng được
             }
         )
 

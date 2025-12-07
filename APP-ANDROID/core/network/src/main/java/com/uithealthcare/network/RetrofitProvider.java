@@ -21,8 +21,9 @@ public final class RetrofitProvider {
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(new SessionInterceptor(tokenProvider))
                     .addInterceptor(log)
-                    .connectTimeout(20, TimeUnit.SECONDS)
-                    .readTimeout(20, TimeUnit.SECONDS)
+                    .connectTimeout(30, TimeUnit.SECONDS)  // thời gian chờ connect
+                    .writeTimeout(60, TimeUnit.SECONDS)    // upload ảnh
+                    .readTimeout(120, TimeUnit.SECONDS)
                     .build();
 
             Gson gson = new GsonBuilder().setLenient().create();

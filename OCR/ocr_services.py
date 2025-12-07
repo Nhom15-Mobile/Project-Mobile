@@ -216,7 +216,7 @@ def run_ocr(img_path: str):
     with open("cccd_result.json", "w", encoding="utf-8") as f:
         f.write(json_str)
     
-    return info
+    return info, texts
 
 
 

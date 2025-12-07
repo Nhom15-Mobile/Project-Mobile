@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.appointment.R;
 import com.example.appointment.api.CareProfileService;
 import com.example.appointment.api.LocationService;
+import com.example.appointment.api.OCRService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -26,6 +28,8 @@ import com.uithealthcare.domain.location.Province;
 import com.uithealthcare.domain.location.ProvinceResponse;
 import com.uithealthcare.domain.location.Ward;
 import com.uithealthcare.domain.location.WardResponse;
+import com.uithealthcare.domain.ocr.CccdData;
+import com.uithealthcare.domain.ocr.OcrResponse;
 import com.uithealthcare.network.ApiServices;
 import com.uithealthcare.network.SessionInterceptor;
 import com.uithealthcare.util.ConvertDate;
@@ -33,9 +37,12 @@ import com.uithealthcare.util.HandleAutoComplete;
 import com.uithealthcare.util.ScanManager;
 import com.uithealthcare.util.SessionManager;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,21 +53,20 @@ public class CreateProfileActivity extends AppCompatActivity {
     private MaterialAutoCompleteTextView autoCountry, autoGender, autoProvince, autoDistrict, autoWard;
 
     private MaterialButton btnCreate, btnBack, btnScan;
-    private ProgressBar progressBar;
     private CareProfileService careProfileService;
     private LocationService locationService;
+    private OCRService ocrService;
     private List<Province> provinceList;
     private List<District> districtList;
     private List<Ward> wardList;
     private final List<String> genderList = Arrays.asList("Nam", "Nữ", "Khác");
     private final List<String> countryList = List.of("Việt Nam");
-
     private String selectedProvinceCode;
     private String selectedDistrictCode;
     private String selectedWardCode;
-
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private ActivityResultLauncher<Uri> takePictureLauncher;
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,16 +82,14 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         careProfileService = ApiServices.create(CareProfileService.class, tokenProvider);
         locationService = ApiServices.create(LocationService.class, tokenProvider);
+        ocrService = ApiServices.create(OCRService.class, tokenProvider);
 
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
-
-                        // TODO: gửi imageUri vào hàm OCR của bạn
-//                        processOCR(imageUri);
-                        Toast.makeText(CreateProfileActivity.this, "Lấy ảnh thành công", Toast.LENGTH_LONG).show();
+                        processOCR(imageUri, ocrService);
                     }
                 }
         );
@@ -122,7 +126,6 @@ public class CreateProfileActivity extends AppCompatActivity {
         autoDistrict = findViewById(R.id.autoDistrict);
         autoWard = findViewById(R.id.autoWard);
         etAddressDetail = findViewById(R.id.edtAddress);
-        //edtCCCD = findViewById(R.id.edtCCCD);
 
         HandleAutoComplete.setupDropDown(autoCountry, countryList);
         HandleAutoComplete.setupDropDown(autoGender, genderList);
@@ -131,6 +134,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         btnScan = findViewById(R.id.btnScan);
 
+        loadingDialog = new LoadingDialog(this);
     }
 
     private void initEvent(){
@@ -277,5 +281,78 @@ public class CreateProfileActivity extends AppCompatActivity {
                 Toast.makeText(CreateProfileActivity.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void processOCR(Uri imageUri, OCRService ocrService) {
+        loadingDialog.show();
+        try {
+            // 1. Đọc bytes từ Uri
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+            int nRead;
+            byte[] data = new byte[4096];
+            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+            byte[] imageBytes = buffer.toByteArray();
+
+            // 2. Tạo RequestBody + MultipartBody.Part
+            okhttp3.RequestBody requestFile =
+                    okhttp3.RequestBody.create(
+                            imageBytes,
+                            okhttp3.MediaType.parse("image/*")
+                    );
+
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData("file", "cccd.jpg", requestFile);
+
+            // 3. Gọi API
+            ocrService.uploadCccd(body).enqueue(new Callback<OcrResponse>() {
+                @Override
+                public void onResponse(Call<OcrResponse> call, Response<OcrResponse> response) {
+                    loadingDialog.dismiss();
+                    if (response.isSuccessful() && response.body() != null) {
+                        OcrResponse ocr = response.body();
+                        CccdData data = ocr.getData();
+
+                        String msg = "Tên: " + data.getFullName()
+                                + "\nQuốc gia: " + data.getCountry()
+                                + "\nGiới tính: " + data.getGender()
+                                + "\nNgày sinh: " + data.getDateOfBirth()
+                                + "\nĐịa chỉ: " + data.getAddress();
+
+                        etFullName.setText(data.getFullName());
+                        autoGender.setText(data.getGender());
+                        autoCountry.setText(data.getCountry());
+                        etDob.setText(data.getDateOfBirth());
+                        etAddressDetail.setText(data.getAddress());
+
+                        Toast.makeText(CreateProfileActivity.this, "Scan hoàn tất", Toast.LENGTH_LONG).show();
+                        Log.d("MyOCR", msg);
+                    } else {
+                        Toast.makeText(CreateProfileActivity.this,
+                                "OCR thất bại: " + response.code(), Toast.LENGTH_LONG).show();
+                        Log.d("MyOCR", "OCR thất bại: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<OcrResponse> call, Throwable throwable) {
+                    loadingDialog.dismiss();
+                    Toast.makeText(CreateProfileActivity.this,
+                            "Lỗi mạng: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.d("MyOCR", "Lỗi mạng: " + throwable.getMessage());
+                }
+            });
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            loadingDialog.dismiss();
+            Toast.makeText(this, "Lỗi đọc ảnh: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 }
