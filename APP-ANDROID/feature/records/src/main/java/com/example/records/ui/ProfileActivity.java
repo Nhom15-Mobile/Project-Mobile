@@ -35,7 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvProvince = findViewById(R.id.tvProvince);
         tvDistrict = findViewById(R.id.tvDistrict);
         tvWard = findViewById(R.id.tvWard);
-        tvAddressDetail = findViewById(R.id.tvAddressDetail);
+        //tvAddressDetail = findViewById(R.id.tvAddressDetail);
 
     }
 
@@ -49,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
         String province = getIntent().getStringExtra("province");
         String district = getIntent().getStringExtra("district");
         String ward = getIntent().getStringExtra("ward");
-        String addressDetail = getIntent().getStringExtra("addressDetail");
+        //String addressDetail = getIntent().getStringExtra("addressDetail");
 
         // Gán vào TextView nếu có dữ liệu
         if (name != null) tvName.setText(name);
@@ -63,9 +63,9 @@ public class ProfileActivity extends AppCompatActivity {
         if (province != null) tvProvince.setText(province);
         if (district != null) tvDistrict.setText(district);
         if (ward != null) tvWard.setText(ward);
-        if (addressDetail != null) {
-            tvAddressDetail.setText(addressDetail);
-        }
+//        if (addressDetail != null) {
+//            tvAddressDetail.setText(addressDetail);
+//        }
     }
 
 

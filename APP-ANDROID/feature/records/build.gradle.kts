@@ -58,4 +58,5 @@ dependencies {
     implementation(project(":domain"))
 
     implementation(project(":feature:results"))
+    implementation(project(":feature:appointment"))
 }

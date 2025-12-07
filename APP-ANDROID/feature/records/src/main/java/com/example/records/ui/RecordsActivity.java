@@ -25,6 +25,7 @@ import java.util.List;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.uithealthcare.domain.careProfile.CareProfile;
 import com.uithealthcare.domain.careProfile.CareProfilesResponse;
+import com.example.appointment.ui.CreateProfileActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +36,8 @@ public class RecordsActivity extends AppCompatActivity {
     private SharedPreferences sp;
     private String TOKEN = null;
     MaterialButton btnBack;
+
+    MaterialButton btnCreateRecord;
     private List<ItemRecord> itemRecords = new ArrayList<>();
     String name;
     @Override
@@ -48,13 +51,28 @@ public class RecordsActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
+        btnCreateRecord = findViewById(R.id.btnCreateRecord);
+        btnCreateRecord.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    RecordsActivity.this,
+                    com.example.appointment.ui.CreateProfileActivity.class
+            );
+            startActivity(intent);
+        });
+
         rcv = findViewById(R.id.recyclerView);
         rcv.setLayoutManager(new LinearLayoutManager(this));
 
         // Gọi API   + appdater
-        showOnCardRecord();
+        //showOnCardRecord();
 
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showOnCardRecord();
+    }
+
 
     private void showOnCardRecord() {
 //        if (TOKEN == null) {

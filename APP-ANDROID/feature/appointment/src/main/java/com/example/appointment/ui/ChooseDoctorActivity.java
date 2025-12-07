@@ -88,6 +88,7 @@ public class ChooseDoctorActivity extends AppCompatActivity {
 
                             String time = startTime + " - " + endTime;
                             boolean available = true;
+
                             scheduleDoc.add(new TimeSlot(slotId, time, available));
                         }
 
@@ -103,7 +104,7 @@ public class ChooseDoctorActivity extends AppCompatActivity {
 
                         data.putExtra(AppointmentRequest.EXTRA, req);
                         data.putExtra(AppointmentInfo.EXTRA, appointmentInfo);
-                        Log.d("Req", "Đã có slotId: "+req.getSlotId());
+                        //Log.d("Req", "Đã có slotId: "+req.getSlotId());
                         startActivity(data);
                     });
                     rvDoctors.setAdapter(adapter);

@@ -3,7 +3,9 @@ package com.example.appointment.model;
 public class TimeSlot {
     private String slotId;
     public final String time;
+
     public final boolean available;
+
     public boolean selected;
 
     public TimeSlot(String slotId, String time, boolean available) {

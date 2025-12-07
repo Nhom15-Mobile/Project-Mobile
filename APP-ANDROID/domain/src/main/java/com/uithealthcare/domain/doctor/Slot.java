@@ -4,9 +4,16 @@ import com.google.gson.annotations.SerializedName;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 public class Slot {
-    @SerializedName("id")    String id;
-    @SerializedName("start") String start; // ISO UTC
-    @SerializedName("end")   String end;
+    @SerializedName("id")
+    String id;
+
+    @SerializedName("start")
+    String start;
+
+    @SerializedName("end")
+    String end;
+
+
 
     private static final java.text.SimpleDateFormat ISO =
             new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.getDefault());
@@ -18,6 +25,9 @@ public class Slot {
     static {
         ISO.setTimeZone(java.util.TimeZone.getTimeZone("UTC")); // parse theo UTC
         // format theo timezone máy (mặc định)
+        java.util.TimeZone vnTz = java.util.TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+        DATE_OUT.setTimeZone(vnTz);
+        TIME_OUT.setTimeZone(vnTz);
     }
 
     public String getId() {
@@ -40,4 +50,5 @@ public class Slot {
     public String getEndTime() throws java.text.ParseException {
         return TIME_OUT.format(ISO.parse(end));
     }
+
 }
