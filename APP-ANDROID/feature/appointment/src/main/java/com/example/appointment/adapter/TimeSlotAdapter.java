@@ -1,5 +1,6 @@
 package com.example.appointment.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.SlotVH
     public void onBindViewHolder(@NonNull SlotVH holder, int position) {
         TimeSlot slot = data.get(position);
         holder.btn.setText(slot.time);
+        Log.d("SlotTime", "slot.time = " + slot.time);
+
         holder.btn.setEnabled(slot.available);
         holder.btn.setChecked(slot.selected);
 
