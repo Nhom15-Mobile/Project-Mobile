@@ -63,7 +63,9 @@ public class ProfileActivity extends AppCompatActivity {
         if (province != null) tvProvince.setText(province);
         if (district != null) tvDistrict.setText(district);
         if (ward != null) tvWard.setText(ward);
-        if (addressDetail != null) tvAddressDetail.setText(addressDetail);
+        if (addressDetail != null) {
+            tvAddressDetail.setText(addressDetail);
+        }
     }
 
 

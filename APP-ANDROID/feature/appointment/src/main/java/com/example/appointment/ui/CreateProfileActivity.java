@@ -82,7 +82,6 @@ public class CreateProfileActivity extends AppCompatActivity {
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
-
                         // TODO: gửi imageUri vào hàm OCR của bạn
 //                        processOCR(imageUri);
                         Toast.makeText(CreateProfileActivity.this, "Lấy ảnh thành công", Toast.LENGTH_LONG).show();
@@ -156,11 +155,12 @@ public class CreateProfileActivity extends AppCompatActivity {
                 ? ConvertDate.VNtoDateUS(etDob.getText().toString().trim())
                 : "";
 
-        String addressDetail = etAddressDetail.getText() != null
-                ? etAddressDetail.getText().toString().trim()
+        String address = etAddressDetail.getText() != null
+                ? etAddressDetail.getText().toString()
                 : "";
 
 
+        //android.util.Log.d("CreateProfile",    address );
         // Lấy từ MaterialAutoCompleteTextView
         String country = autoCountry.getText() != null
                 ? autoCountry.getText().toString().trim()
@@ -171,8 +171,9 @@ public class CreateProfileActivity extends AppCompatActivity {
                 : "";
 
 
+
         return new CreateCareProfileRequest(fullName, relation, phone, country, gender,
-                dob, selectedProvinceCode, selectedDistrictCode, selectedWardCode, addressDetail);
+                dob, selectedProvinceCode, selectedDistrictCode, selectedWardCode, address);
     }
 
     private void sendRequest(CareProfileService careProfileService){
@@ -184,11 +185,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                     Toast.makeText(CreateProfileActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
                     finish();
                 }
-//                if (!response.isSuccessful() && response.body() != null) {
-//                    Toast.makeText(CreateProfileActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
-//                }
             }
-
             @Override
             public void onFailure(Call<CreateCareProfileResponse> call, Throwable throwable) {
                 Toast.makeText(CreateProfileActivity.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
@@ -205,6 +202,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                     provinceList = response.body().getData();
                     HandleAutoComplete.setupDropDown(autoProvince, provinceList);
                     autoProvince.setOnItemClickListener((parent, view, position, id) -> {
+
                         autoDistrict.setText("");
                         autoWard.setText("");
 
