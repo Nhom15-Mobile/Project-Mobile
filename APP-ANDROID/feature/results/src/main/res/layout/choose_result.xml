@@ -33,6 +33,7 @@
     </LinearLayout>
 
     <!-- FILTER CARD -->
+    <!-- FILTER CARD -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,29 +61,37 @@
                 android:src="@drawable/ic_calendar"
                 android:padding="4dp" />
 
-            <!-- Dropdown NĂM -->
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/spinnerYear"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
+            <!-- Dropdown NĂM (ô chọn) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_weight="2"
-                android:paddingHorizontal="12dp"
-                android:hint="Năm"
-                android:textColor="#000"
-                android:inputType="date"/>
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
-            <!-- Dropdown THÁNG -->
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/spinnerMonth"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/spinnerYear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Năm"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Dropdown THÁNG (ô chọn) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="2"
-                android:paddingHorizontal="12dp"
-                android:hint="Tháng"
-                android:textColor="#000"
-                android:inputType="date"/>
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/spinnerMonth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Tháng"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- NÚT X -->
             <com.google.android.material.button.MaterialButton
@@ -98,6 +107,7 @@
                 android:padding="4dp"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+
 
     <!-- LINE -->
     <View

@@ -53,6 +53,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     private MaterialAutoCompleteTextView autoCountry, autoGender, autoProvince, autoDistrict, autoWard;
 
     private MaterialButton btnCreate, btnBack, btnScan;
+    private ProgressBar progressBar;
     private CareProfileService careProfileService;
     private LocationService locationService;
     private OCRService ocrService;
@@ -61,9 +62,11 @@ public class CreateProfileActivity extends AppCompatActivity {
     private List<Ward> wardList;
     private final List<String> genderList = Arrays.asList("Nam", "Nữ", "Khác");
     private final List<String> countryList = List.of("Việt Nam");
+
     private String selectedProvinceCode;
     private String selectedDistrictCode;
     private String selectedWardCode;
+
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private ActivityResultLauncher<Uri> takePictureLauncher;
     private LoadingDialog loadingDialog;
@@ -126,6 +129,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         autoDistrict = findViewById(R.id.autoDistrict);
         autoWard = findViewById(R.id.autoWard);
         etAddressDetail = findViewById(R.id.edtAddress);
+        //edtCCCD = findViewById(R.id.edtCCCD);
 
         HandleAutoComplete.setupDropDown(autoCountry, countryList);
         HandleAutoComplete.setupDropDown(autoGender, genderList);

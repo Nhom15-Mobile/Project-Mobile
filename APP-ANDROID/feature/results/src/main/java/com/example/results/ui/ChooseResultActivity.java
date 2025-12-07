@@ -3,7 +3,6 @@ package com.example.results.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,7 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.results.R;
 import com.example.results.adapter.ResultAdapter;
 import com.example.results.api.ResultService;
@@ -37,7 +35,7 @@ public class ChooseResultActivity extends AppCompatActivity {
 
     private ImageView btnBack;
     private MaterialAutoCompleteTextView spinnerYear, spinnerMonth;
-    //private MaterialButton btnClear;
+    private MaterialButton btnClear;
     private RecyclerView rvResults;
     private SharedPreferences sp;
     private String TOKEN = null;
@@ -58,7 +56,7 @@ public class ChooseResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choose_result);
 
-        // Lấy token từ SharedPreferences
+        //  token từ getSharedPreferences tag
         sp = getSharedPreferences("app_prefs", MODE_PRIVATE);
         TOKEN = sp.getString("access_token", null);
 
@@ -79,7 +77,7 @@ public class ChooseResultActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         spinnerYear = findViewById(R.id.spinnerYear);
         spinnerMonth = findViewById(R.id.spinnerMonth);
-        //btnClear = findViewById(R.id.btnClear);
+        btnClear = findViewById(R.id.btnClear);
         rvResults = findViewById(R.id.rvResults);
 
         TextView tvTitle = findViewById(R.id.tvTitle);
@@ -137,11 +135,11 @@ public class ChooseResultActivity extends AppCompatActivity {
         spinnerMonth.setOnItemClickListener((parent, view, position, id) -> applyFilter());
 
         // Nút clear: reset lại filter năm/tháng, vẫn giữ filter careProfile (nếu có)
-//        btnClear.setOnClickListener(v -> {
-//            spinnerYear.setText("Tất cả", false);
-//            spinnerMonth.setText("Tất cả", false);
-//            applyFilter();
-//        });
+        btnClear.setOnClickListener(v -> {
+            spinnerYear.setText("Tất cả", false);
+            spinnerMonth.setText("Tất cả", false);
+            applyFilter();
+        });
     }
 
     private void loadResults() {
@@ -173,7 +171,7 @@ public class ChooseResultActivity extends AppCompatActivity {
         });
     }
 
-    private void applyFilter() {
+    private void applyFilter1() {
         filteredResults.clear();
         boolean filterByCareProfile = careProfileIdFilter != null && !careProfileIdFilter.trim().isEmpty();
 
@@ -215,4 +213,47 @@ public class ChooseResultActivity extends AppCompatActivity {
             return true; // parse lỗi thì cho qua để tránh mất data
         }
     }
+    private void applyFilter() {
+        // 1. Lấy giá trị năm / tháng từ spinner
+        String yearText = spinnerYear.getText() != null ? spinnerYear.getText().toString() : "Tất cả";
+        String monthText = spinnerMonth.getText() != null ? spinnerMonth.getText().toString() : "Tất cả";
+
+        Integer year = null;
+        Integer month = null;
+
+        if (!"Tất cả".equals(yearText)) {
+            try {
+                year = Integer.parseInt(yearText);
+            } catch (NumberFormatException ignored) {}
+        }
+        if (!"Tất cả".equals(monthText)) {
+            try {
+                month = Integer.parseInt(monthText);
+            } catch (NumberFormatException ignored) {}
+        }
+
+        // 2. Lọc
+        filteredResults.clear();
+        boolean filterByCareProfile = careProfileIdFilter != null && !careProfileIdFilter.trim().isEmpty();
+
+        for (ResultData item : allResults) {
+
+            // 2.1 Lọc theo hồ sơ khám (nếu có)
+            if (filterByCareProfile) {
+                if (item.getCareProfile() == null ||
+                        item.getCareProfile().getId() == null ||
+                        !careProfileIdFilter.equals(item.getCareProfile().getId())) {
+                    continue;
+                }
+            }
+
+            // 2.2 Lọc theo năm / tháng dựa trên scheduledAt
+            if (matchDateFilter(item.getScheduledAt(), year, month)) {
+                filteredResults.add(item);
+            }
+        }
+
+        adapter.updateData(filteredResults);
+    }
+
 }
