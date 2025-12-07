@@ -335,26 +335,26 @@
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Địa chỉ thường trú"
-                    android:textColor="@color/label_text"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/text_profile" />
+<!--                <TextView-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Địa chỉ thường trú"-->
+<!--                    android:textColor="@color/label_text"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="@dimen/text_profile" />-->
 
-                <TextView
-                    android:id="@+id/tvAddressDetail"
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="wrap_content"
-                    android:maxLines="3"
-                    android:ellipsize="end"
-                    android:gravity="right"
-                    android:text="123/4 Hàn Thuyên, khu phố 6P"
-                    android:textColor="@color/view_text"
-                    android:textSize="@dimen/text_profile" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tvAddressDetail"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="2"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:maxLines="3"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:gravity="right"-->
+<!--                    android:text="123/4 Hàn Thuyên, khu phố 6P"-->
+<!--                    android:textColor="@color/view_text"-->
+<!--                    android:textSize="@dimen/text_profile" />-->
             </LinearLayout>
 
             </LinearLayout>
