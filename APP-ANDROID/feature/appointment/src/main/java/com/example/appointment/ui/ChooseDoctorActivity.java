@@ -81,7 +81,7 @@ public class ChooseDoctorActivity extends AppCompatActivity {
                             String endTime = null;
                             try {
                                 startTime = slot.getStartTime();
-                                endTime = slot.getStartTime();
+                                endTime = slot.getEndTime();
                             } catch (ParseException e) {
                                 throw new RuntimeException(e);
                             }
