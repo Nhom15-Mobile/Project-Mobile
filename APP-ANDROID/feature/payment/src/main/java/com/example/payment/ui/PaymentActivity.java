@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -41,6 +42,8 @@ public class PaymentActivity extends AppCompatActivity {
     AppointmentInfo appointmentInfo;
     ImageView qrImage;
     MaterialButton btnProcessPayment, btnBack;
+
+    private TextView tvSpecialty;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +63,7 @@ public class PaymentActivity extends AppCompatActivity {
         PaymentService paymentService = ApiServices.create(PaymentService.class, tokenProvider);
         createQr(paymentService);
 
+        tvSpecialty.setText(appointmentInfo.getSpecialty());
         btnBack.setOnClickListener(v -> finish());
         btnProcessPayment.setOnClickListener(v -> payment(paymentService));
     }
@@ -70,6 +74,7 @@ public class PaymentActivity extends AppCompatActivity {
         qrImage = findViewById(R.id.qrImage);
         btnProcessPayment = findViewById(R.id.btnProcessPayment);
         btnBack = findViewById(R.id.btnBack);
+        tvSpecialty = findViewById(R.id.tvSpecialty);
     }
 
     private void createQr(PaymentService paymentService){

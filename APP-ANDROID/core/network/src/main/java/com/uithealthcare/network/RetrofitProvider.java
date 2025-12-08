@@ -36,6 +36,30 @@ public final class RetrofitProvider {
         }
         return retrofit;
     }
+
+    public static Retrofit getOCR(SessionInterceptor.TokenProvider tokenProvider){
+        if (retrofit == null){
+            HttpLoggingInterceptor log = new HttpLoggingInterceptor();
+            log.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(new SessionInterceptor(tokenProvider))
+                    .addInterceptor(log)
+                    .connectTimeout(30, TimeUnit.SECONDS)  // thời gian chờ connect
+                    .writeTimeout(60, TimeUnit.SECONDS)    // upload ảnh
+                    .readTimeout(600, TimeUnit.SECONDS)
+                    .build();
+
+            Gson gson = new GsonBuilder().setLenient().create();
+
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(ApiConfig.OCR)
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+        }
+        return retrofit;
+    }
     public static synchronized void reset() {
         retrofit = null;
     }

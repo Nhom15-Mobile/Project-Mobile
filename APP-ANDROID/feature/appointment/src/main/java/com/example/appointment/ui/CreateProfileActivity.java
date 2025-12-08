@@ -85,7 +85,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         careProfileService = ApiServices.create(CareProfileService.class, tokenProvider);
         locationService = ApiServices.create(LocationService.class, tokenProvider);
-        ocrService = ApiServices.create(OCRService.class, tokenProvider);
+        ocrService = ApiServices.createOCR(OCRService.class, tokenProvider);
 
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
