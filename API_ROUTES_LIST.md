@@ -365,7 +365,4 @@ All require JWT authentication.
 
 ---
 
-**Last Updated:** November 30, 2025
-**Total Endpoints:** 52
-**Status:** ✅ Complete
 

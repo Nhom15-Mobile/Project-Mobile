@@ -19,37 +19,46 @@ export const AddAppointment = () => {
   }, []);
 
   const fetchData = async () => {
-    try {
-      setLoadingData(true);
-      const [profilesRes, slotsRes] = await Promise.all([
-        adminAPI.getCareProfiles(),
-        adminAPI.getDoctorSlots(),
-      ]);
+  try {
+    setLoadingData(true);
+    const [profilesRes, slotsRes] = await Promise.all([
+      adminAPI.getCareProfiles(),
+      adminAPI.getDoctorSlots(),
+    ]);
 
-      const profilesData = profilesRes.data.data || profilesRes.data;
-      const slotsData = slotsRes.data.data || slotsRes.data;
+    const profilesData = profilesRes.data.data || profilesRes.data;
+    const slotsData = slotsRes.data.data || slotsRes.data;
 
-      // Backend returns { data: { careProfiles: [], pagination: {} } }
-      const profilesList = profilesData.careProfiles || profilesData;
-      setCareProfiles(Array.isArray(profilesList) ? profilesList : []);
+    const profilesList = profilesData.careProfiles || profilesData;
+    setCareProfiles(Array.isArray(profilesList) ? profilesList : []);
 
-      // Backend returns { data: { slots: [], pagination: {} } }
-      const slotsList = slotsData.slots || slotsData;
-      // Filter available slots only
-      const availableSlots = Array.isArray(slotsList)
-        ? slotsList.filter(slot => !slot.isBooked)
-        : [];
-      setDoctorSlots(availableSlots);
-    } catch (error) {
-      console.error('Failed to load data:', error);
-      setMessage({
-        type: 'error',
-        text: 'Failed to load care profiles and doctor slots',
-      });
-    } finally {
-      setLoadingData(false);
-    }
-  };
+    const slotsList = slotsData.slots || slotsData;
+
+    const now = new Date();
+
+    const availableSlots = Array.isArray(slotsList)
+      ? slotsList.filter(slot => {
+          // slot chưa được đặt
+          if (slot.isBooked) return false;
+
+          // slot ở tương lai
+          const slotStart = new Date(slot.start);
+          return slotStart > now;
+        })
+      : [];
+
+    setDoctorSlots(availableSlots);
+  } catch (error) {
+    console.error('Failed to load data:', error);
+    setMessage({
+      type: 'error',
+      text: 'Failed to load care profiles and doctor slots',
+    });
+  } finally {
+    setLoadingData(false);
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
