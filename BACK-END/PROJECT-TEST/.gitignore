@@ -24,3 +24,6 @@ Thumbs.db
 # Markdown docs: ignore tất cả .md TRỪ README.md
 *.md
 !README.md
+
+test-api.http
+test-api.sh
